@@ -13,7 +13,7 @@ import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
 public class OverviewActivity extends AppCompatActivity {
 
-    private static final String TAG = "Flow";
+    private static final String TAG = OverviewActivity.class.getSimpleName();
 
     IntentFilter smsIntentFilter;
     SmsBroadcastReceiver smsReceiver;

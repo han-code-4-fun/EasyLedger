@@ -23,6 +23,7 @@ public class LauncherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
+        //app must read sms in order to work
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
@@ -30,6 +31,7 @@ public class LauncherActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.RECEIVE_SMS},
                     REQUEST_CODE_READMSG);
         }else{
+            // Permission is granted
             Log.d(TAG, "onCreate: Already granted");
             startActivity(new Intent(this, OverviewActivity.class));
         }
