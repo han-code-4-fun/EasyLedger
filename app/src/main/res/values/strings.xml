@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">EasyLedger</string>
+
     <string name="navigation_title_overview">Overview</string>
     <string name="navigation_title_transaction">Transactions</string>
     <string name="navigation_title_chart">Charts</string>
+
+    <string name="overview_totalbalance_title">Total Balance</string>
+    <string name="overview_transaction_tag_textview_title">Transactions need to be tagged</string>
+
 </resources>

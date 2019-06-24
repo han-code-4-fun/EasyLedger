@@ -5,4 +5,9 @@
     <color name="colorAccent">#D81B60</color>
     <color name="navigation_not_selected">#FFFFFF</color>
     <color name="navigation_selected">#FFEB3B</color>
+
+    <color name="color_money_out">#F44336</color>
+    <color name="color_money_in">#4CAF50</color>
+    <color name="background_grid_white">#FFFFFF</color>
+
 </resources>
