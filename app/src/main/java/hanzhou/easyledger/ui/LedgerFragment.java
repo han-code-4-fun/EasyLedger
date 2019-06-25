@@ -8,15 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.TransactionsAdapter;
+import hanzhou.easyledger.LedgersAdapter;
 
-public class TransactionFragment extends Fragment {
+public class LedgerFragment extends Fragment {
 
     //todo
     public static int NUMBER_OF_LEDGERS = 6;
@@ -33,9 +32,9 @@ public class TransactionFragment extends Fragment {
 
         ViewPager viewPager = rootView.findViewById(R.id.transaction_viewpager);
 
-        TransactionsAdapter transactionsAdapter = new TransactionsAdapter(getFragmentManager(),NUMBER_OF_LEDGERS);
+        LedgersAdapter ledgersAdapter = new LedgersAdapter(getFragmentManager(),NUMBER_OF_LEDGERS);
 
-        viewPager.setAdapter(transactionsAdapter);
+        viewPager.setAdapter(ledgersAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);

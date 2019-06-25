@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/transaction_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_weight="0.8"
+        tools:text="@string/placeholder_time" />
+
+    <TextView
+        android:id="@+id/transaction_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_weight="1"
+        android:text="@string/placeholder_amount" />
+
+    <TextView
+        android:id="@+id/transaction_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_weight="1"
+        android:text="@string/placeholder_category" />
+
+    <TextView
+        android:id="@+id/transaction_remark"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="20sp"
+        android:layout_weight="1"
+        android:text= "@string/placeholder_remark" />
+</LinearLayout>

@@ -1,11 +1,34 @@
 <resources>
     <string name="app_name">EasyLedger</string>
 
+
     <string name="navigation_title_overview">Overview</string>
     <string name="navigation_title_transaction">Transactions</string>
     <string name="navigation_title_chart">Charts</string>
 
     <string name="overview_totalbalance_title">Total Balance</string>
     <string name="overview_transaction_tag_textview_title">Transactions need to be tagged</string>
+
+    <string name="placeholder_time">June 1st</string>
+    <string name="placeholder_amount">$12343435.04</string>
+    <string name="placeholder_category">luxury shopping</string>
+    <string name="placeholder_remark">This guide provides several conceptual examples and many other words are hideen behind all of the scences </string>
+
+
+    <string name="menu_title_mainactivity_setting">Settings</string>
+    <string name="menu_title_mainactivity_question">Is this app safe?</string>
+    <string name="menu_title_mainactivity_feedback">Feedback</string>
+
+
+    <string name="explanation_friendly_why_this_app_is_safe">This is an open source app that all its "logic" is on github.com. And I create this app as an personal project to find a job</string>
+    <string name="explanation_less_friendly_why_this_app_is_safe">1. This is a open-source app; \n2. I don\'t want to know what\'s in your cellphone......</string>
+    <string name="explanation_bad_joke">No, it\'s not safe, and very unfortunately your phone\'s data has been retrieved, you need to send me $5000 with a request email to delete your personal files or your files will be shared all over the internet.</string>
+
+    <string name="button_github">Click to view source code</string>
+    <string name="button_question_bad_joke">The Real Reason</string>
+    <string name="button_explanation_friendly_version">Friendly Version</string>
+    <string name="button_explanation_less_friendly_vesion">Less Friendly Version</string>
+
+    <string name="github_link">https://github.com/miaonagemide/EasyLedger</string>
 
 </resources>

@@ -3,10 +3,10 @@
     package="hanzhou.easyledger">
 
     <uses-feature
-        android:name="android.hardware.telephony" android:required="true" />
+        android:name="android.hardware.telephony"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-
 
     <application
         android:allowBackup="true"
@@ -15,16 +15,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.LauncherActivity">
+        <activity android:name=".ui.QuestionActivity"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity"/>
+        </activity>
+        <activity android:name=".ui.LauncherActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MainActivity">
-
-        </activity>
+        <activity android:name=".ui.MainActivity"
+            android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>
