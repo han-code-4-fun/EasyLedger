@@ -7,10 +7,12 @@ import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -18,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
+import hanzhou.easyledger.utility.BackPressHandler;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -35,6 +38,10 @@ public class MainActivity extends AppCompatActivity{
 
     private Toolbar toolBar;
 
+    private Fragment selectedFragment;
+
+    private static Handler handlerBackPress;
+    private static int numOfTimesBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +78,12 @@ public class MainActivity extends AppCompatActivity{
 
 
 
+        selectedFragment = new OverviewFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_fragment_container, new OverviewFragment())
+                .replace(R.id.main_fragment_container, selectedFragment)
                 .commit();
+
 
 
 
@@ -93,6 +102,7 @@ public class MainActivity extends AppCompatActivity{
         unregisterReceiver(smsReceiver);
         Log.d(TAG, "onPause: smsReceiver unregistered");
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,13 +129,23 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if (/*!(selectedFragment instanceof OnBackPressedLinkActivityToFragment) ||*/
+                !((OnBackPressedLinkActivityToFragment) selectedFragment).onBackPressed()) {
+//            super.onBackPressed();
+            //todo
+            Log.d("flow", "not sure what to do, leave it like this so far");
+        }else{
+           super.onBackPressed();
+        }
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    Fragment selectedFragment = null;
+
 
                     switch(menuItem.getItemId()){
                         case R.id.navigation_overview:
@@ -151,6 +171,10 @@ public class MainActivity extends AppCompatActivity{
                     return true;
                 }
             };
+
+    public interface OnBackPressedLinkActivityToFragment {
+        boolean onBackPressed();
+    }
 
 
 }

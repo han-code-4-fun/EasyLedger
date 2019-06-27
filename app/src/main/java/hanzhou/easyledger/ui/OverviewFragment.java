@@ -1,12 +1,10 @@
 package hanzhou.easyledger.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,13 +33,21 @@ import java.util.List;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
+import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.FakeTestingData;
 import hanzhou.easyledger.viewmodel.OverviewViewModel;
 
 public class OverviewFragment extends Fragment
-implements TransactionAdapter.CustomListItemClickListener, View.OnLongClickListener {
+implements TransactionAdapter.CustomListItemClickListener,
+        View.OnLongClickListener,
+        MainActivity.OnBackPressedLinkActivityToFragment {
 
     private static final String TAG = OverviewFragment.class.getSimpleName();
+
+
+
+    private static Handler handlerBackPress;
+    private static int numOfTimesBackPressed;
 
     HorizontalBarChart mBarChart;
 
@@ -211,13 +217,8 @@ implements TransactionAdapter.CustomListItemClickListener, View.OnLongClickListe
 
     @Override
     public boolean onLongClick(View view) {
-        toolBar.getMenu().clear();
-        toolBar.inflateMenu(R.menu.toolbar_action_select_one);
-        isToolBarInAction = true;
+        setToolBarToActionMode();
         mAdapter.notifyDataSetChanged();
-
-        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
 
         return false;
@@ -226,13 +227,43 @@ implements TransactionAdapter.CustomListItemClickListener, View.OnLongClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == android.R.id.home) {
-            //getActivity().onBackPressed();
+
+            if(isToolBarInAction){
+                setToolBarToOriginState();
+            }
+
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
+    @Override
+    public boolean onBackPressed() {
+        if(isToolBarInAction){
+            setToolBarToOriginState();
+        }else{
+            return BackPressHandler.isUserPressedTwice(this.getContext());
+        }
 
+        return false;
+
+    }
+
+    private void setToolBarToActionMode(){
+        toolBar.getMenu().clear();
+        toolBar.inflateMenu(R.menu.toolbar_action_select_one);
+        isToolBarInAction = true;
+        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setToolBarToOriginState(){
+        toolBar.getMenu().clear();
+        toolBar.inflateMenu(R.menu.toolbar_mainactivity);
+        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
+        isToolBarInAction = false;
+    }
 }
