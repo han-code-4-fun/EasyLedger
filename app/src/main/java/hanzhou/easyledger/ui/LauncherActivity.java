@@ -33,7 +33,7 @@ public class LauncherActivity extends AppCompatActivity {
         }else{
             // Permission is granted
             Log.d(TAG, "onCreate: Already granted");
-            startActivity(new Intent(this, MainActivity.class));
+            startMainActivity();
         }
     }
 
@@ -46,8 +46,12 @@ public class LauncherActivity extends AppCompatActivity {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "onRequestPermissionsResult: Granted");
-                startActivity(new Intent(this, MainActivity.class));
+                startMainActivity();
             }
         }
+    }
+    private void startMainActivity(){
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 }

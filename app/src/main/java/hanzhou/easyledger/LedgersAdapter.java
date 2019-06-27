@@ -12,6 +12,8 @@ import java.util.List;
 import hanzhou.easyledger.ui.DetailTransactionFragment;
 
 public class LedgersAdapter extends FragmentPagerAdapter {
+
+
     //todo  the 'numberOfLedgers' has relationship with ledger tables in database
     private static int numberOfLedgers = 0;
 

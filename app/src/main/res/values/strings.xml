@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">EasyLedger</string>
 
+    <string name="actionbar_title">test title</string>
 
     <string name="navigation_title_overview">Overview</string>
     <string name="navigation_title_transaction">Transactions</string>
@@ -15,9 +16,15 @@
     <string name="placeholder_remark">This guide provides several conceptual examples and many other words are hideen behind all of the scences </string>
 
 
-    <string name="menu_title_mainactivity_setting">Settings</string>
-    <string name="menu_title_mainactivity_question">Is this app safe?</string>
-    <string name="menu_title_mainactivity_feedback">Feedback</string>
+    <string name="toolbar_selectAll">Select All</string>
+    <string name="toolbar_ignore">Ignore</string>
+    <string name="toolbar_delete">Delete</string>
+    <string name="toolbar_edit">Share</string>
+
+
+    <string name="menu_title_setting">Settings</string>
+    <string name="menu_title_question">Is this app safe?</string>
+    <string name="menu_title_feedback">Feedback</string>
 
 
     <string name="explanation_friendly_why_this_app_is_safe">This is an open source app that all its "logic" is on github.com. And I create this app as an personal project to find a job</string>

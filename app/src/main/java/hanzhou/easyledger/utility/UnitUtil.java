@@ -1,4 +1,4 @@
-package hanzhou.easyledger.util;
+package hanzhou.easyledger.utility;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
