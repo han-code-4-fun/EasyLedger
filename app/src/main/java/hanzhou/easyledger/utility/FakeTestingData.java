@@ -1,8 +1,11 @@
 package hanzhou.easyledger.utility;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 
 public class FakeTestingData {
@@ -12,24 +15,35 @@ public class FakeTestingData {
     private static String[] category = {
             "restaurant", "supermarket", "petrol", "housing", "bill",
             "travel","shopping", "kids","education",
-            "a super long category name that is long enough to test the recyclerview's reaction"};
+            "medical"};
+
+    private static String[] remarks = {
+            "Shoppers Drug Mart",
+            "TNT supermarket",
+            "Random Sushi",
+            "Super Ramen",
+            "Levis",
+            "Costco",
+            "Movie",
+            "Hilton Hotel",
+            "Canada air",
+            "Avis rental",
+            "Fido",
+            "BC Hydro"
+    };
 
     public static List<TransactionEntry> create10kTransactions(){
         List<TransactionEntry> transactionEntryList =new ArrayList<>();
 
 
-//        category[(int)(Math.random()*category.length)]
-
-
-
         return transactionEntryList;
     }
 
-    public static List<TransactionEntry> create25UntaggedTransactions(){
+    public static List<TransactionEntry> create5UntaggedTransactions(){
         List<TransactionEntry> transactionEntryList =new ArrayList<>();
 
 
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 5; i++) {
             transactionEntryList.add(getARandomTransaction());
         }
 
@@ -38,15 +52,18 @@ public class FakeTestingData {
     }
 
     private static TransactionEntry getARandomTransaction(){
-        String year = "19";
+
         return new TransactionEntry(
-                "n/a",
-                Integer.parseInt(year+getRandomMonthNDate()),
+                Constant.untagged,
+                getRandomMonthNDate(),
                 getRandomAmount(),
-                category[(int)(Math.random()*category.length)],
-                "sample");
+                getRandomCategory(),
+                getRandomRemark());
     }
 
+    private static String getRandomCategory() {
+        return category[(int)(Math.random()*category.length)];
+    }
 
 
     private static double getRandomAmount() {
@@ -56,10 +73,29 @@ public class FakeTestingData {
         return output;
     }
 
-    private static String getRandomMonthNDate(){
-        String output = "";
-        output +=(int)(Math.random()*12+1);
-        output +=(int)(Math.random()*31+1);
+    private static int getRandomMonthNDate(){
+
+        String output = "19";
+        int temp =(int)(Math.random()*12+1);
+        if(temp<10) {
+            output += ("0"+temp);
+        }else{
+            output += temp;
+        }
+        temp = (int)(Math.random()*31+1);
+        if(temp < 10){
+            output += "0"+ temp;
+        }else{
+            output += temp;
+        }
+
+        return Integer.parseInt(output);
+    }
+
+    private static String getRandomRemark(){
+        String output;
+        output = remarks[(int)(Math.random()*remarks.length)];
+
         return output;
     }
 

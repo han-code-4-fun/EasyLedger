@@ -20,6 +20,7 @@
     <string name="toolbar_ignore">Ignore</string>
     <string name="toolbar_delete">Delete</string>
     <string name="toolbar_edit">Share</string>
+    <string name="string_toolbar_selection_word">selected</string>
 
 
     <string name="menu_title_setting">Settings</string>
@@ -37,5 +38,7 @@
     <string name="button_explanation_less_friendly_vesion">Less Friendly Version</string>
 
     <string name="github_link">https://github.com/miaonagemide/EasyLedger</string>
+
+    <string name="empty_string"> </string>
 
 </resources>

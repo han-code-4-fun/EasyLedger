@@ -7,24 +7,25 @@
         android:orderInCategory="100"
         android:title="@string/toolbar_edit"
         android:icon="@drawable/icon_toolbar_edit"
-        app:showAsAction="ifRoom" />
-   <!-- <item
+        app:showAsAction="always" />
+    <item
         android:id="@+id/toolbar_select_all"
         android:orderInCategory="200"
         android:title="@string/toolbar_selectAll"
-        app:showAsAction="ifRoom" />-->
+        android:icon="@drawable/icon_toolbar_all"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/toolbar_delete"
         android:orderInCategory="300"
         android:icon="@drawable/icon_toolbar_delete"
         android:title="@string/toolbar_delete"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/toolbar_ignore"
         android:orderInCategory="400"
         android:title="@string/toolbar_ignore"
         android:icon="@drawable/icon_toolbar_ignore_move_record_to_others"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

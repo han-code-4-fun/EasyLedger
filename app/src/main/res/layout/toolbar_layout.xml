@@ -10,14 +10,15 @@
     android:background="@color/colorPrimary"
     app:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/toolbar_textview"
+
             android:textSize="18sp"
-            android:text="test words"
+            tools:text="12340 selected"
 
             />
     </RelativeLayout>
