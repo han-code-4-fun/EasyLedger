@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,8 +36,10 @@ import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.temp.TestTempActivity;
 import hanzhou.easyledger.utility.BackPressHandler;
+import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
-import hanzhou.easyledger.viewmodel.OverviewViewModel;
+import hanzhou.easyledger.viewmodel.TransactionDBVMFactory;
+import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 public class OverviewFragment extends Fragment
 implements TransactionAdapter.CustomListItemClickListener,
@@ -47,17 +48,16 @@ implements TransactionAdapter.CustomListItemClickListener,
 
     private static final String TAG = OverviewFragment.class.getSimpleName();
 
-    private OverviewViewModel viewModel;
+    private TransactionDBViewModel viewModel;
 
-    private SparseBooleanArray mSelectedItems;
+//    private SparseBooleanArray mSelectedItems;
 
     HorizontalBarChart mBarChart;
 
     TransactionAdapter mAdapter;
 
-    private List<TransactionEntry> mTransactionEntryList;
     private TransactionDB mDb;
-    private int numberOfSelectedTransaction;
+//    private int numberOfSelectedTransaction;
 
     RecyclerView mRecyclerView;
 
@@ -66,6 +66,7 @@ implements TransactionAdapter.CustomListItemClickListener,
     private TextView textViewOnToolBar;
 
     private AppCompatActivity appCompatActivity;
+
 
     @Override
     public void onAttach(Context context) {
@@ -77,9 +78,10 @@ implements TransactionAdapter.CustomListItemClickListener,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        appCompatActivity = appCompatActivity = (AppCompatActivity) getActivity();
+        appCompatActivity = (AppCompatActivity) getActivity();
 
     }
+
 
     @Nullable
     @Override
@@ -88,11 +90,12 @@ implements TransactionAdapter.CustomListItemClickListener,
         View root = inflater.inflate(R.layout.fragment_overview,container,false);
 
 
-        toolBar = getActivity().findViewById(R.id.toolbar_layout);
+        toolBar = appCompatActivity.findViewById(R.id.toolbar_layout);
 
-        textViewOnToolBar = getActivity().findViewById(R.id.toolbar_textview);
+
+        textViewOnToolBar = appCompatActivity.findViewById(R.id.toolbar_textview);
         textViewOnToolBar.setVisibility(View.GONE);
-        mSelectedItems = new SparseBooleanArray();
+//        mSelectedItems = new SparseBooleanArray();
 
 
 
@@ -103,22 +106,21 @@ implements TransactionAdapter.CustomListItemClickListener,
         setBarChart(2, range);
 
 
-        /*AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDb.transactionDAO().insertListOfTransactions(
-                        FakeTestingData.create5UntaggedTransactions());
-            }
-        });*/
+//        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                mDb.transactionDAO().insertListOfTransactions(
+//                        FakeTestingData.create20UntaggedTransactions());
+//            }
+//        });
 
 
 
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(appCompatActivity);
 
         layoutManager.setOrientation(RecyclerView.VERTICAL);
 
-        mAdapter =new TransactionAdapter(getContext(),this);
+        mAdapter =new TransactionAdapter(appCompatActivity,this);
 
         mRecyclerView =root.findViewById(R.id.overview_transaction_untagged_recyclerview);
 
@@ -127,7 +129,6 @@ implements TransactionAdapter.CustomListItemClickListener,
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setAdapter(mAdapter);
-        numberOfSelectedTransaction = mAdapter.getSelectedItemCount();
 
         setupViewModel();
 
@@ -152,22 +153,15 @@ implements TransactionAdapter.CustomListItemClickListener,
 
             mAdapter.switchSelectedState(clickedItemIndex);
 
-            numberOfSelectedTransaction = mAdapter.getSelectedItemCount();
+            displayToolbarIconBasedOnNumberOfSelectedItems(mAdapter.getSelectedItemCount());
 
-            switchToolBarModeBetweenSingleNMultiple(numberOfSelectedTransaction);
-
-            String display = numberOfSelectedTransaction +" "+getResources().getString(R.string.string_toolbar_selection_word);
-
-            textViewOnToolBar.setText(display);
+            textViewOnToolBar.setText(displayToolbarText());
 
         } else {
-
-            TransactionEntry thisRecord = mTransactionEntryList.get(clickedItemIndex);
-
-            Log.d(TAG, "customOnListItemClick: clicked item number "+clickedItemIndex);
+            TransactionEntry transactionEntry = mAdapter.getClickedOne(clickedItemIndex);
             Toast.makeText(
                     this.getActivity(),
-                    "you clicked "+clickedItemIndex+" item, which is "+thisRecord.getRemark(),
+                "clicked "+clickedItemIndex+" -> "+transactionEntry.getRemark(),
                     Toast.LENGTH_LONG).show();
         }
 
@@ -180,7 +174,6 @@ implements TransactionAdapter.CustomListItemClickListener,
         //only set toolbar to action mode if it is not
         if(!mAdapter.getIsToolBarInAction()){
             emptySelectedTransaction();
-
             setToolBarToActionMode();
         }
     }
@@ -192,31 +185,32 @@ implements TransactionAdapter.CustomListItemClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-    /*    if (id == android.R.id.home) {
-
-            if(mAdapter.getIsToolBarInAction()){
-                setToolBarToOriginMode();
-            }
-
-            return true;
-        }else{
-            if(id == R.id.toolbar_edit){
-                startActivity(new Intent(this.getContext(), TestTempActivity.class));
-
-            }
-        }*/
         switch (id){
             case android.R.id.home:
-                if(mAdapter.getIsToolBarInAction()){
-                    setToolBarToOriginMode();
-                }
+
+                if(mAdapter.getIsToolBarInAction()){ setToolBarToOriginMode();}
+
                 break;
 
             case R.id.toolbar_edit:
-                startActivity(new Intent(this.getContext(), TestTempActivity.class));
+
+                startActivity(new Intent(appCompatActivity, TestTempActivity.class));
+                setToolBarToOriginMode();
+
                 break;
             case R.id.toolbar_delete:
+
                 //todo implementing deleting
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.transactionDAO().deleteListOfTransactions(
+                                mAdapter.getSelectedTransactions()
+                        );
+                    }
+                });
+                setToolBarToOriginMode();
+                mAdapter.notifyDataSetChanged();
 
                 break;
             case R.id.toolbar_ignore:
@@ -224,8 +218,14 @@ implements TransactionAdapter.CustomListItemClickListener,
 
                 break;
             case R.id.toolbar_select_all:
-                //todo, select all the transctions in the view
-
+                //select/de-select all the transctions in the view
+                if(mAdapter.getSelectedItemCount() ==mAdapter.getItemCount()){
+                    mAdapter.clearSelectedState();
+                    textViewOnToolBar.setText(displayToolbarText());
+                }else{
+                    mAdapter.selectAll();
+                    textViewOnToolBar.setText(displayToolbarText());
+                }
                 break;
 
         }
@@ -238,7 +238,7 @@ implements TransactionAdapter.CustomListItemClickListener,
         if(mAdapter.getIsToolBarInAction()){
             setToolBarToOriginMode();
         }else{
-            return BackPressHandler.isUserPressedTwice(this.getContext());
+            return BackPressHandler.isUserPressedTwice(appCompatActivity);
         }
 
         return false;
@@ -249,12 +249,21 @@ implements TransactionAdapter.CustomListItemClickListener,
 
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.empty_string);
+
         emptySelectedTransaction();
 
-        String display = numberOfSelectedTransaction +" "+
+        String display = mAdapter.getSelectedItemCount() +" "+
                 getResources().getString(R.string.string_toolbar_selection_word);
 
-        toolBar.inflateMenu(R.menu.toolbar_action_select_one);
+        toolBar.inflateMenu(R.menu.toolbar_action_mode);
+
+        /*  ignore btn is for auto-set selected item to 'Others' category
+         *  when entering toolbar action mode, no item has selected,
+         *  there is not need to display edit and ignore
+         * */
+
+        toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(false);
+        toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
 
         mAdapter.setIsToolBarInAction(true);
 
@@ -262,11 +271,11 @@ implements TransactionAdapter.CustomListItemClickListener,
 
         textViewOnToolBar.setVisibility(View.VISIBLE);
 
-
-
         mAdapter.notifyDataSetChanged();
 
         appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
     }
 
     private void setToolBarToOriginMode(){
@@ -275,7 +284,7 @@ implements TransactionAdapter.CustomListItemClickListener,
 
         toolBar.setTitle(R.string.app_name);
 
-        toolBar.inflateMenu(R.menu.toolbar_mainactivity);
+        toolBar.inflateMenu(R.menu.toolbar_normal_mode);
 
         appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
@@ -290,30 +299,29 @@ implements TransactionAdapter.CustomListItemClickListener,
         mAdapter.notifyDataSetChanged();
     }
 
-    private void switchToolBarModeBetweenSingleNMultiple(int num){
-        String display = num +" "+
-                getResources().getString(R.string.string_toolbar_selection_word);
-        if(num<=1){
-            //todo optimize this
-//            if(!toolBar.getMenu().equals(R.menu.toolbar_action_select_one)){
-                //only run if toolbar doesn't implement toolbar_action_select_one
-                Log.d(TAG, "switchToolBarModeBetweenSingleNMultiple: 11111");
-                toolBar.getMenu().clear();
-                toolBar.inflateMenu(R.menu.toolbar_action_select_one);
-                appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//            }
+    private void displayToolbarIconBasedOnNumberOfSelectedItems(int num){
+        if(num != 0){
+            toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(true);
         }else{
-            toolBar.getMenu().clear();
-            toolBar.inflateMenu(R.menu.toolbar_action_select_multi);
-            appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(false);
+        }
+        if(num == 1){
+            toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(true);
+        }else{
+            toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
+
         }
 
     }
 
     private void emptySelectedTransaction() {
         mAdapter.clearSelectedState();
+    }
 
-        numberOfSelectedTransaction = 0;
+    private String displayToolbarText(){
+        String display = mAdapter.getSelectedItemCount() +" "
+                +getResources().getString(R.string.string_toolbar_selection_word);
+        return display;
     }
 
 
@@ -371,8 +379,9 @@ implements TransactionAdapter.CustomListItemClickListener,
     }
 
     private void setupViewModel() {
-        viewModel= ViewModelProviders.of(this).get(OverviewViewModel.class);
-        viewModel.getUntaggedTransactions().observe(this, new Observer<List<TransactionEntry>>() {
+        final TransactionDBVMFactory factory = new TransactionDBVMFactory(mDb, Constant.untagged);
+        viewModel= ViewModelProviders.of(appCompatActivity,factory).get(TransactionDBViewModel.class);
+        viewModel.getUntaggedTransactions().observe(appCompatActivity, new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntries) {
                 Log.d(TAG, "Updating untagged (new) transaction from LiveData in ViewModel");

@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,7 +19,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
-import hanzhou.easyledger.utility.BackPressHandler;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -106,7 +104,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_mainactivity, menu);
+        getMenuInflater().inflate(R.menu.toolbar_normal_mode, menu);
         return true;
     }
 

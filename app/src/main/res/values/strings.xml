@@ -41,4 +41,6 @@
 
     <string name="empty_string"> </string>
 
+    <string name="txt_user_need_to_select_one_item">Please select one item to edit</string>
+
 </resources>

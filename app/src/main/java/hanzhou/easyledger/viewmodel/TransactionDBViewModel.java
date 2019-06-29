@@ -6,7 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
@@ -15,26 +15,30 @@ import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.ui.OverviewFragment;
 import hanzhou.easyledger.utility.Constant;
 
-public class OverviewViewModel extends AndroidViewModel {
+public class TransactionDBViewModel extends ViewModel {
 
     private static final String TAG = OverviewFragment.class.getSimpleName();
 
-    private LiveData<List<TransactionEntry>> transactionEntryList;
+    private LiveData<List<TransactionEntry>> untaggedTransactions;
+
+    private LiveData<List<TransactionEntry>> allTransactions;
 
 
 
 
-    public OverviewViewModel(@NonNull Application application) {
-        super(application);
+    public TransactionDBViewModel(TransactionDB mDB, String inputTag) {
 
-        TransactionDB database =TransactionDB.getInstance(this.getApplication());
         Log.d(TAG, "Actively retrieving the tasks from the DataBase");
         //the overview fragment only diaplay these (new) transactions that needed to be tagged by user
-        transactionEntryList = database.transactionDAO().loadTransactionByLedger(Constant.untagged);
-
+        untaggedTransactions = mDB.transactionDAO().loadTransactionByLedger(inputTag);
+        allTransactions = mDB.transactionDAO().loadAllTransactions();
     }
 
     public LiveData<List<TransactionEntry>> getUntaggedTransactions(){
-        return transactionEntryList;
+        return untaggedTransactions;
+    }
+
+    public LiveData<List<TransactionEntry>> getAllTransactions(){
+        return allTransactions;
     }
 }

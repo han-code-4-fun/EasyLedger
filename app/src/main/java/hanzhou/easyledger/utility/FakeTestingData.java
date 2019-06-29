@@ -39,11 +39,11 @@ public class FakeTestingData {
         return transactionEntryList;
     }
 
-    public static List<TransactionEntry> create5UntaggedTransactions(){
+    public static List<TransactionEntry> create20UntaggedTransactions(){
         List<TransactionEntry> transactionEntryList =new ArrayList<>();
 
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 20; i++) {
             transactionEntryList.add(getARandomTransaction());
         }
 

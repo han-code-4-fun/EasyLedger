@@ -22,6 +22,7 @@ import hanzhou.easyledger.utility.UnitUtil;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
+    private static final String TAG = TransactionAdapter.class.getSimpleName();
     private CustomListItemClickListener mOnClickListener;
     private Context mContext;
     private List<TransactionEntry> mTransactionEntryList;
@@ -56,8 +57,21 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         } else {
             mSelectedItems.put(position, true);
         }
+        Log.d(TAG, "switchSelectedState:  --------->"+ mSelectedItems.size());
         notifyItemChanged(position);
     }
+
+
+    public void selectAll(){
+        for(int i =0;i<mTransactionEntryList.size();i++){
+            if(!mSelectedItems.get(i)){
+                mSelectedItems.put(i,true);
+            }
+        }
+        Log.d(TAG, "selectAll:  --------->"+ mSelectedItems.size());
+        notifyDataSetChanged();
+    }
+
 
     public boolean getIsToolBarInAction() {
         return mIsInChoiceMode;
@@ -67,20 +81,37 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         this.mIsInChoiceMode = isInChoiceMode;
     }
 
+    public List<TransactionEntry> getSelectedTransactions(){
+        List<Integer> selectedNumbers = getSelectedItems();
+        List<TransactionEntry> output = new ArrayList<>(selectedNumbers.size());
+
+        for(Integer i : selectedNumbers){
+            output.add(mTransactionEntryList.get(i));
+        }
+
+        return output;
+    }
+
     public List<Integer> getSelectedItems() {
         List<Integer> items = new ArrayList<>(mSelectedItems.size());
         for (int i = 0; i < mSelectedItems.size(); ++i) {
             items.add(mSelectedItems.keyAt(i));
         }
+        Log.d(TAG, "getSelectedItems:  --------->"+ mSelectedItems.size());
         return items;
     }
 
     public void clearSelectedState() {
         List<Integer> selection = getSelectedItems();
         mSelectedItems.clear();
+        Log.d(TAG, "getSelectedItems:  --------->"+ mSelectedItems.size());
         for (Integer i : selection) {
             notifyItemChanged(i);
         }
+    }
+
+    public TransactionEntry getClickedOne(int input){
+        return mTransactionEntryList.get(input);
     }
 
     public int getSelectedItemCount() {
@@ -104,6 +135,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
 
         TransactionEntry currentRecord= mTransactionEntryList.get(position);
+
+
 
         holder.time.setText(String.valueOf(currentRecord.getTime()));
         holder.amount.setText(UnitUtil.moneyFormater.format(currentRecord.getAmount()));
@@ -159,10 +192,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         public void onClick(View view) {
             int position = getAdapterPosition();
 
-            if(checkBox.isChecked()){
-                checkBox.setChecked(false);
-            }else{
-                checkBox.setChecked(true);
+            if(mIsInChoiceMode){
+                if(checkBox.isChecked()){
+                    checkBox.setChecked(false);
+                }else{
+                    checkBox.setChecked(true);
+                }
             }
 
             mOnClickListener.customOnListItemClick(position);

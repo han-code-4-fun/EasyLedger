@@ -1,5 +1,6 @@
 package hanzhou.easyledger;
 
+import android.content.Context;
 import android.location.Location;
 
 import androidx.annotation.Nullable;
@@ -14,14 +15,17 @@ import hanzhou.easyledger.ui.DetailTransactionFragment;
 public class LedgersAdapter extends FragmentPagerAdapter {
 
 
-    //todo  the 'numberOfLedgers' has relationship with ledger tables in database
+    //todo  the 'numberOfLedgers' has relationship with ledger in database
     private static int numberOfLedgers = 0;
+
+    private static LedgersAdapter sAdapterInstance;
 
 
     public LedgersAdapter(FragmentManager fm, int input) {
         super(fm);
         numberOfLedgers = input;
     }
+
 
     @Override
     public Fragment getItem(int position) {
