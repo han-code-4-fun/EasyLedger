@@ -1,44 +1,54 @@
 package hanzhou.easyledger.ui;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.LedgersAdapter;
-import hanzhou.easyledger.data.AppExecutors;
-import hanzhou.easyledger.temp.TestTempActivity;
-import hanzhou.easyledger.utility.BackPressHandler;
-import hanzhou.easyledger.utility.HelperUtilMoveToSharedPreferenceLater;
+import hanzhou.easyledger.viewmodel.CrossFragmentCommunicationViewModel;
+
 /*
 *   Fragment that shows detailed transactions based on number of 'ledger'
 *   that user created, by default there is one ledger
 *
 * */
-public class LedgerFragment extends Fragment{
+public class LedgerFragment extends Fragment
+       {
 
     //todo
     private static int NUMBER_OF_LEDGERS;
+    private CrossFragmentCommunicationViewModel crossVM;
+    private AppCompatActivity appCompatActivity;
+    private LedgersAdapter ledgersAdapter;
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        appCompatActivity = (AppCompatActivity) getActivity();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
     }
 
@@ -49,7 +59,7 @@ public class LedgerFragment extends Fragment{
 
 
 
-        NUMBER_OF_LEDGERS = HelperUtilMoveToSharedPreferenceLater.getNumberOfTransactionTables();
+//        NUMBER_OF_LEDGERS = HelperUtilMoveToSharedPreferenceLater.getNumberOfTransactionTables();
 
         final View rootView =inflater.inflate(R.layout.fragment_ledger, container,false);
 
@@ -57,7 +67,12 @@ public class LedgerFragment extends Fragment{
 
         ViewPager viewPager = rootView.findViewById(R.id.transaction_viewpager);
 
-        LedgersAdapter ledgersAdapter = new LedgersAdapter(getChildFragmentManager(), NUMBER_OF_LEDGERS);
+        crossVM = ViewModelProviders.of(appCompatActivity).get(CrossFragmentCommunicationViewModel.class);
+
+
+        //todo, watch out, if add to back stack, will not populate this if
+        ledgersAdapter = new LedgersAdapter(getChildFragmentManager(), /*NUMBER_OF_LEDGERS,*/ this);
+        //todo,  track if there is change while user fragment is not in forground and user add/remove ledgers
 
         viewPager.setAdapter(ledgersAdapter);
 

@@ -1,6 +1,7 @@
 package hanzhou.easyledger.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -21,40 +22,29 @@ public class QuestionActivity extends AppCompatActivity {
 
     private static final String TAG = QuestionActivity.class.getSimpleName();
 
-    private  Button btnFriend;
-    private  Button btnJoke;
+    private Button btnFriend;
+    private Button btnJoke;
     private Button btnLessFriendly;
     private Button btnGithub;
-
+    private Toolbar toolBar;
     private TextView explanationTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         Date today = new Date();
         UnitUtil unitUtil = new UnitUtil();
         String dateString = unitUtil.getMonthDayFormatter().format(today);
 
-        btnFriend = findViewById(R.id.button_question_friendly_answer);
-
-        btnJoke= findViewById(R.id.button_question_bad_joke);
-
-        btnLessFriendly= findViewById(R.id.button_question_less_friendly_answer);
-
-        explanationTxt = findViewById(R.id.textview_question_explanation);
-
-        btnGithub = findViewById(R.id.button_github);
+        uiInitialization();
 
         //make a joke on April 1st
-        if(dateString.equals("04-01")){
-            btnJoke.setVisibility(View.VISIBLE);
-        }
+        if (dateString.equals("04-01")) {btnJoke.setVisibility(View.VISIBLE);}
 
         setOnClickListenerForAllButton();
-
     }
 
     @Override
@@ -71,7 +61,27 @@ public class QuestionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setOnClickListenerForAllButton(){
+    private void uiInitialization() {
+        toolBar = findViewById(R.id.toolbar_layout);
+        setSupportActionBar(toolBar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.title_question_activity));
+        toolBar.setTitle(getResources().getString(R.string.title_question_activity));
+        toolBar.inflateMenu(R.menu.question_activity_toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        btnFriend = findViewById(R.id.button_question_friendly_answer);
+
+        btnJoke = findViewById(R.id.button_question_bad_joke);
+
+        btnLessFriendly = findViewById(R.id.button_question_less_friendly_answer);
+
+        explanationTxt = findViewById(R.id.textview_question_explanation);
+
+        btnGithub = findViewById(R.id.button_github);
+    }
+
+    private void setOnClickListenerForAllButton() {
         btnFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

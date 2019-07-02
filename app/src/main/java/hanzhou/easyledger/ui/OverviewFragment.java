@@ -38,13 +38,11 @@ import hanzhou.easyledger.temp.TestTempActivity;
 import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
+import hanzhou.easyledger.viewmodel.CrossFragmentCommunicationViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBVMFactory;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
-public class OverviewFragment extends Fragment
-implements TransactionAdapter.CustomListItemClickListener,
-
-        MainActivity.OnBackPressedLinkActivityToFragment {
+public class OverviewFragment extends Fragment{
 
     private static final String TAG = OverviewFragment.class.getSimpleName();
 
@@ -54,18 +52,23 @@ implements TransactionAdapter.CustomListItemClickListener,
 
     HorizontalBarChart mBarChart;
 
-    TransactionAdapter mAdapter;
+//    TransactionAdapter mAdapter;
+
+    LinearLayoutManager layoutManager;
 
     private TransactionDB mDb;
 //    private int numberOfSelectedTransaction;
 
-    RecyclerView mRecyclerView;
+    private RecyclerView recyclerView;
 
     private Toolbar toolBar;
 
     private TextView textViewOnToolBar;
 
     private AppCompatActivity appCompatActivity;
+
+    private CrossFragmentCommunicationViewModel crossVM;
+
 
 
     @Override
@@ -79,6 +82,7 @@ implements TransactionAdapter.CustomListItemClickListener,
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         appCompatActivity = (AppCompatActivity) getActivity();
+
 
     }
 
@@ -95,7 +99,6 @@ implements TransactionAdapter.CustomListItemClickListener,
 
         textViewOnToolBar = appCompatActivity.findViewById(R.id.toolbar_textview);
         textViewOnToolBar.setVisibility(View.GONE);
-//        mSelectedItems = new SparseBooleanArray();
 
 
 
@@ -116,22 +119,10 @@ implements TransactionAdapter.CustomListItemClickListener,
 
 
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(appCompatActivity);
-
-        layoutManager.setOrientation(RecyclerView.VERTICAL);
-
-        mAdapter =new TransactionAdapter(appCompatActivity,this);
-
-        mRecyclerView =root.findViewById(R.id.overview_transaction_untagged_recyclerview);
-
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        mRecyclerView.setHasFixedSize(true);
-
-        mRecyclerView.setAdapter(mAdapter);
-
-        setupViewModel();
-
+        appCompatActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.overview_recyclerview_for_untagged_transactions, new DetailTransactionFragment())
+                .commit();
 
        return root;
     }
@@ -145,184 +136,184 @@ implements TransactionAdapter.CustomListItemClickListener,
 
 
 
-
-    @Override
-    public void customOnListItemClick(int clickedItemIndex) {
-
-        if (mAdapter.getIsToolBarInAction()) {
-
-            mAdapter.switchSelectedState(clickedItemIndex);
-
-            displayToolbarIconBasedOnNumberOfSelectedItems(mAdapter.getSelectedItemCount());
-
-            textViewOnToolBar.setText(displayToolbarText());
-
-        } else {
-            TransactionEntry transactionEntry = mAdapter.getClickedOne(clickedItemIndex);
-            Toast.makeText(
-                    this.getActivity(),
-                "clicked "+clickedItemIndex+" -> "+transactionEntry.getRemark(),
-                    Toast.LENGTH_LONG).show();
-        }
-
-
-    }
-
-    @Override
-    public void customOnListItemLongClick(int position) {
-
-        //only set toolbar to action mode if it is not
-        if(!mAdapter.getIsToolBarInAction()){
-            emptySelectedTransaction();
-            setToolBarToActionMode();
-        }
-    }
-
-
+//
+//    @Override
+//    public void customOnListItemClick(int clickedItemIndex) {
+//
+//        if (mAdapter.getIsToolBarInAction()) {
+//
+//            mAdapter.switchSelectedState(clickedItemIndex);
+//
+//            displayToolbarIconBasedOnNumberOfSelectedItems(mAdapter.getSelectedItemCount());
+//
+//            textViewOnToolBar.setText(displayToolbarText());
+//
+//        } else {
+//            TransactionEntry transactionEntry = mAdapter.getClickedOne(clickedItemIndex);
+//            Toast.makeText(
+//                    this.getActivity(),
+//                "clicked "+clickedItemIndex+" -> "+transactionEntry.getRemark(),
+//                    Toast.LENGTH_LONG).show();
+//        }
+//
+//
+//    }
+//
+//    @Override
+//    public void customOnListItemLongClick(int position) {
+//
+//        //only set toolbar to action mode if it is not
+//        if(!mAdapter.getIsToolBarInAction()){
+//            emptySelectedTransaction();
+//            setToolBarToActionMode();
+//        }
+//    }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        switch (id){
-            case android.R.id.home:
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        switch (id){
+//            case android.R.id.home:
+//
+//                if(mAdapter.getIsToolBarInAction()){ setToolBarToOriginMode();}
+//
+//                break;
+//
+//            case R.id.toolbar_edit:
+//
+//                startActivity(new Intent(appCompatActivity, TestTempActivity.class));
+//                setToolBarToOriginMode();
+//
+//                break;
+//            case R.id.toolbar_delete:
+//
+//                //todo implementing deleting
+//                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mDb.transactionDAO().deleteListOfTransactions(
+//                                mAdapter.getSelectedTransactions()
+//                        );
+//                    }
+//                });
+//                setToolBarToOriginMode();
+//                mAdapter.notifyDataSetChanged();
+//
+//                break;
+//            case R.id.toolbar_ignore:
+//                //todo put them all into others category
+//
+//                break;
+//            case R.id.toolbar_select_all:
+//                //select/de-select all the transctions in the view
+//                if(mAdapter.getSelectedItemCount() ==mAdapter.getItemCount()){
+//                    mAdapter.clearSelectedState();
+//                    textViewOnToolBar.setText(displayToolbarText());
+//                }else{
+//                    mAdapter.selectAll();
+//                    textViewOnToolBar.setText(displayToolbarText());
+//                }
+//                break;
+//
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
-                if(mAdapter.getIsToolBarInAction()){ setToolBarToOriginMode();}
-
-                break;
-
-            case R.id.toolbar_edit:
-
-                startActivity(new Intent(appCompatActivity, TestTempActivity.class));
-                setToolBarToOriginMode();
-
-                break;
-            case R.id.toolbar_delete:
-
-                //todo implementing deleting
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().deleteListOfTransactions(
-                                mAdapter.getSelectedTransactions()
-                        );
-                    }
-                });
-                setToolBarToOriginMode();
-                mAdapter.notifyDataSetChanged();
-
-                break;
-            case R.id.toolbar_ignore:
-                //todo put them all into others category
-
-                break;
-            case R.id.toolbar_select_all:
-                //select/de-select all the transctions in the view
-                if(mAdapter.getSelectedItemCount() ==mAdapter.getItemCount()){
-                    mAdapter.clearSelectedState();
-                    textViewOnToolBar.setText(displayToolbarText());
-                }else{
-                    mAdapter.selectAll();
-                    textViewOnToolBar.setText(displayToolbarText());
-                }
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public boolean onBackPressed() {
-        if(mAdapter.getIsToolBarInAction()){
-            setToolBarToOriginMode();
-        }else{
-            return BackPressHandler.isUserPressedTwice(appCompatActivity);
-        }
-
-        return false;
-
-    }
-
-    private void setToolBarToActionMode(){
-
-        toolBar.getMenu().clear();
-        toolBar.setTitle(R.string.empty_string);
-
-        emptySelectedTransaction();
-
-        String display = mAdapter.getSelectedItemCount() +" "+
-                getResources().getString(R.string.string_toolbar_selection_word);
-
-        toolBar.inflateMenu(R.menu.toolbar_action_mode);
-
-        /*  ignore btn is for auto-set selected item to 'Others' category
-         *  when entering toolbar action mode, no item has selected,
-         *  there is not need to display edit and ignore
-         * */
-
-        toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(false);
-        toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
-
-        mAdapter.setIsToolBarInAction(true);
-
-        textViewOnToolBar.setText(display);
-
-        textViewOnToolBar.setVisibility(View.VISIBLE);
-
-        mAdapter.notifyDataSetChanged();
-
-        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-    }
-
-    private void setToolBarToOriginMode(){
-
-        toolBar.getMenu().clear();
-
-        toolBar.setTitle(R.string.app_name);
-
-        toolBar.inflateMenu(R.menu.toolbar_normal_mode);
-
-        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
-
-        textViewOnToolBar.setVisibility(View.GONE);
-
-        mAdapter.setIsToolBarInAction(false);
-
-        emptySelectedTransaction();
-
-        mAdapter.notifyDataSetChanged();
-    }
-
-    private void displayToolbarIconBasedOnNumberOfSelectedItems(int num){
-        if(num != 0){
-            toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(true);
-        }else{
-            toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(false);
-        }
-        if(num == 1){
-            toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(true);
-        }else{
-            toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
-
-        }
-
-    }
-
-    private void emptySelectedTransaction() {
-        mAdapter.clearSelectedState();
-    }
-
-    private String displayToolbarText(){
-        String display = mAdapter.getSelectedItemCount() +" "
-                +getResources().getString(R.string.string_toolbar_selection_word);
-        return display;
-    }
+//
+//    @Override
+//    public boolean onBackPressed() {
+//        if(mAdapter.getIsToolBarInAction()){
+//            setToolBarToOriginMode();
+//        }else{
+//            return BackPressHandler.isUserPressedTwice(appCompatActivity);
+//        }
+//
+//        return false;
+//
+//    }
+//
+//    private void setToolBarToActionMode(){
+//
+//        toolBar.getMenu().clear();
+//        toolBar.setTitle(R.string.empty_string);
+//
+//        emptySelectedTransaction();
+//
+//        String display = mAdapter.getSelectedItemCount() +" "+
+//                getResources().getString(R.string.string_toolbar_selection_word);
+//
+//        toolBar.inflateMenu(R.menu.toolbar_action_mode);
+//
+//        /*  ignore btn is for auto-set selected item to 'Others' category
+//         *  when entering toolbar action mode, no item has selected,
+//         *  there is not need to display edit and ignore
+//         * */
+//
+//        toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(false);
+//        toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
+//
+//        mAdapter.setIsToolBarInAction(true);
+//
+//        textViewOnToolBar.setText(display);
+//
+//        textViewOnToolBar.setVisibility(View.VISIBLE);
+//
+//        mAdapter.notifyDataSetChanged();
+//
+//        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//
+//
+//    }
+//
+//    private void setToolBarToOriginMode(){
+//
+//        toolBar.getMenu().clear();
+//
+//        toolBar.setTitle(R.string.app_name);
+//
+//        toolBar.inflateMenu(R.menu.toolbar_normal_mode);
+//
+//        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//
+//        toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
+//
+//        textViewOnToolBar.setVisibility(View.GONE);
+//
+//        mAdapter.setIsToolBarInAction(false);
+//
+//        emptySelectedTransaction();
+//
+//        mAdapter.notifyDataSetChanged();
+//    }
+//
+//    private void displayToolbarIconBasedOnNumberOfSelectedItems(int num){
+//        if(num != 0){
+//            toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(true);
+//        }else{
+//            toolBar.getMenu().findItem(R.id.toolbar_ignore).setVisible(false);
+//        }
+//        if(num == 1){
+//            toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(true);
+//        }else{
+//            toolBar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
+//
+//        }
+//
+//    }
+//
+//    private void emptySelectedTransaction() {
+//        mAdapter.clearSelectedState();
+//    }
+//
+//    private String displayToolbarText(){
+//        String display = mAdapter.getSelectedItemCount() +" "
+//                +getResources().getString(R.string.string_toolbar_selection_word);
+//        return display;
+//    }
 
 
     private void setBarChart(int i, int range) {
@@ -378,14 +369,16 @@ implements TransactionAdapter.CustomListItemClickListener,
 
     }
 
+
+
     private void setupViewModel() {
         final TransactionDBVMFactory factory = new TransactionDBVMFactory(mDb, Constant.untagged);
         viewModel= ViewModelProviders.of(appCompatActivity,factory).get(TransactionDBViewModel.class);
-        viewModel.getUntaggedTransactions().observe(appCompatActivity, new Observer<List<TransactionEntry>>() {
+        viewModel.getTransactionsByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntries) {
                 Log.d(TAG, "Updating untagged (new) transaction from LiveData in ViewModel");
-                mAdapter.setData(transactionEntries);
+//                mAdapter.setData(transactionEntries);
             }
         });
 

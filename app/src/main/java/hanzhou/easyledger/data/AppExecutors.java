@@ -4,6 +4,11 @@ package hanzhou.easyledger.data;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/* A repository class that
+*   1. can be further developer for taking network data
+*   2. add an abstraction layout
+* */
+
 public class AppExecutors {
 
     // For Singleton instantiation

@@ -21,6 +21,7 @@ public class TransactionEntry {
     private String category;
 
     private String remark;
+
     @Ignore
     public TransactionEntry(String ledger, int time, double amount, String category, String remark) {
         this.ledger = ledger;

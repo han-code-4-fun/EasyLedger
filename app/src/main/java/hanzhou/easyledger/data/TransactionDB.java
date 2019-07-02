@@ -24,7 +24,7 @@ public abstract class TransactionDB extends RoomDatabase {
                 Log.d(LOG_TAG, "Creating new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         TransactionDB.class, TransactionDB.DATABASE_NAME)
-                        .fallbackToDestructiveMigration()
+                        .fallbackToDestructiveMigration()//this means if we change DB schema, ROOM will delete original and make new
                         .build();
             }
         }

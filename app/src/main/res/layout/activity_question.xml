@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.QuestionActivity">
+    <include layout="@layout/toolbar_layout"
+        android:id="@+id/toolbar_layout"
 
+        />
     <Button
         android:id="@+id/button_question_friendly_answer"
         android:layout_width="wrap_content"
@@ -19,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
 
     <Button
         android:id="@+id/button_question_bad_joke"
@@ -56,7 +59,7 @@
     <TextView
         android:id="@+id/textview_question_explanation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
         android:textSize="25sp"

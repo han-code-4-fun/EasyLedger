@@ -46,7 +46,7 @@
         android:gravity="end"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/overview_total_balance_title"
-        app:layout_constraintEnd_toEndOf="@+id/overview_transaction_untagged_recyclerview"
+        app:layout_constraintEnd_toEndOf="@+id/overview_recyclerview_for_untagged_transactions"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/overview_total_balance_title"
         app:layout_constraintTop_toTopOf="@+id/overview_total_balance_title"
@@ -78,8 +78,9 @@
         app:layout_constraintTop_toBottomOf="@+id/overview_total_balance_barchart"
         tools:layout_editor_absoluteX="-26dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/overview_transaction_untagged_recyclerview"
+
+    <FrameLayout
+        android:id="@+id/overview_recyclerview_for_untagged_transactions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"

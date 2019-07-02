@@ -10,6 +10,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.List;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.UnitUtil;
+import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
@@ -26,97 +29,159 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private CustomListItemClickListener mOnClickListener;
     private Context mContext;
     private List<TransactionEntry> mTransactionEntryList;
-    private SparseBooleanArray mSelectedItems;
-    private boolean mIsInChoiceMode;
+    private SparseBooleanArray mSelectedItemsArray;
 
+    private TransactionDBViewModel mViewModel;
+
+    private boolean isInActionMode;
 
 
     public interface CustomListItemClickListener {
         void customOnListItemClick(int position);
-        void customOnListItemLongClick(int position);
+//        void customOnListItemLongClick(int position);
     }
 
     public TransactionAdapter(Context context,
-                              CustomListItemClickListener listener){
+                                CustomListItemClickListener listener,
+                              TransactionDBViewModel inputVM) {
+
         mContext = context;
         mOnClickListener = listener;
-        this.mSelectedItems = new SparseBooleanArray();
-        mIsInChoiceMode = false;
+        this.mSelectedItemsArray = new SparseBooleanArray();
+        mViewModel = inputVM;
+
+
+        mViewModel.getActionModeState().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                isInActionMode = aBoolean;
+                //let show recyclerview show a different style/color
+                notifyDataSetChanged();
+            }
+        });
+
+        mViewModel.getSelectedItemsArray().observe((AppCompatActivity) mContext, new Observer<SparseBooleanArray>() {
+            @Override
+            public void onChanged(SparseBooleanArray sparseBooleanArray) {
+                mSelectedItemsArray = sparseBooleanArray;
+                for (int i = 0; i < mSelectedItemsArray.size(); i++) {
+                    notifyItemChanged(mSelectedItemsArray.keyAt(i));
+                }
+            }
+        });
+
+//        mViewModel.getIsAllSelected().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
+//            @Override
+//            public void onChanged(Boolean aBoolean) {
+//                if(aBoolean){
+//                    selectAll();
+//                }else{
+//                    deselectAll();
+//                }
+//                notifyDataSetChanged();
+//            }
+//        });
+
     }
+
 
     public void setData(List<TransactionEntry> inputEntries) {
         mTransactionEntryList = inputEntries;
+        //todo, need to consider viewmodel obj???
         notifyDataSetChanged();
-    }
 
-    public void switchSelectedState(int position) {
-
-        //item has been selected/
-        if (this.mSelectedItems.get(position)) {
-            mSelectedItems.delete(position);
-        } else {
-            mSelectedItems.put(position, true);
-        }
-        Log.d(TAG, "switchSelectedState:  --------->"+ mSelectedItems.size());
-        notifyItemChanged(position);
     }
 
 
-    public void selectAll(){
-        for(int i =0;i<mTransactionEntryList.size();i++){
-            if(!mSelectedItems.get(i)){
-                mSelectedItems.put(i,true);
+    private void selectAll() {
+        for(int i =0;i<getItemCount();i++){
+            if(!mSelectedItemsArray.get(i)){
+                mSelectedItemsArray.put(i,true);
             }
         }
-        Log.d(TAG, "selectAll:  --------->"+ mSelectedItems.size());
-        notifyDataSetChanged();
+//        mViewModel.selectAllItems();
+        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
+        Log.d("testtest_Adapter", "selectAll:  --------->" + mSelectedItemsArray.size());
     }
 
+    private void deselectAll() {
 
-    public boolean getIsToolBarInAction() {
-        return mIsInChoiceMode;
+        mSelectedItemsArray.clear();
+        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
     }
 
-    public void setIsToolBarInAction(boolean isInChoiceMode) {
-        this.mIsInChoiceMode = isInChoiceMode;
-    }
+//
+//    private boolean getIsToolBarInAction() {
+//
+////        return mIsInChoiceMode;
+//        return isInActionMode;
+//    }
 
-    public List<TransactionEntry> getSelectedTransactions(){
+//    private void setToolBarActionState(boolean isInChoiceMode) {
+//        mViewModel.setActionModeState(isInChoiceMode);
+//    }
+
+    private List<TransactionEntry> getSelectedTransactions() {
         List<Integer> selectedNumbers = getSelectedItems();
+
+
         List<TransactionEntry> output = new ArrayList<>(selectedNumbers.size());
 
-        for(Integer i : selectedNumbers){
+        for (Integer i : selectedNumbers) {
             output.add(mTransactionEntryList.get(i));
         }
 
         return output;
     }
 
-    public List<Integer> getSelectedItems() {
-        List<Integer> items = new ArrayList<>(mSelectedItems.size());
-        for (int i = 0; i < mSelectedItems.size(); ++i) {
-            items.add(mSelectedItems.keyAt(i));
+    private List<Integer> getSelectedItems() {
+        List<Integer> selectedNumbers = new ArrayList<>(mSelectedItemsArray.size());
+        for (int i = 0; i < mSelectedItemsArray.size(); ++i) {
+            selectedNumbers.add(mSelectedItemsArray.keyAt(i));
         }
-        Log.d(TAG, "getSelectedItems:  --------->"+ mSelectedItems.size());
-        return items;
+        return selectedNumbers;
+
     }
 
+//    public List<Integer> getSelectedItems() {
+//        List<Integer> items = new ArrayList<>(mSelectedItemsArray.size());
+//        for (int i = 0; i < mSelectedItemsArray.size(); ++i) {
+//            items.add(mSelectedItemsArray.keyAt(i));
+//        }
+//        Log.d(TAG, "getSelectedItems:  --------->"+ mSelectedItemsArray.size());
+
+
+        //todo, change from List<Integer> to SparseBooleanArray later
+
+
+//        List<Integer> items = new ArrayList<>(mCrossVM.getSelectedItems().size());
+//        for (int i = 0; i < mCrossVM.getSelectedItems().size(); ++i) {
+//            items.add(mCrossVM.getSelectedItems().keyAt(i));
+//        }
+//        return items;
+//        return mViewModel.getSelectedItemAsListOfInteger();
+//    }
+
+
+    //done
     public void clearSelectedState() {
+
         List<Integer> selection = getSelectedItems();
-        mSelectedItems.clear();
-        Log.d(TAG, "getSelectedItems:  --------->"+ mSelectedItems.size());
+
+        Log.d(TAG, "getSelectedItems:  --------->" + selection.size());
+        mSelectedItemsArray.clear();
+        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
+
         for (Integer i : selection) {
             notifyItemChanged(i);
         }
     }
 
-    public TransactionEntry getClickedOne(int input){
+
+    public TransactionEntry getClickedData(int input) {
         return mTransactionEntryList.get(input);
     }
 
-    public int getSelectedItemCount() {
-        return mSelectedItems.size();
-    }
 
     @NonNull
     @Override
@@ -134,8 +199,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
 
-        TransactionEntry currentRecord= mTransactionEntryList.get(position);
-
+        Log.d("flow", "onBindViewHolder: update THIS data");
+        TransactionEntry currentRecord = mTransactionEntryList.get(position);
 
 
         holder.time.setText(String.valueOf(currentRecord.getTime()));
@@ -143,34 +208,40 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.category.setText(currentRecord.getCategory());
         holder.remark.setText(currentRecord.getRemark());
 
-        if(mIsInChoiceMode){
+
+        if (isInActionMode) {
             holder.amount.setBackgroundColor(mContext.getResources().getColor(R.color.color_money_out));
             holder.checkBox.setVisibility(View.VISIBLE);
-            holder.checkBox.setChecked(mSelectedItems.get(position));
-        }else{
+//            holder.checkBox.setChecked(mViewModel.getSelectedItemsArray().getValue().get(position));
+            holder.checkBox.setChecked(mSelectedItemsArray.get(position));
+        } else {
             holder.amount.setBackgroundColor(mContext.getResources().getColor(R.color.transaction_default_background));
             holder.checkBox.setVisibility(View.GONE);
-                holder.checkBox.setChecked(false);
+            holder.checkBox.setChecked(false);
         }
 
     }
 
     @Override
     public int getItemCount() {
+        int temp;
         if (mTransactionEntryList == null) {
-            return 0;
+            temp =0;
+        }else{
+            temp = mTransactionEntryList.size();
         }
-        return mTransactionEntryList.size();
+
+        mViewModel.setmSizeOfTransactions(temp);
+        return temp;
     }
 
     public class TransactionViewHolder extends RecyclerView.ViewHolder
-    implements  View.OnClickListener, View.OnLongClickListener {
-         TextView time;
-         TextView amount;
-         TextView category;
-         TextView remark;
-         CheckBox checkBox;
-
+            implements View.OnClickListener, View.OnLongClickListener {
+        TextView time;
+        TextView amount;
+        TextView category;
+        TextView remark;
+        CheckBox checkBox;
 
 
         public TransactionViewHolder(@NonNull View itemView) {
@@ -191,23 +262,49 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
+            mOnClickListener.customOnListItemClick(position);
+            /*
+                make sure custom onclicklistener is working and
+                the deleting animation is on-going while customer clicked this position
+            */
+            if (mOnClickListener != null && position != RecyclerView.NO_POSITION) {
 
-            if(mIsInChoiceMode){
-                if(checkBox.isChecked()){
-                    checkBox.setChecked(false);
-                }else{
-                    checkBox.setChecked(true);
-                }
+
+                mViewModel.updateSelectedItemsArray(position);
+
+                Log.d("testtest_VH_Onclick",
+                        "mViewModel.updateSelectedItemsArray(position) -->" +
+                                position + " now is -> " + mSelectedItemsArray.get(position)
+                );
+
+                //todo, test if working witout below lines
+             /*   if (isInActionMode) {
+                    if (checkBox.isChecked()) {
+                        checkBox.setChecked(false);
+                        //todo, pass  value to viewmodel
+                    } else {
+                        checkBox.setChecked(true);
+                    }
+                }*/
+
+                notifyItemChanged(position);
+
+//                mOnClickListener.customOnListItemClick(position);
             }
 
-            mOnClickListener.customOnListItemClick(position);
         }
 
         @Override
         public boolean onLongClick(View view) {
             Log.d("testlongclick", "onLongClick: get signal adapter");
-            int position = getAdapterPosition();
-            mOnClickListener.customOnListItemLongClick(position);
+
+            if (!isInActionMode) {
+                clearSelectedState();
+                //the only way to enter a toolbar action mode
+                mViewModel.setActionModeState(true);
+
+            }
+            //todo, handle while action mode, user click to another fragment.
             return false;
         }
     }

@@ -12,6 +12,10 @@ public class FakeTestingData {
     private static String[] month = {"Jan","Feb","Mar","Apr","May",
             "Jun","Jul","Aug","Sep","Oct","Nov","","Dec"};
 
+    public static String[] ledger = {
+            "RBC","HSBC",Constant.untagged
+    };
+
     private static String[] category = {
             "restaurant", "supermarket", "petrol", "housing", "bill",
             "travel","shopping", "kids","education",
@@ -59,6 +63,10 @@ public class FakeTestingData {
                 getRandomAmount(),
                 getRandomCategory(),
                 getRandomRemark());
+    }
+
+    private static String getRandomLedger(){
+        return ledger[(int)(Math.random()*ledger.length)];
     }
 
     private static String getRandomCategory() {
