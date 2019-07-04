@@ -7,13 +7,13 @@ import android.widget.Toast;
 
 public class BackPressHandler {
     /*
-    *   When in the main activity,
-    *   If user clicks back for the first time,
-    *   there will be a (Toast) msg warning,
-    *   if user clicks the 'back' 2nd time within
-    *   2 seconds, app will exit
-    *
-    * */
+     *   When in the main activity,
+     *   If user clicks back for the first time,
+     *   there will be a (Toast) msg warning,
+     *   if user clicks the 'back' 2nd time within
+     *   2 seconds, app will exit
+     *
+     * */
 
     private static int numOfTimesBackPressed =0;
 

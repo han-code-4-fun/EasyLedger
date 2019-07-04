@@ -16,6 +16,14 @@ public interface TransactionDAO {
     @Query("SELECT * FROM transactions ORDER BY time DESC, id DESC")
     LiveData<List<TransactionEntry>> loadAllTransactions();
 
+    @Query("SELECT * FROM transactions WHERE id = :id")
+    LiveData<TransactionEntry> loadTransactionByID(int id);
+
+    @Query("SELECT * FROM transactions WHERE ledger = :leger ORDER BY time DESC, id DESC")
+    LiveData<List<TransactionEntry>> loadTransactionByLedger(String leger);
+
+    @Query("SELECT * FROM transactions WHERE category = :untag ORDER BY time DESC, id DESC")
+    LiveData<List<TransactionEntry>> loadUntaggedTransactions(String untag);
     @Insert
     void insertTransaction(TransactionEntry transactionEntry);
 
@@ -31,11 +39,7 @@ public interface TransactionDAO {
     @Delete
     void deleteListOfTransactions(List<TransactionEntry> lisOfTransactions);
 
-    @Query("SELECT * FROM transactions WHERE id = :id")
-    LiveData<TransactionEntry> loadTransactionByID(int id);
 
-    @Query("SELECT * FROM transactions WHERE ledger = :leger ORDER BY time DESC, id DESC")
-    LiveData<List<TransactionEntry>> loadTransactionByLedger(String leger);
     /*
         select account_id, total,  standard_qty from orders
 

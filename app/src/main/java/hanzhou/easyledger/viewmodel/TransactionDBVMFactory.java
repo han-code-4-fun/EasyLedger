@@ -17,17 +17,11 @@ public class TransactionDBVMFactory extends ViewModelProvider.NewInstanceFactory
         this.inputTag = inputTag;
     }
 
+
+//    @NonNull
 //    @Override
-//    public <T extends ViewModel> T create(Class<T> modelClass) {
-//
+//    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//        Log.d("test_test_", "start to  create: from TransactionDBVMFactory");
 //        return (T) new TransactionDBViewModel(transactionDB, inputTag);
 //    }
-
-
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        Log.d("flow", "start to  create: from TransactionDBVMFactory");
-        return (T) new TransactionDBViewModel(transactionDB, inputTag);
-    }
 }

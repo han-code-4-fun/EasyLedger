@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -25,7 +24,6 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
-import hanzhou.easyledger.temp.TestTempActivity;
 import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler handlerBackPress;
 
-    private  int numOfTimesBackPressed;
+    private int numOfTimesBackPressed;
 
 
     private TransactionDBViewModel viewModel;
@@ -67,22 +65,30 @@ public class MainActivity extends AppCompatActivity {
     private int listSize;
     private int selectedNum;
 
+    /* Database instance */
     private TransactionDB mDb;
 
+
+    /*
+        Ignore btn on toolbar that appears when toolbar is in action mode,
+        this will 'tag' currently untagged transactions into 'others' category
+     */
+    private MenuItem ignore;
     private MenuItem delete;
     private MenuItem edit;
     private MenuItem selectAll;
-    private MenuItem ignore;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        insertSomeFakeData()
+
 
         viewmodelInitialization();
+
+
+        insert20FakeData();
 
         broadcastReceiverInitialization();
 
@@ -102,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -120,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_normal_mode, menu);
+        getMenuInflater().inflate(R.menu.overview_toolbar_normal_mode, menu);
         return true;
     }
 
@@ -129,45 +134,64 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_setting_mainactivity:
-                //todo
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
             case R.id.menu_setting_question:
                 startActivity(new Intent(this, QuestionActivity.class));
                 break;
             case R.id.menu_setting_feedback:
-                //todo
-                sendEmailToDeveloper(getResources().getString(R.string.developer_email_addr));
+                sendEmailToDeveloper();
                 break;
 
-            //todo, added action mode icons
             case android.R.id.home:
 
                 if (isInActionModel) {
                     setToolBarToOriginMode();
                 }
-
                 break;
 
             case R.id.toolbar_edit:
                 setToolBarToOriginMode();
-                startActivity(new Intent(MainActivity.this, TestTempActivity.class));
+//                startActivity(new Intent(MainActivity.this, TestTempActivity.class));
+                break;
+
+            case R.id.toolbar_select_all:
+                /*  select/de-select all the transctions in the view
+                    use viewmodel to send signal to Adapter's (adapter is observing these triggers),
+                    adapter will preform operations after receive the signal,
+                    after finish operation, adapter will set trigger to false
+                 */
+                Log.d(Constant.TESTFLOW+TAG, "onOptionsItemSelected: User clicked toolbar_select_all");
+                if (isAllSelected) {
+                    viewModel.setDeselectAllTrigger(true);
+                } else {
+                    viewModel.setSelectAllTrigger(true);
+
+                }
 
                 break;
             case R.id.toolbar_delete:
+                if (selectedNum == 0) {
+                    Toast.makeText(this,
+                            getResources().getString(R.string.msg_deleting_need_to_have_one),
+                            Toast.LENGTH_LONG).show();
+                } else {
+//                    //only transfer list of entities after conditions meet, to save system resource
+//                    viewModel.setmTransferSelectedListTrigger(true);
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
 
-                //todo implementing deleting
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().deleteListOfTransactions(
-                                viewModel.listOfSelectedTransactions()
-                        );
-                    }
-                });
-                Toast.makeText(this,
-                        getResources().getString(R.string.msg_deleting_complete),
-                        Toast.LENGTH_LONG).show();
-                setToolBarToOriginMode();
+                            mDb.transactionDAO().deleteListOfTransactions(
+                                    viewModel.getSelectedTransactions()
+                            );
+                        }
+                    });
+                    Toast.makeText(this,
+                            getResources().getString(R.string.msg_deleting_complete),
+                            Toast.LENGTH_LONG).show();
+                    setToolBarToOriginMode();
+                }
 
 
                 break;
@@ -175,16 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 //todo put them all into others category
 
                 break;
-            case R.id.toolbar_select_all:
-                //select/de-select all the transctions in the view
-                if(listSize == selectedNum){
-                    viewModel.clearSelectedItemsArray();
-                }else{
-                    viewModel.selectAllItems(listSize);
 
-                }
-
-                break;
             default:
                 return super.onOptionsItemSelected(item);
 
@@ -196,43 +211,43 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isInActionModel) {
-               setToolBarToOriginMode();
+            setToolBarToOriginMode();
 
         } else {
 
-            if(BackPressHandler.isUserPressedTwice(this)){
+            if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
             }
         }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationListener =
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
 
-                        switch (menuItem.getItemId()) {
-                            case R.id.navigation_overview:
-                                selectedFragment = new OverviewFragment();
-                                btnFA.show();
-                                break;
-                            case R.id.navigation_transaction:
-                                selectedFragment = new LedgerFragment();
-                                btnFA.show();
-                                break;
-                            case R.id.navigation_charts:
-                                selectedFragment = new ChartFragment();
-                                btnFA.hide();
-                                break;
+                    switch (menuItem.getItemId()) {
+                        case R.id.navigation_overview:
+                            selectedFragment = new OverviewFragment();
+                            btnFA.show();
+                            break;
+                        case R.id.navigation_transaction:
+                            selectedFragment = new LedgerFragment();
+                            btnFA.show();
+                            break;
+                        case R.id.navigation_charts:
+                            selectedFragment = new ChartFragment();
+                            btnFA.hide();
+                            break;
 
-                        }
-
-                        switchFragmentWithinActivity(selectedFragment);
-
-                        return true;
                     }
-                };
+
+                    switchFragmentWithinActivity(selectedFragment);
+
+                    return true;
+                }
+            };
 
     private FloatingActionButton.OnClickListener fabOnClickListener
             = new FloatingActionButton.OnClickListener() {
@@ -244,20 +259,23 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void viewmodelInitialization(){
+    private void viewmodelInitialization() {
         mDb = TransactionDB.getInstance(this);
-        TransactionDBVMFactory factory = new TransactionDBVMFactory(mDb, Constant.untagged);
-        viewModel = ViewModelProviders.of(this, factory).get(TransactionDBViewModel.class);
+//        TransactionDBVMFactory factory = new TransactionDBVMFactory(mDb, Constant.UNTAGGED);
+//        viewModel = ViewModelProviders.of(this, factory).get(TransactionDBViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
+
+        Log.d("test_hash", "MainActivity:  create viewModel "+ viewModel.hashCode());
 
     }
 
-    private void broadcastReceiverInitialization(){
+    private void broadcastReceiverInitialization() {
         smsIntentFilter = new IntentFilter();
         smsIntentFilter.addAction(SMS_RECEIVED_ACTION);
         smsReceiver = new SmsBroadcastReceiver();
     }
 
-    private void uiInitialization(){
+    private void uiInitialization() {
         toolBar = findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolBar);
         toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
@@ -271,12 +289,13 @@ public class MainActivity extends AppCompatActivity {
         btnFA.setOnClickListener(fabOnClickListener);
     }
 
-    private void setViewModelOberver(){
+    private void setViewModelOberver() {
 
         viewModel.getActionModeState().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isInActionModel = aBoolean;
+                Log.d("test_flow", "main activity got action state "+aBoolean);
                 /*
                     only handle toolbar action mode start (comes from user long click),
                     end of (toolbar) action mode will be one of following :
@@ -293,19 +312,18 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
-        viewModel.getmSizeOfTransactions().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                listSize = integer;
-            }
-        });
+//
+//        viewModel.getmSizeOfTransactions().observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(Integer integer) {
+//                listSize = integer;
+//            }
+//        });
 
 
         viewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                //todo
                 selectedNum = integer;
 
                 String display = integer + " " +
@@ -314,27 +332,52 @@ public class MainActivity extends AppCompatActivity {
                 //display different type of icons on toolbar based on user selection
                 if (isInActionModel) {
                     if (edit != null && ignore != null) {
-                        if (integer < 1) {
-                            ignore.setVisible(false);
-                            edit.setVisible(false);
-                        } else if (integer == 1) {
-                            ignore.setVisible(true);
-                            edit.setVisible(true);
-                        } else {
-                            //more than 1 items is selected
-                            ignore.setVisible(true);
-                            edit.setVisible(false);
+                        if(viewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)){
+                            if (integer < 1) {
+                                ignore.setVisible(false);
+                                edit.setVisible(false);
+                            } else if (integer == 1) {
+                                ignore.setVisible(true);
+                                edit.setVisible(true);
+                            } else {
+                                //more than 1 items is selected
+                                ignore.setVisible(true);
+                                edit.setVisible(false);
 
+                            }
+                        }else{
+                            ignore.setVisible(false);
+                            selectAll.setVisible(false);
+                            delete.setVisible(true);
+                            if (integer != 1) {
+                                edit.setVisible(false);
+                            }else{
+                                edit.setVisible(true);
+
+                            }
                         }
+
                     }
 
                 }
 
             }
         });
+
+        viewModel.getmIsAllSelected().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                isAllSelected = aBoolean;
+            }
+        });
+
+
     }
 
-    private void switchFragmentWithinActivity(Fragment input){
+    private void switchFragmentWithinActivity(Fragment input) {
+
+//        viewModel.prepareViewModelForChangingFragment();
+        setToolBarToOriginMode();
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -346,12 +389,11 @@ public class MainActivity extends AppCompatActivity {
 
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.app_name);
-        toolBar.inflateMenu(R.menu.toolbar_normal_mode);
+        toolBar.inflateMenu(R.menu.overview_toolbar_normal_mode);
         toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
         textViewOnToolBar.setVisibility(View.GONE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        viewModel.clearSelectedItemsArray();
+        viewModel.selectedBooleanArrayViewMode.clear();
         viewModel.setActionModeState(false);
 
     }
@@ -360,18 +402,27 @@ public class MainActivity extends AppCompatActivity {
 
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.empty_string);
-        toolBar.inflateMenu(R.menu.toolbar_action_mode);
+        toolBar.inflateMenu(R.menu.overview_toolbar_action_mode);
         textViewOnToolBar.setVisibility(View.VISIBLE);
 
-        viewModel.clearSelectedItemsArray();
-
         assignMenuItemToVariableForDifferentCombinationNSetInitialState();
+        if(viewModel.getCurrentLedger().equals(Constant.CALLFROMLEDGER)){
+            /*
+                if current fragment is the ledger fragment
+                (which is mostly likely already been tagged),
+                not to display selectALl btn icon, because I don't want user
+                accidently hit selectAll and hit delete.
+             */
+            selectAll.setVisible(false);
+        }else{
+            selectAll.setVisible(true);
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
-    private void assignMenuItemToVariableForDifferentCombinationNSetInitialState(){
+    private void assignMenuItemToVariableForDifferentCombinationNSetInitialState() {
 
         /*  the ignore btn is for auto-set selected item to 'Others' category
          *  when entering toolbar action mode, no item has selected,
@@ -385,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
         edit.setVisible(false);
     }
 
-    private void insertSomeFakeData() {
+    private void insert20FakeData() {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -395,23 +446,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void sendEmailToDeveloper(String email) {
+    private void sendEmailToDeveloper() {
 
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
-//        String aEmailList[] = {email};
-        emailIntent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, email);
-//        String feedback_msg = getString(R.string.feedback_msg);
-//        emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml("<i><font color='your color'>" + feedback_msg + "</font></i>"));
-//        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_msg));
+        String[] emailList = {getResources().getString(R.string.developer_email_addr)};
+        emailIntent.setType(getString(R.string.data_type_email));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, emailList);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_feedback_subject));
 
         PackageManager packageManager = getPackageManager();
         boolean isIntentSafe = emailIntent.resolveActivity(packageManager) != null;
         if (isIntentSafe) {
             startActivity(emailIntent);
         } else {
-            Toast.makeText(this, R.string.no_email_app+R.string.developer_email_addr, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.no_email_app) + getString(R.string.developer_email_addr), Toast.LENGTH_LONG).show();
         }
     }
 

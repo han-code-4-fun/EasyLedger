@@ -19,95 +19,213 @@ import java.util.List;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
+import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
+    private static TransactionAdapter sInstance = null;
 
     private static final String TAG = TransactionAdapter.class.getSimpleName();
+
     private CustomListItemClickListener mOnClickListener;
     private Context mContext;
     private List<TransactionEntry> mTransactionEntryList;
-    private SparseBooleanArray mSelectedItemsArray;
-
     private TransactionDBViewModel mViewModel;
+    public boolean isInActionMode;
 
-    private boolean isInActionMode;
+    private int hash;
+
+    private int adapterHash;
 
 
     public interface CustomListItemClickListener {
         void customOnListItemClick(int position);
-//        void customOnListItemLongClick(int position);
+        void customOnListItemLongClick(int position);
     }
 
-    public TransactionAdapter(Context context,
-                                CustomListItemClickListener listener,
-                              TransactionDBViewModel inputVM) {
+    private TransactionAdapter(Context context,
+                               CustomListItemClickListener listener,
+                               TransactionDBViewModel inputVM) {
 
         mContext = context;
         mOnClickListener = listener;
-        this.mSelectedItemsArray = new SparseBooleanArray();
         mViewModel = inputVM;
+        setupViewModelObserver();
 
-
-        mViewModel.getActionModeState().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                isInActionMode = aBoolean;
-                //let show recyclerview show a different style/color
-                notifyDataSetChanged();
-            }
-        });
-
-        mViewModel.getSelectedItemsArray().observe((AppCompatActivity) mContext, new Observer<SparseBooleanArray>() {
-            @Override
-            public void onChanged(SparseBooleanArray sparseBooleanArray) {
-                mSelectedItemsArray = sparseBooleanArray;
-                for (int i = 0; i < mSelectedItemsArray.size(); i++) {
-                    notifyItemChanged(mSelectedItemsArray.keyAt(i));
-                }
-            }
-        });
-
-//        mViewModel.getIsAllSelected().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
+//        mViewModel.getActionModeState().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
+//            @Override
+//            public void onChanged(Boolean aBoolean) {
+//                isInActionMode = aBoolean;
+//                //set to default style when the 'false' state is updated from user's input of action bar
+//                if(!isInActionMode){
+//                    deselectAll();
+//                }else {
+//                    //todo, check if error
+//                    //todo
+//                    //todo
+//                    notifyDataSetChanged();
+//                }
+//            }
+//        });
+//
+//
+//        //trigger that react to user's click from the action bar
+//        mViewModel.getmDeselectAllTrigger().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
+//            @Override
+//            public void onChanged(Boolean aBoolean) {
+//                if(aBoolean){
+//                    deselectAll();
+//                    Log.d(Constant.TESTFLOW+TAG, "viewmodel observer, deselected all and now set DeselectAllTrigger to false");
+//                    mViewModel.setDeselectAllTrigger(false);
+//                }
+//            }
+//        });
+//
+//        //trigger that react to user's click from the action bar
+//        mViewModel.getmSelectAllTrigger().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
 //            @Override
 //            public void onChanged(Boolean aBoolean) {
 //                if(aBoolean){
 //                    selectAll();
-//                }else{
-//                    deselectAll();
+//                    Log.d(Constant.TESTFLOW+TAG, "viewmodel observer, selected all and now set SelectAllTrigger to false");
+//                    mViewModel.setSelectAllTrigger(false);
 //                }
-//                notifyDataSetChanged();
 //            }
 //        });
 
+
+
+    }
+
+
+    private void setupViewModelObserver() {
+        mViewModel.getActionModeState().observe((AppCompatActivity) mContext, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(!aBoolean){
+                    deselectAll();
+                }
+
+            }
+        });
+    }
+
+
+    public static TransactionAdapter getInstance(Context context,CustomListItemClickListener listener,TransactionDBViewModel inputVM){
+        if(sInstance == null){
+            sInstance = new TransactionAdapter(context, listener, inputVM);
+        }
+
+        return sInstance;
     }
 
 
     public void setData(List<TransactionEntry> inputEntries) {
         mTransactionEntryList = inputEntries;
         //todo, need to consider viewmodel obj???
+        Log.d(Constant.TESTFLOW+TAG, "setData: mTransactionEntryList.size() is now "+ mTransactionEntryList.size());
         notifyDataSetChanged();
 
     }
 
+    //todo, done
+    public void updateSelectedItemsArray(int position){
 
-    private void selectAll() {
-        for(int i =0;i<getItemCount();i++){
-            if(!mSelectedItemsArray.get(i)){
-                mSelectedItemsArray.put(i,true);
+        if (mViewModel.selectedBooleanArrayViewMode.get(position)) {
+            mViewModel.selectedBooleanArrayViewMode.delete(position);
+        } else {
+            mViewModel.selectedBooleanArrayViewMode.put(position, true);
+        }
+
+        Log.d(Constant.TESTFLOW+ TAG, "now  mTransactionSelecteedNumber -> "+
+                mViewModel.selectedBooleanArrayViewMode.size());
+        Log.d(Constant.TESTFLOW+ TAG, "now  selectedBooleanArrayViewMode -> "+
+                mViewModel.selectedBooleanArrayViewMode.toString());
+        mViewModel.setmTransactionSelectedNumber();
+
+
+        if(mViewModel.selectedBooleanArrayViewMode.size()== getItemCount()){
+            mViewModel.setmIsAllSelected(true);
+        }else{
+            mViewModel.setmIsAllSelected(false);
+        }
+        this.notifyItemChanged(position);
+    }
+//    public void updateSelectedItemsArray(int position){
+//
+//        if (mSelectedItemsArray.get(position)) {
+//            mSelectedItemsArray.delete(position);
+//        } else {
+//            mSelectedItemsArray.put(position, true);
+//        }
+//        mViewModel.setmTransactionSelectedNumber(mSelectedItemsArray.size());
+//
+//
+//        if(mSelectedItemsArray.size()== getItemCount()){
+//            mViewModel.setmIsAllSelected(true);
+//        }else{
+//            mViewModel.setmIsAllSelected(false);
+//        }
+//        notifyItemChanged(position);
+//        Log.d("testtest", "updateSelectedItemsArray: ---->"+mSelectedItemsArray.toString());
+//    }
+
+
+    public void clearSelectedItemsArray(){
+        for(int i = 0; i < mViewModel.selectedBooleanArrayViewMode.size(); i++) {
+            int key = mViewModel.selectedBooleanArrayViewMode.keyAt(i);
+            if(mViewModel.selectedBooleanArrayViewMode.get(key)){
+                mViewModel.selectedBooleanArrayViewMode.put(key, false);
+                this.notifyItemChanged(key);
             }
         }
-//        mViewModel.selectAllItems();
-        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
-        Log.d("testtest_Adapter", "selectAll:  --------->" + mSelectedItemsArray.size());
+        mViewModel.setmTransactionSelectedNumber();
+        mViewModel.setmIsAllSelected(false);
     }
 
-    private void deselectAll() {
 
-        mSelectedItemsArray.clear();
-        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
+    public void selectAll() {
+        Log.d("test_hash", "selectAll: adapter hash  "+adapterHash);
+        Log.d(Constant.TESTFLOW+TAG, "selectAll: getItemCount() is "+ mTransactionEntryList.size());
+        Log.d(Constant.TESTFLOW+TAG, "selectAll: selectedBooleanArrayViewMode is "+
+                mViewModel.selectedBooleanArrayViewMode.toString());
+        for(int i =0;i<mTransactionEntryList.size(); i++){
+            Log.d(Constant.TESTFLOW+TAG, "selectAll: "+i);
+            if(!mViewModel.selectedBooleanArrayViewMode.get(i)){
+                mViewModel.selectedBooleanArrayViewMode.put(i,true);
+                Log.d(Constant.TESTFLOW+TAG, "steps ++++= " + mViewModel.selectedBooleanArrayViewMode.toString());
+                this.notifyItemChanged(i);
+            }
+        }
+        mViewModel.setmTransactionSelectedNumber();
+        Log.d(Constant.TESTFLOW+ TAG, "selectAll: now will set mTransactionSelecteedNumber -> "+
+                mViewModel.selectedBooleanArrayViewMode.size());
+        Log.d(Constant.TESTFLOW+TAG, "selectAll: selectedBooleanArrayViewMode is "+
+                mViewModel.selectedBooleanArrayViewMode.toString());
+
+        mViewModel.setmIsAllSelected(true);
+////        mViewModel.selectAllItems();
+//        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
+//        Log.d("testtest_Adapter", "selectAll:  --------->" + mSelectedItemsArray.size());
+    }
+
+
+    public void deselectAll() {
+        Log.d("test_hash", "deselectAll: adapter hash "+ adapterHash);
+        Log.d(Constant.TESTFLOW+TAG, "deselectAll: selectedBooleanArrayViewMode is "+
+                mViewModel.selectedBooleanArrayViewMode.toString());
+        mViewModel.selectedBooleanArrayViewMode.clear();
+        mViewModel.setmTransactionSelectedNumber();
+        Log.d(Constant.TESTFLOW+ TAG, "deselectAll: now will set mTransactionSelecteedNumber -> "+
+                mViewModel.selectedBooleanArrayViewMode.size());
+        Log.d(Constant.TESTFLOW+TAG, "de-selectAll:  now will set isAllSelected to false");
+        mViewModel.setmIsAllSelected(false);
+        Log.d(Constant.TESTFLOW+TAG, "deselectAll: selectedBooleanArrayViewMode is "+
+                mViewModel.selectedBooleanArrayViewMode.toString());
+        this.notifyDataSetChanged();
+//        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
     }
 
 //
@@ -120,28 +238,27 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 //    private void setToolBarActionState(boolean isInChoiceMode) {
 //        mViewModel.setActionModeState(isInChoiceMode);
 //    }
+//
+//    private List<TransactionEntry> getSelectedTransactions() {
+//        List<Integer> selectedNumbers = getSelectedItems();
+//
+//
+//        List<TransactionEntry> output = new ArrayList<>(selectedNumbers.size());
+//
+//        for (Integer i : selectedNumbers) {
+//            output.add(mTransactionEntryList.get(i));
+//        }
+//
+//        return output;
+//    }
 
-    private List<TransactionEntry> getSelectedTransactions() {
-        List<Integer> selectedNumbers = getSelectedItems();
-
-
-        List<TransactionEntry> output = new ArrayList<>(selectedNumbers.size());
-
-        for (Integer i : selectedNumbers) {
-            output.add(mTransactionEntryList.get(i));
-        }
-
-        return output;
-    }
-
-    private List<Integer> getSelectedItems() {
-        List<Integer> selectedNumbers = new ArrayList<>(mSelectedItemsArray.size());
-        for (int i = 0; i < mSelectedItemsArray.size(); ++i) {
-            selectedNumbers.add(mSelectedItemsArray.keyAt(i));
-        }
-        return selectedNumbers;
-
-    }
+//    private List<Integer> getSelectedItems() {
+//        List<Integer> selectedNumbers = new ArrayList<>(mViewModel.selectedBooleanArrayViewMode.size());
+//        for (int i = 0; i < mViewModel.selectedBooleanArrayViewMode.size(); ++i) {
+//            selectedNumbers.add(mViewModel.selectedBooleanArrayViewMode.keyAt(i));
+//        }
+//        return selectedNumbers;
+//    }
 
 //    public List<Integer> getSelectedItems() {
 //        List<Integer> items = new ArrayList<>(mSelectedItemsArray.size());
@@ -151,7 +268,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 //        Log.d(TAG, "getSelectedItems:  --------->"+ mSelectedItemsArray.size());
 
 
-        //todo, change from List<Integer> to SparseBooleanArray later
 
 
 //        List<Integer> items = new ArrayList<>(mCrossVM.getSelectedItems().size());
@@ -164,18 +280,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
 
     //done
-    public void clearSelectedState() {
-
-        List<Integer> selection = getSelectedItems();
-
-        Log.d(TAG, "getSelectedItems:  --------->" + selection.size());
-        mSelectedItemsArray.clear();
-        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
-
-        for (Integer i : selection) {
-            notifyItemChanged(i);
-        }
-    }
+//    public void clearSelectedState() {
+//
+//        List<Integer> selection = getSelectedItems();
+//
+//        Log.d(TAG, "getSelectedItems:  --------->" + selection.size());
+//        mViewModel.selectedBooleanArrayViewMode.clear();
+////        mViewModel.synchronizeSelectedItemsArrayWithInViewModelClass(mSelectedItemsArray);
+//
+//        for (Integer i : selection) {
+//            notifyItemChanged(i);
+//        }
+//    }
 
 
     public TransactionEntry getClickedData(int input) {
@@ -208,13 +324,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.category.setText(currentRecord.getCategory());
         holder.remark.setText(currentRecord.getRemark());
 
-
+//        Log.d(Constant.TESTFLOW+TAG, "onBindViewHolder: refresh");
+//        Log.d(Constant.TESTFLOW+TAG, "onBindViewHolder: position "+ position);
         if (isInActionMode) {
             holder.amount.setBackgroundColor(mContext.getResources().getColor(R.color.color_money_out));
             holder.checkBox.setVisibility(View.VISIBLE);
 //            holder.checkBox.setChecked(mViewModel.getSelectedItemsArray().getValue().get(position));
-            holder.checkBox.setChecked(mSelectedItemsArray.get(position));
+//            Log.d(Constant.TESTFLOW+TAG, "selectedBooleanArrayViewMode.get(position)  -> "+
+//                    mViewModel.selectedBooleanArrayViewMode.get(position));
+            holder.checkBox.setChecked(mViewModel.selectedBooleanArrayViewMode.get(position));
         } else {
+//            Log.d(Constant.TESTFLOW+TAG, "NOT IN ACTION MODE!!!");
             holder.amount.setBackgroundColor(mContext.getResources().getColor(R.color.transaction_default_background));
             holder.checkBox.setVisibility(View.GONE);
             holder.checkBox.setChecked(false);
@@ -230,8 +350,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }else{
             temp = mTransactionEntryList.size();
         }
-
-        mViewModel.setmSizeOfTransactions(temp);
+//        mViewModel.setmSizeOfTransactions(temp);
         return temp;
     }
 
@@ -262,7 +381,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            mOnClickListener.customOnListItemClick(position);
+
             /*
                 make sure custom onclicklistener is working and
                 the deleting animation is on-going while customer clicked this position
@@ -270,12 +389,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             if (mOnClickListener != null && position != RecyclerView.NO_POSITION) {
 
 
-                mViewModel.updateSelectedItemsArray(position);
+//                mViewModel.updateSelectedItemsArray(position);
 
-                Log.d("testtest_VH_Onclick",
-                        "mViewModel.updateSelectedItemsArray(position) -->" +
-                                position + " now is -> " + mSelectedItemsArray.get(position)
-                );
+                if(isInActionMode){
+                    updateSelectedItemsArray(position);
+                }else{
+                    //open new activity/fragment from ui activity/fragment which implement this listener
+                    //todo, make the 'open' aciton through viewmodel
+                    mOnClickListener.customOnListItemClick(position);
+                }
+
+                //todo, check redundant
+//                notifyItemChanged(position);
 
                 //todo, test if working witout below lines
              /*   if (isInActionMode) {
@@ -287,7 +412,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                     }
                 }*/
 
-                notifyItemChanged(position);
 
 //                mOnClickListener.customOnListItemClick(position);
             }
@@ -296,11 +420,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         @Override
         public boolean onLongClick(View view) {
-            Log.d("testlongclick", "onLongClick: get signal adapter");
 
             if (!isInActionMode) {
-                clearSelectedState();
+                //todo, check if redundant
+
+//                clearSelectedState();
                 //the only way to enter a toolbar action mode
+
+                Log.d(Constant.TESTFLOW+TAG, "onLongClick: now will set action mode to true");
                 mViewModel.setActionModeState(true);
 
             }

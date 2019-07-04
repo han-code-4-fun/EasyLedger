@@ -1,11 +1,8 @@
 package hanzhou.easyledger.utility;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 
 public class FakeTestingData {
@@ -13,12 +10,12 @@ public class FakeTestingData {
             "Jun","Jul","Aug","Sep","Oct","Nov","","Dec"};
 
     public static String[] ledger = {
-            "RBC","HSBC",Constant.untagged
+            "RBC","HSBC",Constant.UNTAGGED
     };
 
     private static String[] category = {
             "restaurant", "supermarket", "petrol", "housing", "bill",
-            "travel","shopping", "kids","education",
+            "travel","shopping", "kids","education",Constant.UNTAGGED,
             "medical"};
 
     private static String[] remarks = {
@@ -47,7 +44,7 @@ public class FakeTestingData {
         List<TransactionEntry> transactionEntryList =new ArrayList<>();
 
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i <20; i++) {
             transactionEntryList.add(getARandomTransaction());
         }
 
@@ -58,7 +55,7 @@ public class FakeTestingData {
     private static TransactionEntry getARandomTransaction(){
 
         return new TransactionEntry(
-                Constant.untagged,
+                ledger[0],
                 getRandomMonthNDate(),
                 getRandomAmount(),
                 getRandomCategory(),

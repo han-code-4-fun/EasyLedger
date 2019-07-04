@@ -61,10 +61,13 @@
     <string name="title_question_activity">Is this app safe?</string>
 
 
-    <string name="no_email_app">You don\'t have email app to send email to me: </string>
+    <string name="data_type_email">text/plain</string>
+    <string name="no_email_app">You don\'t have an app to send email to me: </string>
     <string name="developer_email_addr">hanzhou244@gmail.com</string>
+    <string name="email_feedback_subject">Feedback to Easyledger</string>
 
 
     <string name="msg_deleting_complete">Records deleted!!!</string>
+    <string name="msg_deleting_need_to_have_one">Please select at least one records!</string>
 
 </resources>

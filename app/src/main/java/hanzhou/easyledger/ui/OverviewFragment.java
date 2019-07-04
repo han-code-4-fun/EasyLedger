@@ -1,15 +1,12 @@
 package hanzhou.easyledger.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,14 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
-import hanzhou.easyledger.temp.TestTempActivity;
-import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.utility.FakeTestingData;
-import hanzhou.easyledger.viewmodel.CrossFragmentCommunicationViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBVMFactory;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
@@ -67,7 +59,6 @@ public class OverviewFragment extends Fragment{
 
     private AppCompatActivity appCompatActivity;
 
-    private CrossFragmentCommunicationViewModel crossVM;
 
 
 
@@ -75,6 +66,7 @@ public class OverviewFragment extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         mDb = TransactionDB.getInstance(context);
+        Log.d("test_hash", "+++++++Overview Fragment Attached++++++++"+ this.hashCode());
     }
 
     @Override
@@ -82,7 +74,7 @@ public class OverviewFragment extends Fragment{
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         appCompatActivity = (AppCompatActivity) getActivity();
-
+        Log.d("frg_flow_b_b", "onCreate: -5-5-5-5-5-5-5-");
 
     }
 
@@ -92,7 +84,7 @@ public class OverviewFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_overview,container,false);
-
+        Log.d("frg_flow_b_b", "onCreateView: -4-4-4-4-4-");
 
         toolBar = appCompatActivity.findViewById(R.id.toolbar_layout);
 
@@ -121,22 +113,65 @@ public class OverviewFragment extends Fragment{
 
         appCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.overview_recyclerview_for_untagged_transactions, new DetailTransactionFragment())
-                .commit();
+                .replace(R.id.overview_recyclerview_for_untagged_transactions,
+                        new DetailTransactionFragment(Constant.CALLFROMOVERVIEW))
 
-       return root;
+                .commit();
+        Log.d(Constant.TESTFLOW+TAG, "onCreateView:  create another DetailTransactionFragment() class");
+
+        return root;
     }
 
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d("frg_flow_b_b", "onActivityCreated: -3-3-3-3-3-3");
+    }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("frg_flow_b_b", "onStart: -2-2-2-2-2-2-");
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("frg_flow_b_b", "onStart: -1-1-1--1-1");
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("frg_flow_b", "onStart: 11111111111111");
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("frg_flow_b", "onStop: 222222");
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("frg_flow_b", "onDestroyView: 33333333");
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("frg_flow_b", "onDestroy: 444444");
+    }
 
-//
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("test_hash", "_____Overview Fragment onDetached _______ "+ this.hashCode());
+    }
+    //
 //    @Override
 //    public void customOnListItemClick(int clickedItemIndex) {
 //
@@ -246,7 +281,7 @@ public class OverviewFragment extends Fragment{
 //        String display = mAdapter.getSelectedItemCount() +" "+
 //                getResources().getString(R.string.string_toolbar_selection_word);
 //
-//        toolBar.inflateMenu(R.menu.toolbar_action_mode);
+//        toolBar.inflateMenu(R.menu.overview_toolbar_action_mode);
 //
 //        /*  ignore btn is for auto-set selected item to 'Others' category
 //         *  when entering toolbar action mode, no item has selected,
@@ -275,7 +310,7 @@ public class OverviewFragment extends Fragment{
 //
 //        toolBar.setTitle(R.string.app_name);
 //
-//        toolBar.inflateMenu(R.menu.toolbar_normal_mode);
+//        toolBar.inflateMenu(R.menu.overview_toolbar_normal_mode);
 //
 //        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //
@@ -372,12 +407,13 @@ public class OverviewFragment extends Fragment{
 
 
     private void setupViewModel() {
-        final TransactionDBVMFactory factory = new TransactionDBVMFactory(mDb, Constant.untagged);
-        viewModel= ViewModelProviders.of(appCompatActivity,factory).get(TransactionDBViewModel.class);
+//        final TransactionDBVMFactory factory = new TransactionDBVMFactory(mDb, Constant.UNTAGGED);
+//        viewModel= ViewModelProviders.of(appCompatActivity,factory).get(TransactionDBViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
         viewModel.getTransactionsByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntries) {
-                Log.d(TAG, "Updating untagged (new) transaction from LiveData in ViewModel");
+                Log.d(TAG, "Updating UNTAGGED (new) transaction from LiveData in ViewModel");
 //                mAdapter.setData(transactionEntries);
             }
         });

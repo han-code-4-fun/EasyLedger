@@ -5,11 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Constant {
 
-    public static final String untagged = "n/a";
+    public static final String UNTAGGED = "n/a";
+
+    public static final String ALL_RECORDS = "";
 
     public static final String prefName = "Preference_for_ledger_manager";
 
     public static final String ledgerNumber = "number_of_ledgers";
+
+    public static final String CALLFROMOVERVIEW = "this_recyclerview_open_from_overview_fragment";
+    public static final String CALLFROMLEDGER = "this_recyclerview_open_from_ledger_fragment";
+
+    public static final String TESTFLOW = "test_";
 
 
 

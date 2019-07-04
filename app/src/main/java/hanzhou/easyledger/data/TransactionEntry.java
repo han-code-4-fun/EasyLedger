@@ -115,11 +115,11 @@ public class TransactionEntry {
 //    private int tagged;
 //    @ColumnInfo(name = "is_tagged")
 //     */
-//     *   untagged transactions marked as 0, tagged will be 1
+//     *   UNTAGGED transactions marked as 0, tagged will be 1
 //     *   tracks whether a transaction is tagged or not
 //    /*
     /*
-        mLedgerName == "n/a" means it's an untagged transaction
+        mLedgerName == "n/a" means it's an UNTAGGED transaction
         that need to be tagged by user
     */
 //    /*
