@@ -1,21 +1,12 @@
 package hanzhou.easyledger.ui;
 
-import android.app.Activity;
-import android.content.Context;
-import android.location.Location;
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.lifecycle.ViewModelProviders;
 
-import java.util.List;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.ui.DetailTransactionFragment;
 import hanzhou.easyledger.utility.Constant;
 
 public class LedgersAdapter extends FragmentPagerAdapter {

@@ -124,7 +124,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TransactionViewHolder holder, final int position) {
 
         Log.d("flow", "onBindViewHolder: update THIS data");
         TransactionEntry currentRecord = mTransactionEntryList.get(position);
@@ -137,7 +137,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         if (isInActionMode) {
             holder.amount.setBackgroundColor(Color.RED);
             holder.checkBox.setVisibility(View.VISIBLE);
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateSelectedItemsArray(position);
+                }
+            });
             holder.checkBox.setChecked(mViewModel.getAValueFromSelectedItems(position));
+
         } else {
             holder.amount.setBackgroundColor(Color.WHITE);
             holder.checkBox.setVisibility(View.GONE);
