@@ -1,11 +1,8 @@
 package hanzhou.easyledger.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,17 +15,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.viewmodel.TransactionDBVMFactory;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
+
+
+    /*
+    *  Recyclerview Fragment that can be used by other classes to show a standard list
+    *
+    *
+    */
+
 
 public  class DetailTransactionFragment extends Fragment
         implements TransactionAdapter.CustomListItemClickListener {
@@ -39,67 +40,33 @@ public  class DetailTransactionFragment extends Fragment
 
     private TransactionAdapter mAdapter;
 
-    private RecyclerView mRecyclerView;
-
-    private Toolbar toolBar;
-
-    private TextView textViewOnToolBar;
-
-    private TransactionDB mDb;
-
-    private TransactionDBVMFactory factory;
-
-    private boolean isActionModeLocal;
-
     private String whoCalledMe;
 
     public DetailTransactionFragment(String parentString) {
         whoCalledMe = parentString;
     }
 
-    //1st step of starting Fragment
-    //create DB instance
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mDb = TransactionDB.getInstance(context);
-        Log.d("test_hash", " DetailTransaction fragment attached "+ this.hashCode());
-
-
-    }
-
-    //enable onCreateOptionsMenu, save AppCompatActivity to local variable
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Log.d("frg_flow", "onCreate: -5-5-5-5-5-5-5-");
     }
 
-    //todo, save data into instance
+    //todo, implement data PERSISTANCE
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
 
-    //setup layout
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        Log.d("frg_flow", "onCreateView: -4-4-4-4-4-");
-
-//        toolBar = getActivity().findViewById(R.id.toolbar_layout);
-//
-//        textViewOnToolBar = getActivity().findViewById(R.id.toolbar_textview);
-//        textViewOnToolBar.setVisibility(View.GONE);
-
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
-
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
 
-        ((LinearLayoutManager) mLayoutManager).setOrientation(RecyclerView.VERTICAL);
+//        ((LinearLayoutManager) mLayoutManager).setOrientation(RecyclerView.VERTICAL);
 
 
 
@@ -110,9 +77,9 @@ public  class DetailTransactionFragment extends Fragment
             mViewModel.setActionModeState(false);
         }
         //todo, if error, try to change from appCompatActivity to getActivity()
-        mAdapter = TransactionAdapter.getInstance(getActivity(), this, mViewModel);
+        mAdapter = TransactionAdapter.getInstance( this, mViewModel);
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
+        RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -148,7 +115,7 @@ public  class DetailTransactionFragment extends Fragment
             mViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
                 @Override
                 public void onChanged(List<TransactionEntry> transactionEntries) {
-                    mAdapter.setData(transactionEntries);
+                    mAdapter.setAdapterData(transactionEntries);
                     Log.d(Constant.TESTFLOW+TAG, "getUntaggedTransactions total -> "+ transactionEntries.size());
                     //      mCrossVM.setTransactionEntriesFromDB(transactionEntries);
                 }
@@ -163,7 +130,7 @@ public  class DetailTransactionFragment extends Fragment
             mViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
                 @Override
                 public void onChanged(List<TransactionEntry> transactionEntries) {
-                    mAdapter.setData(transactionEntries);
+                    mAdapter.setAdapterData(transactionEntries);
                     Log.d(Constant.TESTFLOW+TAG, "getAllTransactions total -> "+ transactionEntries.size());
                 }
             });
@@ -183,15 +150,11 @@ public  class DetailTransactionFragment extends Fragment
             @Override
             public void onChanged(Boolean aBoolean) {
                 mAdapter.isInActionMode = aBoolean;
-                Log.d("test_hash", "tesettestest       "+aBoolean);
                 //set to default style when the 'false' state is updated from user's input of action bar
                 if(!aBoolean){
                     mAdapter.deselectAll();
                 }else {
                     //todo, check if error
-                    //todo
-                    //todo
-                    Log.d("test_hash", "tesettestest       true");
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -204,7 +167,6 @@ public  class DetailTransactionFragment extends Fragment
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     mAdapter.deselectAll();
-                    Log.d(Constant.TESTFLOW+TAG, "viewmodel observer, deselected all and now set DeselectAllTrigger to false");
                     mViewModel.setDeselectAllTrigger(false);
                 }
             }
@@ -216,7 +178,6 @@ public  class DetailTransactionFragment extends Fragment
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     mAdapter.selectAll();
-                    Log.d(Constant.TESTFLOW+TAG, "viewmodel observer, selected all and now set SelectAllTrigger to false");
                     mViewModel.setSelectAllTrigger(false);
                 }
             }
@@ -232,18 +193,10 @@ public  class DetailTransactionFragment extends Fragment
 ////            mViewModel.updateSelectedItemsArray(position);
 //
 //        } else {
-        TransactionEntry transactionEntry = mAdapter.getClickedData(position);
-        Toast.makeText(
-                this.getActivity(),
-                "clicked " + position + " -> " + transactionEntry.getRemark(),
-                Toast.LENGTH_LONG).show();
-//        }
+        TransactionEntry transactionEntry = mAdapter.getClickedEntry(position);
+        Log.d(TAG, "clicked " + position + " -> " + transactionEntry.getRemark());
     }
 
-    @Override
-    public void customOnListItemLongClick(int position) {
-        //handle toolbar action mode
-    }
 
 
     @Override

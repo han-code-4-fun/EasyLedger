@@ -88,7 +88,7 @@ public class TransactionDBViewModel extends AndroidViewModel {
 
 //    private List<TransactionEntry> selectedTransactions;
 
-    public SparseBooleanArray selectedBooleanArrayViewMode;
+    private SparseBooleanArray selectedBooleanArrayViewMode;
 
     private String currentLedger;
 
@@ -104,6 +104,26 @@ public class TransactionDBViewModel extends AndroidViewModel {
 //
 //
 //    }
+
+    public void emptySelectedItems(){
+        selectedBooleanArrayViewMode.clear();
+    }
+
+    public boolean getAValueFromSelectedItems(int position){
+        return selectedBooleanArrayViewMode.get(position);
+    }
+
+    public void deleteAValueFromSelectedItems(int position){
+        selectedBooleanArrayViewMode.delete(position);
+    }
+
+    public void putAValueIntoSelectedItems(int position, boolean value){
+        selectedBooleanArrayViewMode.put(position, value);
+    }
+
+    public int getNumberOfSelectedItems(){
+        return selectedBooleanArrayViewMode.size();
+    }
 
 
     public LiveData<List<TransactionEntry>> getTransactionsByLedger() {
@@ -122,13 +142,10 @@ public class TransactionDBViewModel extends AndroidViewModel {
 
 
     public void setActionModeState(boolean state) {
-        Log.d("testtest", "-------------> action mode incoming->> " + state);
         mIsActionModeLiveData.setValue(state);
-        Log.d("testtest", "-------------> action mode now ->> " + mIsActionModeLiveData.getValue());
     }
 
     public LiveData<Boolean> getActionModeState() {
-        Log.d("test_flow", "return actionmode state: "+mIsActionModeLiveData.getValue());
         return mIsActionModeLiveData;
     }
 
@@ -139,14 +156,6 @@ public class TransactionDBViewModel extends AndroidViewModel {
     public LiveData<Integer> getTransactionSelectedNumberLiveData() {
         return mTransactionSelectedNumber;
     }
-
-//    public void setmSizeOfTransactions(int number){
-//        mSizeOfTransactions.setValue(number);
-//    }
-//
-//    public MutableLiveData<Integer> getmSizeOfTransactions(){
-//        return mSizeOfTransactions;
-//    }
 
     public void setmIsAllSelected(boolean input) {
 
@@ -202,13 +211,6 @@ public class TransactionDBViewModel extends AndroidViewModel {
         return output;
     }
 
-//    public void setmTransferSelectedListTrigger(boolean input){
-//        mTransferSelectedListTrigger.setValue(input);
-//    }
-//
-//    public MutableLiveData<Boolean> getmTransferSelectedListTrigger(){
-//        return mTransferSelectedListTrigger;
-//    }
 
     public String getCurrentLedger() {
         return currentLedger;

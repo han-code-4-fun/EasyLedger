@@ -11,13 +11,13 @@
             app:showAsAction="never" />
 
         <item
-            android:id="@+id/menu_setting_question"
+            android:id="@+id/menu_user_has_question"
             android:orderInCategory="200"
             android:title="@string/menu_title_question"
             app:showAsAction="never" />
 
         <item
-            android:id="@+id/menu_setting_feedback"
+            android:id="@+id/menu_feedback"
             android:orderInCategory="300"
             android:title="@string/menu_title_feedback"
             app:showAsAction="never" />

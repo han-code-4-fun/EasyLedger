@@ -36,7 +36,9 @@ public class FakeTestingData {
     public static List<TransactionEntry> create10kTransactions(){
         List<TransactionEntry> transactionEntryList =new ArrayList<>();
 
-
+        for (int i = 0; i <10000; i++) {
+            transactionEntryList.add(getARandomTransaction());
+        }
         return transactionEntryList;
     }
 

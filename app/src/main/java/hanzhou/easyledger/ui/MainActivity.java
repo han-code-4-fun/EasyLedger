@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +26,6 @@ import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
-import hanzhou.easyledger.viewmodel.TransactionDBVMFactory;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 import androidx.appcompat.widget.Toolbar;
@@ -40,33 +38,20 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    public static String parentFragment;
 
-    private FloatingActionButton btnFA;
-
-    private IntentFilter smsIntentFilter;
-    private SmsBroadcastReceiver smsReceiver;
-    private BottomNavigationView bottomNavigation;
-
-    private Toolbar toolBar;
-    private TextView textViewOnToolBar;
-
-    private Fragment selectedFragment;
-
-    private Handler handlerBackPress;
-
-    private int numOfTimesBackPressed;
-
-
-    private TransactionDBViewModel viewModel;
-
-    private boolean isInActionModel;
-    private boolean isAllSelected;
-    private int listSize;
-    private int selectedNum;
+    private IntentFilter mSmsIntentFilter;
+    private SmsBroadcastReceiver mSmsReceiver;
 
     /* Database instance */
     private TransactionDB mDb;
+    private TransactionDBViewModel mViewModel;
+
+    private Fragment selectedFragment;
+
+    private FloatingActionButton btnFA;
+
+    private Toolbar toolBar;
+    private TextView textViewOnToolBar;
 
 
     /*
@@ -78,48 +63,42 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem edit;
     private MenuItem selectAll;
 
+    private boolean isInActionModel;
+    private boolean isAllSelected;
+    private int mNumberOfSelection;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         viewmodelInitialization();
 
-
-        insert20FakeData();
+//        insert20FakeData();
 
         broadcastReceiverInitialization();
 
         uiInitialization();
 
-
         setViewModelOberver();
 
-        //start initial fragment
-        selectedFragment = new OverviewFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_fragment_container, selectedFragment)
-                .commit();
-
+        activityStartRunFragment();
 
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        this.registerReceiver(smsReceiver, smsIntentFilter);
-        Log.d(TAG, "onResume: smsReceiver registered");
+        this.registerReceiver(mSmsReceiver, mSmsIntentFilter);
+        Log.d(TAG, "onResume: mSmsReceiver registered");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(smsReceiver);
-        Log.d(TAG, "onPause: smsReceiver unregistered");
+        unregisterReceiver(mSmsReceiver);
+        Log.d(TAG, "onPause: mSmsReceiver unregistered");
     }
 
 
@@ -129,6 +108,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -136,85 +122,45 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_setting_mainactivity:
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
-            case R.id.menu_setting_question:
+            case R.id.menu_user_has_question:
                 startActivity(new Intent(this, QuestionActivity.class));
                 break;
-            case R.id.menu_setting_feedback:
+            case R.id.menu_feedback:
                 sendEmailToDeveloper();
                 break;
-
             case android.R.id.home:
-
-                if (isInActionModel) {
-                    setToolBarToOriginMode();
-                }
+                if (isInActionModel) { setToolBarToOriginMode(); }
                 break;
 
             case R.id.toolbar_edit:
                 setToolBarToOriginMode();
+                //todo, implement editing fragment/activity
 //                startActivity(new Intent(MainActivity.this, TestTempActivity.class));
                 break;
 
             case R.id.toolbar_select_all:
-                /*  select/de-select all the transctions in the view
-                    use viewmodel to send signal to Adapter's (adapter is observing these triggers),
-                    adapter will preform operations after receive the signal,
-                    after finish operation, adapter will set trigger to false
-                 */
-                Log.d(Constant.TESTFLOW+TAG, "onOptionsItemSelected: User clicked toolbar_select_all");
-                if (isAllSelected) {
-                    viewModel.setDeselectAllTrigger(true);
-                } else {
-                    viewModel.setSelectAllTrigger(true);
-
-                }
-
+                selectAllOrDeselectAll();
                 break;
             case R.id.toolbar_delete:
-                if (selectedNum == 0) {
-                    Toast.makeText(this,
-                            getResources().getString(R.string.msg_deleting_need_to_have_one),
-                            Toast.LENGTH_LONG).show();
-                } else {
-//                    //only transfer list of entities after conditions meet, to save system resource
-//                    viewModel.setmTransferSelectedListTrigger(true);
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            mDb.transactionDAO().deleteListOfTransactions(
-                                    viewModel.getSelectedTransactions()
-                            );
-                        }
-                    });
-                    Toast.makeText(this,
-                            getResources().getString(R.string.msg_deleting_complete),
-                            Toast.LENGTH_LONG).show();
-                    setToolBarToOriginMode();
-                }
-
-
+                deleteSelectedRecords();
                 break;
             case R.id.toolbar_ignore:
-                //todo put them all into others category
+                //todo set all selected into others category
 
                 break;
 
             default:
                 return super.onOptionsItemSelected(item);
-
         }
         return true;
-
     }
+
 
     @Override
     public void onBackPressed() {
         if (isInActionModel) {
             setToolBarToOriginMode();
-
         } else {
-
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
             }
@@ -249,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+    //todo, FAB should create a new activity
     private FloatingActionButton.OnClickListener fabOnClickListener
             = new FloatingActionButton.OnClickListener() {
         @Override
@@ -261,28 +208,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void viewmodelInitialization() {
         mDb = TransactionDB.getInstance(this);
-//        TransactionDBVMFactory factory = new TransactionDBVMFactory(mDb, Constant.UNTAGGED);
-//        viewModel = ViewModelProviders.of(this, factory).get(TransactionDBViewModel.class);
-        viewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
-
-        Log.d("test_hash", "MainActivity:  create viewModel "+ viewModel.hashCode());
-
+        mViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
     }
 
     private void broadcastReceiverInitialization() {
-        smsIntentFilter = new IntentFilter();
-        smsIntentFilter.addAction(SMS_RECEIVED_ACTION);
-        smsReceiver = new SmsBroadcastReceiver();
+        mSmsIntentFilter = new IntentFilter();
+        mSmsIntentFilter.addAction(SMS_RECEIVED_ACTION);
+        mSmsReceiver = new SmsBroadcastReceiver();
     }
 
     private void uiInitialization() {
         toolBar = findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolBar);
+        //todo, change to app Logo
         toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
         textViewOnToolBar = findViewById(R.id.toolbar_textview);
 
-
-        bottomNavigation = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
 
         btnFA = findViewById(R.id.btn_floating_aciton);
@@ -291,11 +233,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setViewModelOberver() {
 
-        viewModel.getActionModeState().observe(this, new Observer<Boolean>() {
+        mViewModel.getActionModeState().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                isInActionModel = aBoolean;
-                Log.d("test_flow", "main activity got action state "+aBoolean);
                 /*
                     only handle toolbar action mode start (comes from user long click),
                     end of (toolbar) action mode will be one of following :
@@ -305,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
                     4. press delete (after user select some data)
                     5. press ignore (automatically mark all transaciton in category others)
                  */
+                isInActionModel = aBoolean;
                 if (isInActionModel) {
                     setToolBarToActionMode();
                 }
@@ -312,59 +253,25 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-//
-//        viewModel.getmSizeOfTransactions().observe(this, new Observer<Integer>() {
-//            @Override
-//            public void onChanged(Integer integer) {
-//                listSize = integer;
-//            }
-//        });
 
 
-        viewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
+        mViewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                selectedNum = integer;
+                /*
+                    toolbar's respondse to user selction of records
+                */
 
-                String display = integer + " " +
-                        getResources().getString(R.string.string_toolbar_selection_word);
-                textViewOnToolBar.setText(display);
-                //display different type of icons on toolbar based on user selection
-                if (isInActionModel) {
-                    if (edit != null && ignore != null) {
-                        if(viewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)){
-                            if (integer < 1) {
-                                ignore.setVisible(false);
-                                edit.setVisible(false);
-                            } else if (integer == 1) {
-                                ignore.setVisible(true);
-                                edit.setVisible(true);
-                            } else {
-                                //more than 1 items is selected
-                                ignore.setVisible(true);
-                                edit.setVisible(false);
+                mNumberOfSelection = integer;
 
-                            }
-                        }else{
-                            ignore.setVisible(false);
-                            selectAll.setVisible(false);
-                            delete.setVisible(true);
-                            if (integer != 1) {
-                                edit.setVisible(false);
-                            }else{
-                                edit.setVisible(true);
+                showNumberOfSelectedTransactionOnToolbar(integer);
 
-                            }
-                        }
-
-                    }
-
-                }
+                displayToolbarIconsBasedOnNumberOfSelections(integer);
 
             }
         });
 
-        viewModel.getmIsAllSelected().observe(this, new Observer<Boolean>() {
+        mViewModel.getmIsAllSelected().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isAllSelected = aBoolean;
@@ -374,9 +281,71 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void displayToolbarIconsBasedOnNumberOfSelections(int integer) {
+
+        if (isInActionModel) {
+            if (edit != null && ignore != null) {
+                if (mViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)) {
+
+                    toolbarActionsIfCalledFromOverViewFragment(integer);
+                } else {
+                    toolbarAcitonsIfCalledFromLedgerFragment(integer);
+                }
+
+            }
+
+        }
+    }
+
+    private void toolbarActionsIfCalledFromOverViewFragment(int integer) {
+        /*  when selected number ==0, show icon: selectAll and delete
+        *   when selected number ==1, show icon: edit, ignore, selectAll and delete
+        *   when selected number >1, show icon: ignore, selectAll and delete
+        * */
+        if (integer < 1) {
+            ignore.setVisible(false);
+            edit.setVisible(false);
+        } else if (integer == 1) {
+            ignore.setVisible(true);
+            edit.setVisible(true);
+        } else {
+            //more than 1 items is selected
+            ignore.setVisible(true);
+            edit.setVisible(false);
+
+        }
+    }
+
+    private void toolbarAcitonsIfCalledFromLedgerFragment(int integer) {
+        /*
+                if current fragment is the ledger fragment
+                (which is mostly likely already been tagged),
+                not to display selectALl btn icon, because I don't want user
+                accidently hit selectAll and hit delete.
+
+
+        *   when selected number ==1, show icon: edit, and delete
+        *   when selected number ==0 or more than 1, show icon:delete
+        */
+        ignore.setVisible(false);
+        selectAll.setVisible(false);
+        delete.setVisible(true);
+        if (integer != 1) {
+            edit.setVisible(false);
+        } else {
+            edit.setVisible(true);
+
+        }
+    }
+
+
+    private void activityStartRunFragment() {
+        selectedFragment = new OverviewFragment();
+        switchFragmentWithinActivity(selectedFragment);
+    }
+
     private void switchFragmentWithinActivity(Fragment input) {
 
-//        viewModel.prepareViewModelForChangingFragment();
         setToolBarToOriginMode();
 
         getSupportFragmentManager()
@@ -393,8 +362,8 @@ public class MainActivity extends AppCompatActivity {
         toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
         textViewOnToolBar.setVisibility(View.GONE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        viewModel.selectedBooleanArrayViewMode.clear();
-        viewModel.setActionModeState(false);
+        mViewModel.emptySelectedItems();
+        mViewModel.setActionModeState(false);
 
     }
 
@@ -406,15 +375,10 @@ public class MainActivity extends AppCompatActivity {
         textViewOnToolBar.setVisibility(View.VISIBLE);
 
         assignMenuItemToVariableForDifferentCombinationNSetInitialState();
-        if(viewModel.getCurrentLedger().equals(Constant.CALLFROMLEDGER)){
-            /*
-                if current fragment is the ledger fragment
-                (which is mostly likely already been tagged),
-                not to display selectALl btn icon, because I don't want user
-                accidently hit selectAll and hit delete.
-             */
+        if (mViewModel.getCurrentLedger().equals(Constant.CALLFROMLEDGER)) {
+
             selectAll.setVisible(false);
-        }else{
+        } else {
             selectAll.setVisible(true);
         }
 
@@ -443,6 +407,59 @@ public class MainActivity extends AppCompatActivity {
                 mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create20UntaggedTransactions());
             }
         });
+    }
+
+
+    private void insert10000FakeData() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create10kTransactions());
+            }
+        });
+    }
+
+    private void deleteSelectedRecords() {
+        if (mNumberOfSelection == 0) {
+            Toast.makeText(this,
+                    getResources().getString(R.string.msg_deleting_need_to_have_one),
+                    Toast.LENGTH_LONG).show();
+        } else {
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+
+                    mDb.transactionDAO().deleteListOfTransactions(
+                            mViewModel.getSelectedTransactions()
+                    );
+                }
+            });
+            Toast.makeText(this,
+                    getResources().getString(R.string.msg_deleting_complete),
+                    Toast.LENGTH_LONG).show();
+            setToolBarToOriginMode();
+        }
+    }
+
+    private void selectAllOrDeselectAll() {
+         /* select/de-select all the transctions in the view
+            use viewmodel to send signal to Recyclerview (the fragment which run recyclerview
+            is observing these triggers),
+            the fragment will perform operations after receive the signal,
+            after finish operation, the fragment will set trigger to false
+         */
+        if (isAllSelected) {
+            mViewModel.setDeselectAllTrigger(true);
+        } else {
+            mViewModel.setSelectAllTrigger(true);
+
+        }
+    }
+
+    private void showNumberOfSelectedTransactionOnToolbar(int integer) {
+        String display = integer + " " +
+                getResources().getString(R.string.string_toolbar_selection_word);
+        textViewOnToolBar.setText(display);
     }
 
 

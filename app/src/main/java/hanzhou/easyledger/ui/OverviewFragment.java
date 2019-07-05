@@ -414,7 +414,7 @@ public class OverviewFragment extends Fragment{
             @Override
             public void onChanged(List<TransactionEntry> transactionEntries) {
                 Log.d(TAG, "Updating UNTAGGED (new) transaction from LiveData in ViewModel");
-//                mAdapter.setData(transactionEntries);
+//                mAdapter.setAdapterData(transactionEntries);
             }
         });
 
