@@ -10,7 +10,7 @@ import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {TransactionEntry.class}, version = 1, exportSchema = false)
+@Database(entities = {TransactionEntry.class}, version = 2, exportSchema = false)
 public abstract class TransactionDB extends RoomDatabase {
 
     private static final String LOG_TAG = TransactionDB.class.getSimpleName();

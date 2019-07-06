@@ -2,16 +2,14 @@ package hanzhou.easyledger.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -19,21 +17,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import hanzhou.easyledger.OverViewBalanceXAxisValueFormatter;
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.data.TransactionDB;
-import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewmodel.ChartDataViewModel;
-import hanzhou.easyledger.viewmodel.TransactionDBVMFactory;
-import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 public class OverviewFragment extends Fragment{
 
@@ -42,6 +37,7 @@ public class OverviewFragment extends Fragment{
     private ChartDataViewModel mChartViewModel;
 
     HorizontalBarChart mBarChart;
+    BarDataSet barDataSet;
 
     LinearLayoutManager layoutManager;
 
@@ -49,8 +45,11 @@ public class OverviewFragment extends Fragment{
 
     private AppCompatActivity appCompatActivity;
 
-    private double revenue;
-    private double spend;
+    private float revenueF;
+    private float spendF;
+
+    /* get from revenus/spend comparision to set barchart range*/
+    private float biggerNumber;
 
 
 
@@ -59,6 +58,10 @@ public class OverviewFragment extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         appCompatActivity = (AppCompatActivity) context;
+        spendF = 0f;
+        revenueF = 0f;
+        //todo, they should retrieve data from savedinstance
+        biggerNumber = Math.max(spendF, revenueF);
     }
 
 
@@ -70,6 +73,11 @@ public class OverviewFragment extends Fragment{
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+//        biggerNumber = Math.max(spendF, revenueF);
+    }
 
     @Nullable
     @Override
@@ -77,15 +85,9 @@ public class OverviewFragment extends Fragment{
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_overview,container,false);
 
-
         mBarChart = root.findViewById(R.id.overview_total_balance_barchart);
-        mBarChart.calculateOffsets();
 
-        int range = 200;
-
-        setBarChart(2, range);
-
-
+        initiazlizeBarChart();
 
         appCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
@@ -112,54 +114,27 @@ public class OverviewFragment extends Fragment{
 
 
 
-    private void setBarChart(int i, int range) {
-        ArrayList<BarEntry> entrySpending = new ArrayList<>();
-        ArrayList<BarEntry> entryRevenus = new ArrayList<>();
-        float barWidth = 3f;
-        float spaceForBar = 1f;
-//        entryRevenus.add(new BarEntry(spaceForBar, Math.round(revenue)));
-//        entrySpending.add(new BarEntry(spaceForBar*2, Math.round(spend)));
+    private void initiazlizeBarChart() {
 
-        entryRevenus.add(new BarEntry(spaceForBar, 2000));
-        entrySpending.add(new BarEntry(spaceForBar*2, 1200));
+        //set barchar style,
+        setChartStyle();
 
-        BarDataSet barDataSetSpending = new BarDataSet(entrySpending, "Money out");
-        barDataSetSpending.setColor(getResources().getColor(R.color.color_money_out));
-
-        BarDataSet barDataSetRevenue = new BarDataSet(entryRevenus, "Money in");
-        barDataSetRevenue.setColor(getResources().getColor(R.color.color_money_in));
-
-        BarData data = new BarData();
-        data.addDataSet(barDataSetSpending);
-        data.addDataSet(barDataSetRevenue);
-
-//        data.setBarWidth(barWidth);
-
-        barChartSetting();
-
-        mBarChart.setData(data);
-        mBarChart.invalidate();//refresh data
+        //Set bar entries
+        setChartData();
 
 
     }
 
+    /*make chart to display only*/
+    private void setChartStyle(){
 
-
-    private void barChartSetting(){
-        barChartSetStyle();
-        barChartSetNoInteraction();
-
-    }
-
-    private void barChartSetStyle(){
-        mBarChart.setFitBars(true);
-        mBarChart.setVisibleYRange(0,1500, YAxis.AxisDependency.LEFT);
-        mBarChart.getXAxis().setDrawGridLines(false);
-        mBarChart.getAxisLeft().setDrawGridLines(false);
-        mBarChart.getAxisRight().setDrawGridLines(false);
-    }
-
-    private void barChartSetNoInteraction(){
+//        mBarChart.setDrawBarShadow(false);
+        mBarChart.setDescription(null);
+        mBarChart.getLegend().setEnabled(false);
+        mBarChart.setDrawValueAboveBar(false);
+        mBarChart.setDrawBarShadow(true);
+        mBarChart.getXAxis().setEnabled(false);
+        mBarChart.getAxisRight().setEnabled(false);
         mBarChart.setTouchEnabled(false);
         mBarChart.setDragEnabled(false);
         mBarChart.setScaleEnabled(false);
@@ -168,26 +143,119 @@ public class OverviewFragment extends Fragment{
         mBarChart.setPinchZoom(false);
         mBarChart.setDoubleTapToZoomEnabled(false);
 
+        setXAxis();
+        setYLeftAxis();
+
     }
+
+    private void setXAxis() {
+        XAxis xAxis = mBarChart.getXAxis();
+
+        xAxis.setDrawGridLines(false);
+
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        xAxis.setEnabled(true);
+//        xAxis.setXOffset(5f);
+        xAxis.setDrawGridLinesBehindData(true);
+        xAxis.setDrawLimitLinesBehindData(true);
+        xAxis.setTextSize(10f);
+
+        xAxis.setDrawAxisLine(false);
+
+        //only display revenue and spend
+        xAxis.setLabelCount(2);
+
+        String[] balanceTitle = {
+
+                getString(R.string.overview_balance_spend),
+                getString(R.string.overview_balance_revenue)
+        };
+
+        xAxis.setValueFormatter(new OverViewBalanceXAxisValueFormatter(balanceTitle));
+
+
+    }
+
+
+    /*set YLeftAxis' maximum based on the maximum get from DB*/
+    private void setYLeftAxis(){
+        YAxis yLeftAxis = mBarChart.getAxisLeft();
+
+        /*set YLeftAxis' maximum based on the maximum get from DB*/
+        yLeftAxis.setAxisMaximum(biggerNumber);
+
+        yLeftAxis.setAxisMinimum(0f);
+
+        yLeftAxis.setEnabled(false);
+    }
+
+
+    private void setChartData() {
+
+        /*use the data come from viewmodel*/
+        //place revenue on top of spend in barchart
+        BarEntry revenue = new BarEntry(1f, revenueF);
+        BarEntry spend = new BarEntry(0f,spendF);
+
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(revenue);
+        entries.add(spend);
+
+        barDataSet = new BarDataSet(entries, "Bar data test");
+
+        barDataSet.setColors(
+                //set upper chart (revenue) color
+                ContextCompat.getColor(mBarChart.getContext(), R.color.color_money_in),
+                //set lower chart (spend) color
+                ContextCompat.getColor(mBarChart.getContext(), R.color.color_money_out));
+        //todo, important
+        barDataSet.setBarShadowColor(
+                ContextCompat.getColor(mBarChart.getContext(), R.color.background_grid_white));
+        barDataSet.setValueTextSize(15f);
+        barDataSet.setDrawValues(true);
+
+        BarData barData = new BarData(barDataSet);
+
+
+        barData.setBarWidth(0.9f);
+
+        mBarChart.setData(barData);
+
+        //refresh barchart
+        mBarChart.invalidate();
+    }
+
+
+
 
 
 
     private void setupViewModel() {
         mChartViewModel = ViewModelProviders.of(appCompatActivity).get(ChartDataViewModel.class);
 
-        mChartViewModel.getRevenue().observe(getViewLifecycleOwner(), new Observer<Double>() {
+        mChartViewModel.getRevenue().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
-            public void onChanged(Double aDouble) {
-                revenue = aDouble;
+            public void onChanged(Float aDouble) {
+                revenueF = aDouble;
+                synchronizeBalanceData();
             }
         });
 
-        mChartViewModel.getSpend().observe(getViewLifecycleOwner(), new Observer<Double>() {
+        mChartViewModel.getSpend().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
-            public void onChanged(Double aDouble) {
-                spend = aDouble;
+            public void onChanged(Float aDouble) {
+                spendF = Math.abs(aDouble);
+                synchronizeBalanceData();
+
             }
         });
 
+    }
+
+    private void synchronizeBalanceData(){
+        biggerNumber = Math.max(Math.abs(spendF), revenueF);
+        setYLeftAxis();
+        setChartData();
     }
 }

@@ -50,6 +50,9 @@ public interface TransactionDAO {
     @Delete
     void deleteListOfTransactions(List<TransactionEntry> lisOfTransactions);
 
+    @Query("DELETE FROM transactions")
+    void deleteAll();
+
 
     /*
         select account_id, total,  standard_qty from orders

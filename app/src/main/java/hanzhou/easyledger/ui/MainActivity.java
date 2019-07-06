@@ -145,9 +145,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_insert_data:
                 insert20FakeData();
                 break;
+            case R.id.menu_delete_all_data:
+                deleteAll();
+                break;
 
             case android.R.id.home:
-                if (isInActionModel) { setToolBarToOriginMode(); }
+                if (isInActionModel) {
+                    setToolBarToOriginMode();
+                }
                 break;
 
             case R.id.toolbar_edit:
@@ -171,6 +176,16 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private void deleteAll() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                mDb.transactionDAO().deleteAll();
+            }
+        });
     }
 
 
@@ -232,18 +247,16 @@ public class MainActivity extends AppCompatActivity {
 
         int time = UnitUtil.formatTime(halfYear);
 
-        ChartViewModelFactory factory = new ChartViewModelFactory(time,mDb);
+        ChartViewModelFactory factory = new ChartViewModelFactory(time, mDb);
         mChartViewModel = ViewModelProviders.of(this, factory).get(ChartDataViewModel.class);
         mTransactionViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
 
 
-
     }
 
-    private int getTime(){
+    private int getTime() {
         return 100002;
     }
-
 
 
     private void broadcastReceiverInitialization() {
@@ -296,7 +309,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         mTransactionViewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
@@ -325,12 +337,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void calculateSpendingNRevenueSum(List<TransactionEntry> transactionEntryList) {
-        double revenue = 0;
-        double spending = 0;
+        float revenue = 0;
+        float spending = 0;
         for (TransactionEntry entry : transactionEntryList) {
-            if(entry.getAmount()>=0){
+            if (entry.getAmount() >= 0) {
                 revenue = revenue + entry.getAmount();
-            }else{
+            } else {
                 spending = spending + entry.getAmount();
             }
         }
@@ -358,9 +370,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void toolbarActionsIfCalledFromOverViewFragment(int integer) {
         /*  when selected number ==0, show icon: selectAll and delete
-        *   when selected number ==1, show icon: edit, ignore, selectAll and delete
-        *   when selected number >1, show icon: ignore, selectAll and delete
-        * */
+         *   when selected number ==1, show icon: edit, ignore, selectAll and delete
+         *   when selected number >1, show icon: ignore, selectAll and delete
+         * */
         if (integer < 1) {
             ignore.setVisible(false);
             edit.setVisible(false);

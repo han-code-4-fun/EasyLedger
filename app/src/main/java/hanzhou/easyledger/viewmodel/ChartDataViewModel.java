@@ -13,17 +13,17 @@ public class ChartDataViewModel extends ViewModel {
 
     private LiveData<List<TransactionEntry>> listOfTransactions7Days;
 
-    private MutableLiveData<Double> revenue;
-    private MutableLiveData<Double> spend;
+    private MutableLiveData<Float> revenue;
+    private MutableLiveData<Float> spend;
 
     /* during test, input 180 days time, not just 7days */
     ChartDataViewModel(int time, TransactionDB mDb){
         listOfTransactions7Days = mDb.transactionDAO().loadTransactionByTime7days(time);
         revenue =new MutableLiveData<>();
-        revenue.setValue(0.0);
+        revenue.setValue(0.0f);
 
         spend = new MutableLiveData<>();
-        spend.setValue(0.0);
+        spend.setValue(0.0f);
 
     }
 
@@ -32,19 +32,19 @@ public class ChartDataViewModel extends ViewModel {
         return listOfTransactions7Days;
     }
 
-    public void setRevenue(double input){
+    public void setRevenue(Float input){
         revenue.setValue(input);
     }
 
-    public LiveData<Double> getRevenue(){
+    public LiveData<Float> getRevenue(){
         return revenue;
     }
 
-    public void setSpend(double input){
+    public void setSpend(Float input){
         spend.setValue(input);
     }
 
-    public LiveData<Double> getSpend(){
+    public LiveData<Float> getSpend(){
         return spend;
     }
 

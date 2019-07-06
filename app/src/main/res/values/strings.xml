@@ -9,6 +9,8 @@
 
     <string name="overview_totalbalance_title">Total Balance</string>
     <string name="overview_transaction_tag_textview_title">Transactions need to be tagged</string>
+    <string name="overview_balance_revenue">Money In ($)</string>
+    <string name="overview_balance_spend">Money Out ($)</string>
 
     <string name="placeholder_time">June 1st</string>
     <string name="placeholder_amount">$12343435.04</string>
@@ -27,6 +29,7 @@
     <string name="menu_title_question">Is this app safe?</string>
     <string name="menu_title_feedback">Feedback</string>
     <string name="menu_insert_data">Insert Data</string>
+    <string name="menu_delete_all_data">Delete All</string>
 
 
     <string name="explanation_friendly_why_this_app_is_safe">

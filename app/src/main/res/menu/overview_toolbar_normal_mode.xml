@@ -27,6 +27,13 @@
             android:orderInCategory="400"
             android:title="@string/menu_insert_data"
             app:showAsAction="never" />
+        <item
+            android:id="@+id/menu_delete_all_data"
+            android:orderInCategory="500"
+            android:title="@string/menu_delete_all_data"
+            app:showAsAction="never" />
+
+
 
 
 

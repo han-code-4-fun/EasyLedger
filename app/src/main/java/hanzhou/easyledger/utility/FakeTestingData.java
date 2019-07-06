@@ -74,12 +74,12 @@ public class FakeTestingData {
     }
 
 
-    private static double getRandomAmountBetween3000PositiveNNegative() {
-        double output=0;
+    private static float getRandomAmountBetween3000PositiveNNegative() {
+        float output=0;
 
         Random random = new Random();
 
-        output = random.nextDouble()*6000-3000;
+        output = random.nextFloat()*6000-3000;
         output = Math.round(output*100);
         output = output/100;
 

@@ -16,14 +16,14 @@ public class TransactionEntry {
 
     private int time;
 
-    private double amount;
+    private Float amount;
 
     private String category;
 
     private String remark;
 
     @Ignore
-    public TransactionEntry(String ledger, int time, double amount, String category, String remark) {
+    public TransactionEntry(String ledger, int time, Float amount, String category, String remark) {
         this.ledger = ledger;
         this.time = time;
         this.amount = amount;
@@ -31,7 +31,7 @@ public class TransactionEntry {
         this.remark = remark;
     }
 
-    public TransactionEntry(int id, String ledger, int time, double amount, String category, String remark) {
+    public TransactionEntry(int id, String ledger, int time, Float amount, String category, String remark) {
         this.id = id;
         this.ledger = ledger;
         this.time = time;
@@ -64,11 +64,11 @@ public class TransactionEntry {
         this.time = time;
     }
 
-    public double getAmount() {
+    public Float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 
