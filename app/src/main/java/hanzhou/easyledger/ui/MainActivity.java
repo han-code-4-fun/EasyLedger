@@ -23,14 +23,25 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
+import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
+import hanzhou.easyledger.utility.UnitUtil;
+import hanzhou.easyledger.viewmodel.ChartDataViewModel;
+import hanzhou.easyledger.viewmodel.ChartViewModelFactory;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.LocalDate;
+
+import java.util.Date;
+import java.util.List;
 
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
@@ -44,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     /* Database instance */
     private TransactionDB mDb;
-    private TransactionDBViewModel mViewModel;
+    private TransactionDBViewModel mTransactionViewModel;
+    private ChartDataViewModel mChartViewModel;
 
     private Fragment selectedFragment;
 
@@ -73,9 +85,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*Initialize JodaTime library*/
+        JodaTimeAndroid.init(this);
+
         viewmodelInitialization();
 
-//        insert20FakeData();
 
         broadcastReceiverInitialization();
 
@@ -128,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_feedback:
                 sendEmailToDeveloper();
                 break;
+            case R.id.menu_insert_data:
+                insert20FakeData();
+                break;
+
             case android.R.id.home:
                 if (isInActionModel) { setToolBarToOriginMode(); }
                 break;
@@ -207,9 +225,26 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void viewmodelInitialization() {
+
         mDb = TransactionDB.getInstance(this);
-        mViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
+
+        Date halfYear = LocalDate.now().minusDays(180).toDate();
+
+        int time = UnitUtil.formatTime(halfYear);
+
+        ChartViewModelFactory factory = new ChartViewModelFactory(time,mDb);
+        mChartViewModel = ViewModelProviders.of(this, factory).get(ChartDataViewModel.class);
+        mTransactionViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
+
+
+
     }
+
+    private int getTime(){
+        return 100002;
+    }
+
+
 
     private void broadcastReceiverInitialization() {
         mSmsIntentFilter = new IntentFilter();
@@ -233,7 +268,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setViewModelOberver() {
 
-        mViewModel.getActionModeState().observe(this, new Observer<Boolean>() {
+        mChartViewModel.getlistOfTransactions7Days().observe(this, new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+                calculateSpendingNRevenueSum(transactionEntryList);
+            }
+        });
+
+        mTransactionViewModel.getActionModeState().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 /*
@@ -255,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        mViewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
+        mTransactionViewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 /*
@@ -271,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mViewModel.getmIsAllSelected().observe(this, new Observer<Boolean>() {
+        mTransactionViewModel.getmIsAllSelected().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isAllSelected = aBoolean;
@@ -281,11 +323,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void calculateSpendingNRevenueSum(List<TransactionEntry> transactionEntryList) {
+        double revenue = 0;
+        double spending = 0;
+        for (TransactionEntry entry : transactionEntryList) {
+            if(entry.getAmount()>=0){
+                revenue = revenue + entry.getAmount();
+            }else{
+                spending = spending + entry.getAmount();
+            }
+        }
+
+        mChartViewModel.setRevenue(revenue);
+        mChartViewModel.setSpend(spending);
+
+    }
+
     private void displayToolbarIconsBasedOnNumberOfSelections(int integer) {
 
         if (isInActionModel) {
             if (edit != null && ignore != null) {
-                if (mViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)) {
+                if (mTransactionViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)) {
 
                     toolbarActionsIfCalledFromOverViewFragment(integer);
                 } else {
@@ -362,8 +421,8 @@ public class MainActivity extends AppCompatActivity {
         toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
         textViewOnToolBar.setVisibility(View.GONE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        mViewModel.emptySelectedItems();
-        mViewModel.setActionModeState(false);
+        mTransactionViewModel.emptySelectedItems();
+        mTransactionViewModel.setActionModeState(false);
 
     }
 
@@ -375,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
         textViewOnToolBar.setVisibility(View.VISIBLE);
 
         assignMenuItemToVariableForDifferentCombinationNSetInitialState();
-        if (mViewModel.getCurrentLedger().equals(Constant.CALLFROMLEDGER)) {
+        if (mTransactionViewModel.getCurrentLedger().equals(Constant.CALLFROMLEDGER)) {
 
             selectAll.setVisible(false);
         } else {
@@ -430,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
 
                     mDb.transactionDAO().deleteListOfTransactions(
-                            mViewModel.getSelectedTransactions()
+                            mTransactionViewModel.getSelectedTransactions()
                     );
                 }
             });
@@ -449,9 +508,9 @@ public class MainActivity extends AppCompatActivity {
             after finish operation, the fragment will set trigger to false
          */
         if (isAllSelected) {
-            mViewModel.setDeselectAllTrigger(true);
+            mTransactionViewModel.setDeselectAllTrigger(true);
         } else {
-            mViewModel.setSelectAllTrigger(true);
+            mTransactionViewModel.setSelectAllTrigger(true);
 
         }
     }

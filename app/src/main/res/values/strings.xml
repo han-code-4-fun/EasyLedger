@@ -26,6 +26,7 @@
     <string name="menu_title_setting">Settings</string>
     <string name="menu_title_question">Is this app safe?</string>
     <string name="menu_title_feedback">Feedback</string>
+    <string name="menu_insert_data">Insert Data</string>
 
 
     <string name="explanation_friendly_why_this_app_is_safe">

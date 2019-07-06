@@ -2,6 +2,7 @@ package hanzhou.easyledger.utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import hanzhou.easyledger.data.TransactionEntry;
 
@@ -14,8 +15,8 @@ public class FakeTestingData {
     };
 
     private static String[] category = {
-            "restaurant", "supermarket", "petrol", "housing", "bill",
-            "travel","shopping", "kids","education",Constant.UNTAGGED,
+            "restaurant", "supermarket", "petrol",
+            "travel","shopping",Constant.UNTAGGED,
             "medical"};
 
     private static String[] remarks = {
@@ -59,7 +60,7 @@ public class FakeTestingData {
         return new TransactionEntry(
                 ledger[0],
                 getRandomMonthNDate(),
-                getRandomAmount(),
+                getRandomAmountBetween3000PositiveNNegative(),
                 getRandomCategory(),
                 getRandomRemark());
     }
@@ -73,10 +74,15 @@ public class FakeTestingData {
     }
 
 
-    private static double getRandomAmount() {
+    private static double getRandomAmountBetween3000PositiveNNegative() {
         double output=0;
 
-        output = Math.random()*3000;
+        Random random = new Random();
+
+        output = random.nextDouble()*6000-3000;
+        output = Math.round(output*100);
+        output = output/100;
+
         return output;
     }
 

@@ -22,6 +22,12 @@
             android:title="@string/menu_title_feedback"
             app:showAsAction="never" />
 
+        <item
+            android:id="@+id/menu_insert_data"
+            android:orderInCategory="400"
+            android:title="@string/menu_insert_data"
+            app:showAsAction="never" />
+
 
 
 </menu>

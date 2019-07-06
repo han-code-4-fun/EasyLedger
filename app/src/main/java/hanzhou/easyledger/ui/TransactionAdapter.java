@@ -131,7 +131,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
 
         holder.time.setText(String.valueOf(currentRecord.getTime()));
-        holder.amount.setText(UnitUtil.moneyFormater.format(currentRecord.getAmount()));
+        holder.amount.setText(UnitUtil.formatMoney(currentRecord.getAmount()));
         holder.category.setText(currentRecord.getCategory());
         holder.remark.setText(currentRecord.getRemark());
         if (isInActionMode) {

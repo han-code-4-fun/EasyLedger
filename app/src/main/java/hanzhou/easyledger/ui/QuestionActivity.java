@@ -11,8 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Date;
-
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.UnitUtil;
 
@@ -35,9 +33,8 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
 
 
-        Date today = new Date();
-        UnitUtil unitUtil = new UnitUtil();
-        String dateString = unitUtil.getMonthDayFormatter().format(today);
+
+        String dateString = UnitUtil.getMonthDayToday();
 
         uiInitialization();
 

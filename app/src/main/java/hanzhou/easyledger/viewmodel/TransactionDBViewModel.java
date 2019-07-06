@@ -39,6 +39,9 @@ public class TransactionDBViewModel extends AndroidViewModel {
 
     private String currentLedger;
 
+    private double overviewSpending;
+    private double overviewRevenue;
+
 
     public TransactionDBViewModel(@NonNull Application application) {
         super(application);
