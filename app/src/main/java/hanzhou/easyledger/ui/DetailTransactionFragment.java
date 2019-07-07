@@ -19,11 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-import java.util.Objects;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 
@@ -37,6 +37,7 @@ public class DetailTransactionFragment extends Fragment
     private static final String TAG = DetailTransactionFragment.class.getSimpleName();
 
     private TransactionDBViewModel mViewModel;
+    private OverviewFragmentViewModel mOverviewViewModel;
 
     private TransactionAdapter mAdapter;
 
@@ -44,8 +45,13 @@ public class DetailTransactionFragment extends Fragment
 
     private AppCompatActivity appCompatActivity;
 
+    private int hash;
+
     public DetailTransactionFragment(String parentString) {
+
         whoCalledMe = parentString;
+        hash = hashCode();
+        Log.d("test_flow2", " constructor: hash "+whoCalledMe+" "+ hash);
     }
 
     @Override
@@ -58,6 +64,12 @@ public class DetailTransactionFragment extends Fragment
     public void onDetach() {
         super.onDetach();
         appCompatActivity=null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("test_flow2", "onDestroy: " +whoCalledMe + " "+hash);
     }
 
     @Override
@@ -79,6 +91,10 @@ public class DetailTransactionFragment extends Fragment
 
         mViewModel = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
         mViewModel.setCurrentLedger(whoCalledMe);
+
+
+        mOverviewViewModel = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
+
         setActionModeToFalse();
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
@@ -124,12 +140,21 @@ public class DetailTransactionFragment extends Fragment
 
         //todo, 2nd stage, handle different data for different ledgers
 
+        if(whoCalledMe.equals(Constant.CALLFROMLEDGER)){
+            if(mViewModel.getUntaggedTransactions().hasActiveObservers()){
+                Log.d("test_flow2", "has active observer, remove them ");
+
+                mViewModel.getUntaggedTransactions().removeObservers(getViewLifecycleOwner());
+            }
+        }
+
         mViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntries) {
 
                 if (whoCalledMe.equals(Constant.CALLFROMOVERVIEW)) {
-                    Log.d("test_flow", "DetailTransactionFragment  now is calling untagged");
+                    Log.d("test_flow2", "observer: calling untagged");
+                    Log.d("test_flow2", "observer: hash "+ hash);
                     mAdapter.setAdapterData(transactionEntries);
                 }
 
@@ -140,7 +165,8 @@ public class DetailTransactionFragment extends Fragment
             public void onChanged(List<TransactionEntry> transactionEntries) {
                 if (whoCalledMe.equals(Constant.CALLFROMLEDGER)) {
 
-                    Log.d("test_flow", "DetailTransactionFragment  now is calling alltransacitons");
+                    Log.d("test_flow2", "observer calling alltransacitons");
+                    Log.d("test_flow2", "observer: hash "+ hash);
                     mAdapter.setAdapterData(transactionEntries);
                 }
             }

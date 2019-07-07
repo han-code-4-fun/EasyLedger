@@ -20,8 +20,8 @@ public class TransactionDBViewModel extends AndroidViewModel {
     //LiveData that comes from ROOM
     private LiveData<List<TransactionEntry>> transactionsByLedger;
     private LiveData<List<TransactionEntry>> allTransactions;
-    private LiveData<List<TransactionEntry>> untaggedTransactions;
 
+    private LiveData<List<TransactionEntry>> untaggedTransactions;
     //store the state of toolbar
     private MutableLiveData<Boolean> mIsActionMode;
 
@@ -49,9 +49,9 @@ public class TransactionDBViewModel extends AndroidViewModel {
 
         //for future development, e.g. user creates multiple ledger
         transactionsByLedger = mDB.transactionDAO().loadTransactionByLedger(Constant.UNTAGGED);
-
-        allTransactions = mDB.transactionDAO().loadAllTransactions();
         untaggedTransactions = mDB.transactionDAO().loadUntaggedTransactions(Constant.UNTAGGED);
+        allTransactions = mDB.transactionDAO().loadAllTransactions();
+
 
         mIsActionMode = new MutableLiveData<>();
         mIsActionMode.setValue(false);
@@ -72,21 +72,20 @@ public class TransactionDBViewModel extends AndroidViewModel {
 
         selectedBooleanArrayViewMode = new SparseBooleanArray();
 
-        currentLedger= Constant.CALLFROMOVERVIEW;
+        currentLedger = Constant.CALLFROMOVERVIEW;
     }
 
 
     public LiveData<List<TransactionEntry>> getTransactionsByLedger() {
         return transactionsByLedger;
     }
+
     public LiveData<List<TransactionEntry>> getAllTransactions() {
         return allTransactions;
     }
-
     public LiveData<List<TransactionEntry>> getUntaggedTransactions() {
         return untaggedTransactions;
     }
-
 
     public void setActionModeState(boolean state) {
         mIsActionMode.setValue(state);
@@ -134,17 +133,13 @@ public class TransactionDBViewModel extends AndroidViewModel {
     //todo, optimize later
     public List<TransactionEntry> getSelectedTransactions() {
         List<TransactionEntry> entries;
-        if (currentLedger.equals(Constant.CALLFROMOVERVIEW)) {
-            entries = untaggedTransactions.getValue();
-        } else {
 
-            entries = allTransactions.getValue();
-        }
+        entries = allTransactions.getValue();
 
         int[] selectedNumbers = new int[selectedBooleanArrayViewMode.size()];
         //todo, may have issue from ++i to i++
         for (int i = 0; i < selectedBooleanArrayViewMode.size(); i++) {
-            selectedNumbers[i]=selectedBooleanArrayViewMode.keyAt(i);
+            selectedNumbers[i] = selectedBooleanArrayViewMode.keyAt(i);
         }
 
         List<TransactionEntry> output = new ArrayList<>(selectedNumbers.length);
@@ -156,23 +151,23 @@ public class TransactionDBViewModel extends AndroidViewModel {
         return output;
     }
 
-    public void emptySelectedItems(){
+    public void emptySelectedItems() {
         selectedBooleanArrayViewMode.clear();
     }
 
-    public boolean getAValueFromSelectedItems(int position){
+    public boolean getAValueFromSelectedItems(int position) {
         return selectedBooleanArrayViewMode.get(position);
     }
 
-    public void deleteAValueFromSelectedItems(int position){
+    public void deleteAValueFromSelectedItems(int position) {
         selectedBooleanArrayViewMode.delete(position);
     }
 
-    public void putAValueIntoSelectedItems(int position, boolean value){
+    public void putAValueIntoSelectedItems(int position, boolean value) {
         selectedBooleanArrayViewMode.put(position, value);
     }
 
-    public int getNumberOfSelectedItems(){
+    public int getNumberOfSelectedItems() {
         return selectedBooleanArrayViewMode.size();
     }
 

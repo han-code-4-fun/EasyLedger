@@ -1,6 +1,10 @@
 package hanzhou.easyledger.utility;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -11,7 +15,7 @@ public class FakeTestingData {
             "Jun","Jul","Aug","Sep","Oct","Nov","","Dec"};
 
     public static String[] ledger = {
-            "RBC","HSBC",Constant.UNTAGGED
+            "RBC","HSBC"
     };
 
     private static String[] category = {
@@ -37,13 +41,91 @@ public class FakeTestingData {
     public static List<TransactionEntry> create10kTransactions(){
         List<TransactionEntry> transactionEntryList =new ArrayList<>();
 
-        for (int i = 0; i <10000; i++) {
-            transactionEntryList.add(getARandomTransaction());
-        }
         return transactionEntryList;
     }
 
-    public static List<TransactionEntry> create20UntaggedTransactions(){
+
+
+    public static List<TransactionEntry> create10DesignateTestingDataInCurrentWeek(){
+        List<TransactionEntry> transactionEntryList =new ArrayList<>();
+        for (int i = 0; i <10; i++) {
+            transactionEntryList.add(getAnEntryRevenueWithinThisWeek());
+        }
+
+        return transactionEntryList;
+    }
+
+    private static TransactionEntry getAnEntryRevenueWithinThisWeek(){
+        return new TransactionEntry(
+                ledger[0],
+                getRandomMonthNDateWithThisWeek(),
+                getRandomAmountBetween3000PositiveNNegative(),
+                getRandomCategory(),
+                getRandomRemark()
+        );
+    }
+
+    private static int getRandomMonthNDateWithThisWeek(){
+        DateTime dt = new DateTime();
+        int dayOfWeek = dt.getDayOfWeek();
+        return getRandomMonthNDateWithinXdays(dayOfWeek);
+    }
+
+    public static List<TransactionEntry> create10DesignateTestingDataInCurrentMonth(){
+        List<TransactionEntry> transactionEntryList =new ArrayList<>();
+        for (int i = 0; i <10; i++) {
+            transactionEntryList.add(getAnEntryRevenueWithinThisMonth());
+        }
+
+        return transactionEntryList;
+    }
+    private static TransactionEntry getAnEntryRevenueWithinThisMonth(){
+        return new TransactionEntry(
+                ledger[0],
+                getRandomMonthNDateWithThisMonth(),
+                getRandomAmountBetween3000PositiveNNegative(),
+                getRandomCategory(),
+                getRandomRemark()
+        );
+    }
+    private static int getRandomMonthNDateWithThisMonth(){
+        DateTime dt = new DateTime();
+        int dayOfMonth = dt.getDayOfMonth();
+        return getRandomMonthNDateWithinXdays(dayOfMonth);
+    }
+
+
+    public static List<TransactionEntry> create10DesignateTestingDataInCertaindays(int daysBackFromToday){
+        List<TransactionEntry> transactionEntryList =new ArrayList<>();
+
+        for (int i = 0; i <10; i++) {
+            transactionEntryList.add(getAnEntryRevenueWithinXdays(daysBackFromToday));
+        }
+
+        return transactionEntryList;
+    }
+
+
+    private static TransactionEntry getAnEntryRevenueWithinXdays(int daysBackFromToday){
+        return new TransactionEntry(
+                ledger[0],
+                getRandomMonthNDateWithinXdays(daysBackFromToday),
+                getRandomAmountBetween3000PositiveNNegative(),
+                getRandomCategory(),
+                getRandomRemark()
+        );
+    }
+    private static int getRandomMonthNDateWithinXdays(int daysBackFromToday){
+        Date today =LocalDate.now().minusDays(return0toXRandom(daysBackFromToday)).toDate();
+        return UnitUtil.formatTime(today);
+    }
+
+    private static int return0toXRandom(int daysBackFromToday){
+        return new Random().nextInt(daysBackFromToday);
+    }
+
+
+    public static List<TransactionEntry> create20Transactions(){
         List<TransactionEntry> transactionEntryList =new ArrayList<>();
 
 
@@ -54,6 +136,29 @@ public class FakeTestingData {
 
         return transactionEntryList;
     }
+
+    public static List<TransactionEntry> create20UntaggedTransactions(){
+        List<TransactionEntry> transactionEntryList =new ArrayList<>();
+
+
+//        for (int i = 0; i <20; i++) {
+            transactionEntryList.add(getARandomUntaggedTransaction());
+//        }
+
+
+        return transactionEntryList;
+    }
+
+    private static TransactionEntry getARandomUntaggedTransaction(){
+        return new TransactionEntry(
+                ledger[0],
+                getRandomMonthNDate(),
+                getRandomAmountBetween3000PositiveNNegative(),
+                Constant.UNTAGGED,
+                getRandomRemark());
+    }
+
+
 
     private static TransactionEntry getARandomTransaction(){
 

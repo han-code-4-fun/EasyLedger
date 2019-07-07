@@ -30,6 +30,12 @@
     <string name="menu_title_feedback">Feedback</string>
     <string name="menu_insert_data">Insert Data</string>
     <string name="menu_delete_all_data">Delete All</string>
+    <string name="menu_insert_data_7days">Insert Data within 7days (0\-6)</string>
+    <string name="menu_insert_data_30days">Insert Data within 30days (0\-29)</string>
+    <string name="menu_insert_data_180days">Insert Data within 180days (0\-179)</string>
+    <string name="menu_insert_data_current_month">Insert Data within this month</string>
+    <string name="menu_insert_data_current_week">Insert Data within this week</string>
+    <string name="menu_insert_untagged_data">Insert untagged data</string>
 
 
     <string name="explanation_friendly_why_this_app_is_safe">

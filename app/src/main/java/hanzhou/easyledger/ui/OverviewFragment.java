@@ -2,6 +2,7 @@ package hanzhou.easyledger.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,6 +111,7 @@ public class OverviewFragment extends Fragment{
     public void onDetach() {
         super.onDetach();
         appCompatActivity = null;
+        Log.d("test_flow2", "overview onDetach now!!!! ");
     }
 
 
@@ -157,6 +159,7 @@ public class OverviewFragment extends Fragment{
 
         xAxis.setEnabled(true);
 //        xAxis.setXOffset(5f);
+
         xAxis.setDrawGridLinesBehindData(true);
         xAxis.setDrawLimitLinesBehindData(true);
         xAxis.setTextSize(10f);
@@ -215,12 +218,16 @@ public class OverviewFragment extends Fragment{
         barDataSet.setValueTextSize(15f);
         barDataSet.setDrawValues(true);
 
+
+
         BarData barData = new BarData(barDataSet);
 
 
         barData.setBarWidth(0.9f);
 
         mBarChart.setData(barData);
+
+
 
         //refresh barchart
         mBarChart.invalidate();

@@ -30,6 +30,7 @@ import hanzhou.easyledger.utility.FakeTestingData;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.ChartDataViewModel;
 import hanzhou.easyledger.viewmodel.ChartViewModelFactory;
+import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 import androidx.appcompat.widget.Toolbar;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private TransactionDB mDb;
     private TransactionDBViewModel mTransactionViewModel;
     private ChartDataViewModel mChartViewModel;
+    private OverviewFragmentViewModel mOverviewViewModel;
 
     private Fragment selectedFragment;
 
@@ -148,6 +150,63 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_delete_all_data:
                 deleteAll();
                 break;
+            case R.id.menu_insert_data_within7days:
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.transactionDAO().insertListOfTransactions(
+                                FakeTestingData.create10DesignateTestingDataInCertaindays(7));
+                    }
+                });
+                break;
+            case R.id.menu_insert_data_within30days:
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.transactionDAO().insertListOfTransactions(
+                                FakeTestingData.create10DesignateTestingDataInCertaindays(30));
+                    }
+                });
+                break;
+            case R.id.menu_insert_data_within180days:
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.transactionDAO().insertListOfTransactions(
+                                FakeTestingData.create10DesignateTestingDataInCertaindays(180));
+                    }
+                });
+
+                break;
+            case R.id.menu_insert_data_within_this_week:
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.transactionDAO().insertListOfTransactions(
+                                FakeTestingData.create10DesignateTestingDataInCurrentWeek());
+                    }
+                });
+
+                break;
+            case R.id.menu_insert_data_within_this_month:
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.transactionDAO().insertListOfTransactions(
+                                FakeTestingData.create10DesignateTestingDataInCurrentMonth());
+                    }
+                });
+                break;
+
+            case R.id.menu_insert_untagged_data:
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.transactionDAO().insertListOfTransactions(
+                                FakeTestingData.create20UntaggedTransactions());
+                    }
+                });
+                break;
 
             case android.R.id.home:
                 if (isInActionModel) {
@@ -175,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+        Log.d("test_flow2", "menu clickedddddddddddddddddddddddddddddddddddddddd");
         return true;
     }
 
@@ -249,7 +309,10 @@ public class MainActivity extends AppCompatActivity {
 
         ChartViewModelFactory factory = new ChartViewModelFactory(time, mDb);
         mChartViewModel = ViewModelProviders.of(this, factory).get(ChartDataViewModel.class);
+
         mTransactionViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
+
+        mOverviewViewModel = ViewModelProviders.of(this).get(OverviewFragmentViewModel.class);
 
 
     }
@@ -475,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create20UntaggedTransactions());
+                mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create20Transactions());
             }
         });
     }
