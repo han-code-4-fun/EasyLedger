@@ -29,13 +29,14 @@ import java.util.ArrayList;
 import hanzhou.easyledger.OverViewBalanceXAxisValueFormatter;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.viewmodel.ChartDataViewModel;
+import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 
 public class OverviewFragment extends Fragment{
 
     private static final String TAG = OverviewFragment.class.getSimpleName();
 
-    private ChartDataViewModel mChartViewModel;
+    private OverviewFragmentViewModel mOverviewFragmentViewModel;
 
     HorizontalBarChart mBarChart;
     BarDataSet barDataSet;
@@ -239,9 +240,9 @@ public class OverviewFragment extends Fragment{
 
 
     private void setupViewModel() {
-        mChartViewModel = ViewModelProviders.of(appCompatActivity).get(ChartDataViewModel.class);
+        mOverviewFragmentViewModel = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
 
-        mChartViewModel.getRevenue().observe(getViewLifecycleOwner(), new Observer<Float>() {
+        mOverviewFragmentViewModel.getRevenue().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
             public void onChanged(Float aDouble) {
                 revenueF = aDouble;
@@ -249,7 +250,7 @@ public class OverviewFragment extends Fragment{
             }
         });
 
-        mChartViewModel.getSpend().observe(getViewLifecycleOwner(), new Observer<Float>() {
+        mOverviewFragmentViewModel.getSpend().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
             public void onChanged(Float aDouble) {
                 spendF = Math.abs(aDouble);
@@ -261,7 +262,7 @@ public class OverviewFragment extends Fragment{
     }
 
     private void synchronizeBalanceData(){
-        biggerNumber = Math.max(Math.abs(spendF), revenueF);
+        biggerNumber = Math.max(spendF, revenueF);
         setYLeftAxis();
         setChartData();
     }

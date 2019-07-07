@@ -25,14 +25,15 @@ public interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE category = :untag ORDER BY time DESC, id DESC")
     LiveData<List<TransactionEntry>> loadUntaggedTransactions(String untag);
 
-    @Query("SELECT * FROM transactions WHERE time >= :currentTime ORDER BY time DESC, id DESC")
-    LiveData<List<TransactionEntry>> loadTransactionByTime7days(int currentTime);
+    @Query("SELECT * FROM transactions WHERE time >= :time7DaysBackwards ORDER BY time DESC, id DESC")
+    LiveData<List<TransactionEntry>> loadTransactionByTime7days(int time7DaysBackwards);
 
 //    LiveData<List<TransactionEntry>> loadTransactionByTime14days();
 //
 //    LiveData<List<TransactionEntry>> loadTransactionByTimeCurrentMonth();
-//
-//    LiveData<List<TransactionEntry>> loadTransactionByTimeUserDefined(int time);
+
+    @Query("SELECT * FROM transactions WHERE time >= :timeDaysBackwards ORDER BY time DESC, id DESC")
+    LiveData<List<TransactionEntry>> loadTransactionByTimeUserDefined(int timeDaysBackwards);
 
 
     @Insert

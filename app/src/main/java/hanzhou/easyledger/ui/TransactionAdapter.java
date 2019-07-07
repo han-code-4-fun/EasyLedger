@@ -22,18 +22,18 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.UnitUtil;
+import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
-    private static TransactionAdapter sInstance = null;
 
     private static final String TAG = TransactionAdapter.class.getSimpleName();
 
     private CustomListItemClickListener mOnClickListener;
     private List<TransactionEntry> mTransactionEntryList;
-    private TransactionDBViewModel mViewModel;
+    private AdapterNActionBarViewModel mViewModel;
     boolean isInActionMode;
 
 
@@ -41,21 +41,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         void customOnListItemClick(int position);
     }
 
-    private TransactionAdapter(CustomListItemClickListener listener,TransactionDBViewModel inputVM) {
+    public TransactionAdapter(CustomListItemClickListener listener, AdapterNActionBarViewModel inputVM) {
 
         mOnClickListener = listener;
         mViewModel = inputVM;
-
+        mViewModel.emptySelectedItems();
     }
 
-    /* make a singleton instance*/
-    public static TransactionAdapter getInstance(CustomListItemClickListener listener,TransactionDBViewModel inputVM){
-        if(sInstance == null){
-            sInstance = new TransactionAdapter( listener, inputVM);
-        }
-
-        return sInstance;
-    }
 
 
     public void setAdapterData(List<TransactionEntry> inputEntries) {
@@ -100,6 +92,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void deselectAll() {
         mViewModel.emptySelectedItems();
         mViewModel.setmTransactionSelectedNumber();
+        mViewModel.setmIsAllSelected(false);
         this.notifyDataSetChanged();
     }
 

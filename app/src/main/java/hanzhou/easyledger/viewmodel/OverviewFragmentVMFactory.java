@@ -8,15 +8,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import hanzhou.easyledger.data.TransactionDB;
 
-public class ChartViewModelFactory extends  ViewModelProvider.NewInstanceFactory{
+public class OverviewFragmentVMFactory extends ViewModelProvider.NewInstanceFactory {
     /* during test, use 180days */
     private int time;
 
     private TransactionDB transactionDB;
 
-    public ChartViewModelFactory(int inputTime, TransactionDB mDB){
+    public OverviewFragmentVMFactory(int inputTime, TransactionDB mDB){
         time = inputTime;
-        Log.d("test_flow", "ChartViewModelFactory: the time is "+ time);
         transactionDB = mDB;
     }
 
@@ -26,6 +25,7 @@ public class ChartViewModelFactory extends  ViewModelProvider.NewInstanceFactory
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ChartDataViewModel(time, transactionDB);
+        return (T) new OverviewFragmentViewModel(time, transactionDB);
     }
+
 }

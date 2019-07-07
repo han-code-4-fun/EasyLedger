@@ -16,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.SettingActivity"></activity>
-        <activity android:name=".temp.TestTempActivity" />
         <activity
             android:name=".ui.QuestionActivity"
             android:parentActivityName=".ui.MainActivity">

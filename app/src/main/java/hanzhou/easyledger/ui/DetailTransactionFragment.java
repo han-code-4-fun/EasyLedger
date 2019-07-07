@@ -23,6 +23,7 @@ import java.util.List;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
@@ -36,8 +37,8 @@ public class DetailTransactionFragment extends Fragment
 
     private static final String TAG = DetailTransactionFragment.class.getSimpleName();
 
-    private TransactionDBViewModel mViewModel;
-    private OverviewFragmentViewModel mOverviewViewModel;
+    private TransactionDBViewModel mTransactionViewModel;
+    private AdapterNActionBarViewModel mAdapterActionViewModel;
 
     private TransactionAdapter mAdapter;
 
@@ -89,17 +90,18 @@ public class DetailTransactionFragment extends Fragment
                              @Nullable Bundle savedInstanceState) {
 
 
-        mViewModel = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
-        mViewModel.setCurrentLedger(whoCalledMe);
+        mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
+        mAdapterActionViewModel.setCurrentLedger(whoCalledMe);
 
 
-        mOverviewViewModel = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
+
+
 
         setActionModeToFalse();
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
 
-        mAdapter = TransactionAdapter.getInstance(this, mViewModel);
+        mAdapter = new TransactionAdapter(this, mAdapterActionViewModel);
 
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
 
@@ -108,6 +110,8 @@ public class DetailTransactionFragment extends Fragment
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setAdapter(mAdapter);
+
+
 
         return rootView;
     }
@@ -130,9 +134,9 @@ public class DetailTransactionFragment extends Fragment
 
 
     private void setActionModeToFalse() {
-        boolean isActionMode = mViewModel.getActionModeState().getValue();
+        boolean isActionMode = mAdapterActionViewModel.getActionModeState().getValue();
         if (isActionMode) {
-            mViewModel.setActionModeState(false);
+            mAdapterActionViewModel.setActionModeState(false);
         }
     }
 
@@ -140,40 +144,57 @@ public class DetailTransactionFragment extends Fragment
 
         //todo, 2nd stage, handle different data for different ledgers
 
-        if(whoCalledMe.equals(Constant.CALLFROMLEDGER)){
-            if(mViewModel.getUntaggedTransactions().hasActiveObservers()){
-                Log.d("test_flow2", "has active observer, remove them ");
+//        if(whoCalledMe.equals(Constant.CALLFROMLEDGER)){
+//            if(mTransactionViewModel.getUntaggedTransactions().hasActiveObservers()){
+//                Log.d("test_flow2", "has active observer, remove them ");
+//
+//                mTransactionViewModel.getUntaggedTransactions().removeObservers(getViewLifecycleOwner());
+//            }
+//        }
 
-                mViewModel.getUntaggedTransactions().removeObservers(getViewLifecycleOwner());
-            }
+//        mTransactionViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+//            @Override
+//            public void onChanged(List<TransactionEntry> transactionEntries) {
+//
+//                if (whoCalledMe.equals(Constant.CALLFROMOVERVIEW)) {
+//                    Log.d("test_flow2", "observer: calling untagged");
+//                    Log.d("test_flow2", "observer: hash "+ hash);
+//                    mAdapter.setAdapterData(transactionEntries);
+//                }
+//
+//            }
+//        });
+//        mTransactionViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+//            @Override
+//            public void onChanged(List<TransactionEntry> transactionEntries) {
+//                if (whoCalledMe.equals(Constant.CALLFROMLEDGER)) {
+//
+//                    Log.d("test_flow2", "observer calling alltransacitons");
+//                    Log.d("test_flow2", "observer: hash "+ hash);
+//                    mAdapter.setAdapterData(transactionEntries);
+//                }
+//            }
+//        });
+
+        if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)){
+            OverviewFragmentViewModel mOverviewVM = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
+            mOverviewVM.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+                @Override
+                public void onChanged(List<TransactionEntry> transactionEntryList) {
+                    mAdapter.setAdapterData(transactionEntryList);
+                }
+            });
+        }else{
+            TransactionDBViewModel mTransVM = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
+            mTransVM.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+                @Override
+                public void onChanged(List<TransactionEntry> transactionEntryList) {
+                    mAdapter.setAdapterData(transactionEntryList);
+                }
+            });
         }
 
-        mViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-            @Override
-            public void onChanged(List<TransactionEntry> transactionEntries) {
-
-                if (whoCalledMe.equals(Constant.CALLFROMOVERVIEW)) {
-                    Log.d("test_flow2", "observer: calling untagged");
-                    Log.d("test_flow2", "observer: hash "+ hash);
-                    mAdapter.setAdapterData(transactionEntries);
-                }
-
-            }
-        });
-        mViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-            @Override
-            public void onChanged(List<TransactionEntry> transactionEntries) {
-                if (whoCalledMe.equals(Constant.CALLFROMLEDGER)) {
-
-                    Log.d("test_flow2", "observer calling alltransacitons");
-                    Log.d("test_flow2", "observer: hash "+ hash);
-                    mAdapter.setAdapterData(transactionEntries);
-                }
-            }
-        });
-
-
-        mViewModel.getActionModeState().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        mAdapterActionViewModel.getActionModeState().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 mAdapter.isInActionMode = aBoolean;
@@ -189,23 +210,23 @@ public class DetailTransactionFragment extends Fragment
 
 
         //trigger that react to user's click from the action bar
-        mViewModel.getmDeselectAllTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        mAdapterActionViewModel.getmDeselectAllTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     mAdapter.deselectAll();
-                    mViewModel.setDeselectAllTrigger(false);
+                    mAdapterActionViewModel.setDeselectAllTrigger(false);
                 }
             }
         });
 
         //trigger that react to user's click from the action bar
-        mViewModel.getmSelectAllTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        mAdapterActionViewModel.getmSelectAllTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
                     mAdapter.selectAll();
-                    mViewModel.setSelectAllTrigger(false);
+                    mAdapterActionViewModel.setSelectAllTrigger(false);
                 }
             }
         });
