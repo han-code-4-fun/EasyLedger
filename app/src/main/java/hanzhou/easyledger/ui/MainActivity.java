@@ -36,7 +36,6 @@ import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.lifecycle.LifecycleOwner;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -63,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment selectedFragment;
 
+    private BottomNavigationView bottomNavigation;
+
     private FloatingActionButton btnFA;
 
     private Toolbar toolBar;
@@ -80,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isInActionModel;
     private boolean isAllSelected;
+
+    private boolean isInQuestionFragment;
+
     private int mNumberOfSelection;
 
 
@@ -93,11 +97,9 @@ public class MainActivity extends AppCompatActivity {
 
         viewmodelInitialization();
 
-
         broadcastReceiverInitialization();
 
         uiInitialization();
-
         setViewModelOberver();
 
         activityStartRunFragment();
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.overview_toolbar_normal_mode, menu);
+        getMenuInflater().inflate(R.menu.toolbar_normal_mode, menu);
         return true;
     }
 
@@ -140,7 +142,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
             case R.id.menu_user_has_question:
-                startActivity(new Intent(this, QuestionActivity.class));
+                //todo, change this to launch fragment, when entering, set all icons to invisible except home
+
+                selectedFragment = new QuestionFragment();
+                addCurrentFragmentToBack(selectedFragment);
+//                setToolBarToOriginMode();
+//                bottomNavigation.setVisibility(View.GONE);
+//                btnFA.hide();
+
+
+//                startActivity(new Intent(this, QuestionActivity.class));
                 break;
             case R.id.menu_feedback:
                 sendEmailToDeveloper();
@@ -212,6 +223,11 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 if (isInActionModel) {
                     setToolBarToOriginMode();
+                }else if (isInQuestionFragment){
+
+
+                    //todo, jump back to previous fragment
+                    getSupportFragmentManager().popBackStack();
                 }
                 break;
 
@@ -231,6 +247,8 @@ public class MainActivity extends AppCompatActivity {
                 //todo set all selected into others category
 
                 break;
+
+
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -254,51 +272,15 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionModel) {
             setToolBarToOriginMode();
-        } else {
+        } else if(isInQuestionFragment){
+            getSupportFragmentManager().popBackStack();
+        }else{
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
             }
         }
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-
-                    switch (menuItem.getItemId()) {
-                        case R.id.navigation_overview:
-                            selectedFragment = new OverviewFragment();
-                            btnFA.show();
-                            break;
-                        case R.id.navigation_transaction:
-                            selectedFragment = new LedgerFragment();
-                            btnFA.show();
-                            break;
-                        case R.id.navigation_charts:
-                            selectedFragment = new ChartFragment();
-                            btnFA.hide();
-                            break;
-
-                    }
-
-                    switchFragmentWithinActivity(selectedFragment);
-
-                    return true;
-                }
-            };
-
-    //todo, FAB should create a new activity
-    private FloatingActionButton.OnClickListener fabOnClickListener
-            = new FloatingActionButton.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-
-        }
-    };
 
     private void viewmodelInitialization() {
 
@@ -334,23 +316,27 @@ public class MainActivity extends AppCompatActivity {
         toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
         textViewOnToolBar = findViewById(R.id.toolbar_textview);
 
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
 
         btnFA = findViewById(R.id.btn_floating_aciton);
         btnFA.setOnClickListener(fabOnClickListener);
+
     }
 
     private void setViewModelOberver() {
 
-        mOverviewViewModel.getlistOfTransactionsInTimeRange().observe((LifecycleOwner) this, new Observer<List<TransactionEntry>>() {
+        mOverviewViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
+                Log.d("test_flow3", "main_activity, should be called one time");
                 calculateSpendingNRevenueSum(transactionEntryList);
             }
         });
 
-        mAdapterActionViewModel.getActionModeState().observe((LifecycleOwner) this, new Observer<Boolean>() {
+
+
+        mAdapterActionViewModel.getActionModeState().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 /*
@@ -371,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        mAdapterActionViewModel.getTransactionSelectedNumberLiveData().observe((LifecycleOwner) this, new Observer<Integer>() {
+        mAdapterActionViewModel.getTransactionSelectedNumberLiveData().observe( this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 /*
@@ -387,15 +373,82 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mAdapterActionViewModel.getmIsAllSelected().observe((LifecycleOwner) this, new Observer<Boolean>() {
+        mAdapterActionViewModel.getmIsAllSelected().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isAllSelected = aBoolean;
             }
         });
 
+        mAdapterActionViewModel.getmIsInQuestionFragment().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                isInQuestionFragment = aBoolean;
+                if(aBoolean){
+                    setToolBarToQuestionFragment(getString(R.string.title_question_activity));
+                    bottomNavigation.setVisibility(View.GONE);
+                    btnFA.hide();
+                }else{
+                    setToolBarToOriginMode();
+                    bottomNavigation.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
 
     }
+    private void setToolBarToQuestionFragment(String fragmentTitle){
+        toolBar.getMenu().clear();
+        toolBar.setTitle(fragmentTitle);
+        toolBar.inflateMenu(R.menu.toolbar_question_fragment);
+        textViewOnToolBar.setVisibility(View.GONE);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true
+        );
+        mAdapterActionViewModel.emptySelectedItems();
+        mAdapterActionViewModel.setActionModeState(false);
+    }
+
+
+
+    private BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+
+                    switch (menuItem.getItemId()) {
+                        case R.id.navigation_overview:
+                            selectedFragment = new OverviewFragment();
+                            btnFA.show();
+                            break;
+                        case R.id.navigation_transaction:
+                            selectedFragment = new LedgerFragment();
+                            btnFA.show();
+                            break;
+                        case R.id.navigation_charts:
+                            selectedFragment = new ChartFragment();
+                            btnFA.hide();
+                            break;
+
+                    }
+
+                    switchFragmentWithinActivity(selectedFragment);
+
+                    return true;
+                }
+            };
+
+
+    //todo, FAB should create a new fragment
+    private FloatingActionButton.OnClickListener fabOnClickListener
+            = new FloatingActionButton.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
+        }
+    };
 
 
     private void calculateSpendingNRevenueSum(List<TransactionEntry> transactionEntryList) {
@@ -424,9 +477,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     toolbarAcitonsIfCalledFromLedgerFragment(integer);
                 }
-
             }
-
         }
     }
 
@@ -483,7 +534,17 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_fragment_container, input)
+                .replace(R.id.base_fragment, input)
+                .commit();
+    }
+
+    private void addCurrentFragmentToBack(Fragment input){
+        setToolBarToOriginMode();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.base_fragment, input)
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -491,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
 
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.app_name);
-        toolBar.inflateMenu(R.menu.overview_toolbar_normal_mode);
+        toolBar.inflateMenu(R.menu.toolbar_normal_mode);
         toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
         textViewOnToolBar.setVisibility(View.GONE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -504,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
 
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.empty_string);
-        toolBar.inflateMenu(R.menu.overview_toolbar_action_mode);
+        toolBar.inflateMenu(R.menu.toolbar_action_mode);
         textViewOnToolBar.setVisibility(View.VISIBLE);
 
         assignMenuItemToVariableForDifferentCombinationNSetInitialState();

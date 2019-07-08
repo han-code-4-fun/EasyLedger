@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import hanzhou.easyledger.OverViewBalanceXAxisValueFormatter;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 
 public class OverviewFragment extends Fragment{
@@ -47,6 +46,10 @@ public class OverviewFragment extends Fragment{
 
     private AppCompatActivity appCompatActivity;
 
+    /*two variable are boolean triggers that only update UI when both data updated*/
+    private boolean receivedRevenueData;
+    private boolean receivedSpendData;
+
     private float revenueF;
     private float spendF;
 
@@ -60,6 +63,8 @@ public class OverviewFragment extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         appCompatActivity = (AppCompatActivity) context;
+        receivedRevenueData =false;
+        receivedSpendData = false;
         spendF = 0f;
         revenueF = 0f;
         //todo, they should retrieve data from savedinstance
@@ -246,6 +251,7 @@ public class OverviewFragment extends Fragment{
             @Override
             public void onChanged(Float aDouble) {
                 revenueF = aDouble;
+                receivedRevenueData = true;
                 synchronizeBalanceData();
             }
         });
@@ -254,6 +260,7 @@ public class OverviewFragment extends Fragment{
             @Override
             public void onChanged(Float aDouble) {
                 spendF = Math.abs(aDouble);
+                receivedSpendData = true;
                 synchronizeBalanceData();
 
             }
@@ -262,8 +269,16 @@ public class OverviewFragment extends Fragment{
     }
 
     private void synchronizeBalanceData(){
-        biggerNumber = Math.max(spendF, revenueF);
-        setYLeftAxis();
-        setChartData();
+        //only update UI when two values are received
+        if(receivedRevenueData && receivedSpendData){
+            biggerNumber = Math.max(spendF, revenueF);
+            setYLeftAxis();
+            setChartData();
+
+            //after update UI, set back to false to be prepared to next update
+            receivedRevenueData = false;
+            receivedSpendData = false;
+        }
+
     }
 }

@@ -33,6 +33,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private String currentLedger;
 
+    private MutableLiveData<Boolean> mIsInQuestionFragment;
+
+
 
     public AdapterNActionBarViewModel(@NonNull Application application) {
         super(application);
@@ -58,6 +61,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         selectedBooleanArrayViewMode = new SparseBooleanArray();
 
         currentLedger = Constant.CALLFROMOVERVIEW;
+
+        mIsInQuestionFragment = new MutableLiveData<>();
+        mIsInQuestionFragment.setValue(false);
     }
 
 
@@ -112,7 +118,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
 
         int[] selectedNumbers = new int[selectedBooleanArrayViewMode.size()];
-        //todo, may have issue from ++i to i++
         for (int i = 0; i < selectedBooleanArrayViewMode.size(); i++) {
             selectedNumbers[i] = selectedBooleanArrayViewMode.keyAt(i);
         }
@@ -153,6 +158,14 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     public void setCurrentLedger(String currentLedger) {
         this.currentLedger = currentLedger;
+    }
+
+    public MutableLiveData<Boolean> getmIsInQuestionFragment() {
+        return mIsInQuestionFragment;
+    }
+
+    public void setmIsInQuestionFragment(Boolean input) {
+        this.mIsInQuestionFragment.setValue(input);
     }
 
 }
