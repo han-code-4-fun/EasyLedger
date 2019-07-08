@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isAllSelected;
 
     private boolean isInQuestionFragment;
+    private boolean isInSettingsFragment;
 
     private int mNumberOfSelection;
 
@@ -100,10 +103,22 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiverInitialization();
 
         uiInitialization();
+
         setViewModelOberver();
 
         activityStartRunFragment();
 
+        testSharedPreference();
+
+    }
+
+    private void testSharedPreference() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp == null){
+            Log.d("test_flow3", "testSharedPreference: is empty");
+        }else{
+            Log.d("test_flow3", "testSharedPreference: is NOT empty");
+        }
     }
 
     @Override
@@ -139,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_setting_mainactivity:
-                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                selectedFragment = new PreferenceFragment();
+                addCurrentFragmentToBack(selectedFragment);
+//                startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
             case R.id.menu_user_has_question:
                 //todo, change this to launch fragment, when entering, set all icons to invisible except home
@@ -228,6 +245,9 @@ public class MainActivity extends AppCompatActivity {
 
                     //todo, jump back to previous fragment
                     getSupportFragmentManager().popBackStack();
+                }else if(isInSettingsFragment){
+                    //todo, combine this and previous into one logic
+                    getSupportFragmentManager().popBackStack();
                 }
                 break;
 
@@ -273,6 +293,8 @@ public class MainActivity extends AppCompatActivity {
         if (isInActionModel) {
             setToolBarToOriginMode();
         } else if(isInQuestionFragment){
+            getSupportFragmentManager().popBackStack();
+        }else if(isInSettingsFragment){
             getSupportFragmentManager().popBackStack();
         }else{
             if (BackPressHandler.isUserPressedTwice(this)) {
@@ -385,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 isInQuestionFragment = aBoolean;
                 if(aBoolean){
-                    setToolBarToQuestionFragment(getString(R.string.title_question_activity));
+                    setToolBarToEmptyEntringOtherFragments(getString(R.string.title_question_fragment));
                     bottomNavigation.setVisibility(View.GONE);
                     btnFA.hide();
                 }else{
@@ -395,12 +417,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mAdapterActionViewModel.getmIsInSettingsFragment().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                isInSettingsFragment = aBoolean;
+                if(aBoolean){
+                    setToolBarToEmptyEntringOtherFragments(getString(R.string.title_settings_fragment));
+                    bottomNavigation.setVisibility(View.GONE);
+                    btnFA.hide();
+                }else{
+                    setToolBarToOriginMode();
+                    bottomNavigation.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mAdapterActionViewModel.getmClickedEntryID().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                //start the fragment
+                if(integer != null){
+                    selectedFragment = new AddNEditTransactionFragment();
+                    addCurrentFragmentToBack(selectedFragment);
+                    //todo
+                }
+            }
+        });
+
 
     }
-    private void setToolBarToQuestionFragment(String fragmentTitle){
+
+    private void setToolBarToEmptyEntringOtherFragments(String fragmentTitle){
         toolBar.getMenu().clear();
         toolBar.setTitle(fragmentTitle);
-        toolBar.inflateMenu(R.menu.toolbar_question_fragment);
+        toolBar.inflateMenu(R.menu.toolbar_empty);
         textViewOnToolBar.setVisibility(View.GONE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true
         );

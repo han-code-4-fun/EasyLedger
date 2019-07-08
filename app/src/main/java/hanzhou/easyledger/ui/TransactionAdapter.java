@@ -31,7 +31,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private static final String TAG = TransactionAdapter.class.getSimpleName();
 
-    private CustomListItemClickListener mOnClickListener;
+//    private CustomListItemClickListener mOnClickListener;
     private List<TransactionEntry> mTransactionEntryList;
     private AdapterNActionBarViewModel mViewModel;
     boolean isInActionMode;
@@ -41,9 +41,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         void customOnListItemClick(int position);
     }
 
-    public TransactionAdapter(CustomListItemClickListener listener, AdapterNActionBarViewModel inputVM) {
+    public TransactionAdapter( AdapterNActionBarViewModel inputVM) {
 
-        mOnClickListener = listener;
+//        mOnClickListener = listener;
         mViewModel = inputVM;
         mViewModel.emptySelectedItems();
     }
@@ -97,10 +97,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
 
-
-    public TransactionEntry getClickedEntry(int input) {
-        return mTransactionEntryList.get(input);
-    }
+//
+//    public TransactionEntry getClickedEntry(int input) {
+//        return mTransactionEntryList.get(input);
+//    }
 
 
     @NonNull
@@ -181,14 +181,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         public void onClick(View view) {
             int position = getAdapterPosition();
 
-            /*ensure custom onclicklistener is working and
-                the deleting animation is on-going while customer clicked this position*/
-            if (mOnClickListener != null && position != RecyclerView.NO_POSITION) {
+            /*ensure the deleting animation is on-going while customer clicked this position*/
+            if ( position != RecyclerView.NO_POSITION) {
 
                 if(isInActionMode){updateSelectedItemsArray(position);}
                 else{
+                    int id = mTransactionEntryList.get(position).getId();
                     //open new activity/fragment from ui activity/fragment which implement this listener
-                    mOnClickListener.customOnListItemClick(position);
+//                    mOnClickListener.customOnListItemClick(id);
+                    mViewModel.setmClickedEntryID(id);
                 }
             }
         }

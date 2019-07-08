@@ -32,8 +32,7 @@ import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
  *  Recyclerview Fragment that can be used by other classes to show a standard list
  *
  */
-public class DetailTransactionFragment extends Fragment
-        implements TransactionAdapter.CustomListItemClickListener {
+public class DetailTransactionFragment extends Fragment{
 
     private static final String TAG = DetailTransactionFragment.class.getSimpleName();
 
@@ -101,7 +100,9 @@ public class DetailTransactionFragment extends Fragment
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
 
-        mAdapter = new TransactionAdapter(this, mAdapterActionViewModel);
+//        mAdapter = new TransactionAdapter(this, mAdapterActionViewModel);
+        mAdapter = new TransactionAdapter( mAdapterActionViewModel);
+
 
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
 
@@ -125,12 +126,12 @@ public class DetailTransactionFragment extends Fragment
     }
 
 
-    @Override
-    public void customOnListItemClick(int position) {
-        //todo, open a transaction editing activity/fragment
-        TransactionEntry transactionEntry = mAdapter.getClickedEntry(position);
-        Log.d(TAG, "clicked " + position + " -> " + transactionEntry.getRemark());
-    }
+//    @Override
+//    public void customOnListItemClick(int position) {
+//        //todo, open a transaction editing activity/fragment
+//        int transactionEntryID = position;
+//        Log.d("test_flow3", "Entry id is -> " + transactionEntryID);
+//    }
 
 
     private void setActionModeToFalse() {
@@ -143,38 +144,6 @@ public class DetailTransactionFragment extends Fragment
     private void setupViewModelObserver() {
 
         //todo, 2nd stage, handle different data for different ledgers
-
-//        if(whoCalledMe.equals(Constant.CALLFROMLEDGER)){
-//            if(mTransactionViewModel.getUntaggedTransactions().hasActiveObservers()){
-//                Log.d("test_flow2", "has active observer, remove them ");
-//
-//                mTransactionViewModel.getUntaggedTransactions().removeObservers(getViewLifecycleOwner());
-//            }
-//        }
-
-//        mTransactionViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-//            @Override
-//            public void onChanged(List<TransactionEntry> transactionEntries) {
-//
-//                if (whoCalledMe.equals(Constant.CALLFROMOVERVIEW)) {
-//                    Log.d("test_flow2", "observer: calling untagged");
-//                    Log.d("test_flow2", "observer: hash "+ hash);
-//                    mAdapter.setAdapterData(transactionEntries);
-//                }
-//
-//            }
-//        });
-//        mTransactionViewModel.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-//            @Override
-//            public void onChanged(List<TransactionEntry> transactionEntries) {
-//                if (whoCalledMe.equals(Constant.CALLFROMLEDGER)) {
-//
-//                    Log.d("test_flow2", "observer calling alltransacitons");
-//                    Log.d("test_flow2", "observer: hash "+ hash);
-//                    mAdapter.setAdapterData(transactionEntries);
-//                }
-//            }
-//        });
 
         if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)){
             OverviewFragmentViewModel mOverviewVM = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
