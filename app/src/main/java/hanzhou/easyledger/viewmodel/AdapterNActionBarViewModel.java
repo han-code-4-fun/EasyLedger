@@ -37,6 +37,8 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> mIsInSettingsFragment;
 
+    private MutableLiveData<Boolean> mIsInAddNEditFragment;
+
     private MutableLiveData<Integer> mClickedEntryID;
 
 
@@ -70,9 +72,13 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         mIsInQuestionFragment.setValue(false);
 
         mClickedEntryID = new MutableLiveData<>();
+        mClickedEntryID.setValue(null);
 
         mIsInSettingsFragment = new MutableLiveData<>();
         mIsInSettingsFragment.setValue(false);
+
+        mIsInAddNEditFragment = new MutableLiveData<>();
+        mIsInAddNEditFragment.setValue(false);
     }
 
 
@@ -185,6 +191,10 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.mClickedEntryID.setValue(inputID);
     }
 
+    public void setmClickedEntryIDToNull(){
+        mClickedEntryID.setValue(null);
+    }
+
     public MutableLiveData<Boolean> getmIsInSettingsFragment() {
         return mIsInSettingsFragment;
     }
@@ -192,6 +202,15 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     public void setmIsInSettingsFragment(Boolean input) {
         this.mIsInSettingsFragment.setValue(input);
     }
+
+    public MutableLiveData<Boolean> getmIsInAddNEditFragment() {
+        return mIsInAddNEditFragment;
+    }
+
+    public void setmIsInAddNEditFragment(Boolean input) {
+        this.mIsInAddNEditFragment.setValue(input);
+    }
+
 
 
 }

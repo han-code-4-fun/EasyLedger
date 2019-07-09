@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,7 +26,7 @@ public class AddNEditTransactionFragment extends Fragment {
 
     private AdapterNActionBarViewModel mAdapterActionViewModel;
     private AppCompatActivity appCompatActivity;
-    private  TextView textView;
+    private Toolbar toolBar;
 
     public AddNEditTransactionFragment() {
         // Required empty public constructor
@@ -41,8 +42,7 @@ public class AddNEditTransactionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView =inflater.inflate(R.layout.fragment_add_n_edit_transaction, container, false);
-
-        textView = rootView.findViewById(R.id.tx_add_fragment);
+        toolBar = appCompatActivity.findViewById(R.id.toolbar_layout);
         return rootView;
     }
 
@@ -55,10 +55,21 @@ public class AddNEditTransactionFragment extends Fragment {
             @Override
             public void onChanged(Integer integer) {
                 if(integer != null){
-                    textView.setText(String.valueOf(integer));
+                    /*  edit an existing transaction*/
+                    toolBar.setTitle(R.string.title_edit_transaction);
+                }else{
+                    /* add a new transaction*/
+                    toolBar.setTitle(R.string.title_add_transaction);
+
                 }
 
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mAdapterActionViewModel.setmIsInAddNEditFragment(false);
     }
 }

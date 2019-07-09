@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isInQuestionFragment;
     private boolean isInSettingsFragment;
+    private boolean isInAddNEditFragment;
 
     private int mNumberOfSelection;
 
@@ -156,19 +157,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_setting_mainactivity:
                 selectedFragment = new PreferenceFragment();
                 addCurrentFragmentToBack(selectedFragment);
-//                startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
             case R.id.menu_user_has_question:
-                //todo, change this to launch fragment, when entering, set all icons to invisible except home
-
                 selectedFragment = new QuestionFragment();
                 addCurrentFragmentToBack(selectedFragment);
-//                setToolBarToOriginMode();
-//                bottomNavigation.setVisibility(View.GONE);
-//                btnFA.hide();
-
-
-//                startActivity(new Intent(this, QuestionActivity.class));
                 break;
             case R.id.menu_feedback:
                 sendEmailToDeveloper();
@@ -245,9 +237,16 @@ public class MainActivity extends AppCompatActivity {
 
                     //todo, jump back to previous fragment
                     getSupportFragmentManager().popBackStack();
+                    btnFA.show();
                 }else if(isInSettingsFragment){
                     //todo, combine this and previous into one logic
                     getSupportFragmentManager().popBackStack();
+                    btnFA.show();
+                }else if(isInAddNEditFragment){
+                    //todo, combine this and previous into one logic
+
+                    getSupportFragmentManager().popBackStack();
+                    btnFA.show();
                 }
                 break;
 
@@ -294,13 +293,21 @@ public class MainActivity extends AppCompatActivity {
             setToolBarToOriginMode();
         } else if(isInQuestionFragment){
             getSupportFragmentManager().popBackStack();
+            btnFA.show();
         }else if(isInSettingsFragment){
             getSupportFragmentManager().popBackStack();
-        }else{
+            btnFA.show();
+        }else if(isInAddNEditFragment) {
+            getSupportFragmentManager().popBackStack();
+            btnFA.show();
+
+        }
+        else{
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
             }
         }
+
     }
 
 
@@ -437,15 +444,30 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Integer integer) {
                 //start the fragment
                 if(integer != null){
-                    selectedFragment = new AddNEditTransactionFragment();
-                    addCurrentFragmentToBack(selectedFragment);
-                    //todo
+                   openAddNEditTransactionFragment();
+                }
+            }
+        });
+
+        mAdapterActionViewModel.getmIsInAddNEditFragment().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                isInAddNEditFragment = aBoolean;
+                if(aBoolean){
+                    setToolBarToEmptyEntringOtherFragments(getString(R.string.empty_string));
+                    bottomNavigation.setVisibility(View.GONE);
+                    btnFA.hide();
+                }else{
+                    setToolBarToOriginMode();
+                    bottomNavigation.setVisibility(View.VISIBLE);
                 }
             }
         });
 
 
     }
+
+
 
     private void setToolBarToEmptyEntringOtherFragments(String fragmentTitle){
         toolBar.getMenu().clear();
@@ -494,8 +516,9 @@ public class MainActivity extends AppCompatActivity {
             = new FloatingActionButton.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+
+            mAdapterActionViewModel.setmClickedEntryIDToNull();
+            openAddNEditTransactionFragment();
 
         }
     };
@@ -586,6 +609,12 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.base_fragment, input)
                 .commit();
+    }
+
+    private void openAddNEditTransactionFragment() {
+        selectedFragment = new AddNEditTransactionFragment();
+        addCurrentFragmentToBack(selectedFragment);
+        mAdapterActionViewModel.setmIsInAddNEditFragment(true);
     }
 
     private void addCurrentFragmentToBack(Fragment input){

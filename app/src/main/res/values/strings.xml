@@ -37,6 +37,8 @@
     <string name="menu_insert_data_current_week">Insert Data within this week</string>
     <string name="menu_insert_untagged_data">Insert untagged data</string>
 
+    <string name="add_edit_transaction_save_btn_title">SAVE</string>
+
 
     <string name="explanation_friendly_why_this_app_is_safe">
         This is an open source app that all its "logic" is on github.com,
@@ -70,6 +72,9 @@
     <string name="title_question_fragment">Is this app safe?</string>
 
     <string name="title_settings_fragment">App Settings</string>
+
+    <string name="title_edit_transaction">Editing Transaction</string>
+    <string name="title_add_transaction">Adding Transaction</string>
 
 
     <string name="data_type_email">text/plain</string>
