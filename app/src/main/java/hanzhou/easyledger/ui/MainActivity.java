@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
@@ -76,10 +75,12 @@ public class MainActivity extends AppCompatActivity {
         Ignore btn on toolbar that appears when toolbar is in action mode,
         this will 'tag' currently untagged transactions into 'others' category
      */
-    private MenuItem ignore;
-    private MenuItem delete;
-    private MenuItem edit;
-    private MenuItem selectAll;
+    private MenuItem mIgnoreBtn;
+    private MenuItem mDeleteBtn;
+    private MenuItem mEditBtn;
+    private MenuItem mSelectAllBtn;
+
+    private MenuItem mSaveBtn;
 
     private boolean isInActionModel;
     private boolean isAllSelected;
@@ -155,10 +156,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_setting_mainactivity:
+                setToolBarToOriginMode();
                 selectedFragment = new PreferenceFragment();
                 addCurrentFragmentToBack(selectedFragment);
+
                 break;
             case R.id.menu_user_has_question:
+                setToolBarToOriginMode();
                 selectedFragment = new QuestionFragment();
                 addCurrentFragmentToBack(selectedFragment);
                 break;
@@ -224,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mDb.transactionDAO().insertListOfTransactions(
-                                FakeTestingData.create20UntaggedTransactions());
+                                FakeTestingData.create5UntaggedTransactions());
                     }
                 });
                 break;
@@ -266,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
                 //todo set all selected into others category
 
                 break;
+            case R.id.add_edit_transaction_save_btn:
+                Log.d("test_flow5", "save btn clicked!");
+                break;
 
 
 
@@ -280,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-
                 mDb.transactionDAO().deleteAll();
             }
         });
@@ -373,9 +379,9 @@ public class MainActivity extends AppCompatActivity {
                     end of (toolbar) action mode will be one of following :
                     1. press android.R.id.home
                     2. press back button
-                    3. press edit (goes to another activity for editing)
-                    4. press delete (after user select some data)
-                    5. press ignore (automatically mark all transaciton in category others)
+                    3. press mEditBtn (goes to another activity for editing)
+                    4. press mDeleteBtn (after user select some data)
+                    5. press mIgnoreBtn (automatically mark all transaciton in category others)
                  */
                 isInActionModel = aBoolean;
                 if (isInActionModel) {
@@ -412,9 +418,12 @@ public class MainActivity extends AppCompatActivity {
         mAdapterActionViewModel.getmIsInQuestionFragment().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+                Log.d("test_flow5", "onChanged in Mainactivity the viewmodel is "+mAdapterActionViewModel.hashCode());
                 isInQuestionFragment = aBoolean;
+                Log.d("test_flow5", "same viewmodel value is "+aBoolean);
+
                 if(aBoolean){
-                    setToolBarToEmptyEntringOtherFragments(getString(R.string.title_question_fragment));
+                    resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
                     btnFA.hide();
                 }else{
@@ -429,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 isInSettingsFragment = aBoolean;
                 if(aBoolean){
-                    setToolBarToEmptyEntringOtherFragments(getString(R.string.title_settings_fragment));
+                    resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
                     btnFA.hide();
                 }else{
@@ -442,6 +451,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapterActionViewModel.getmClickedEntryID().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
+                Log.d("test_flow11", "main activity getmClickedEntryID onChanged: "+integer);
                 //start the fragment
                 if(integer != null){
                    openAddNEditTransactionFragment();
@@ -454,7 +464,8 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 isInAddNEditFragment = aBoolean;
                 if(aBoolean){
-                    setToolBarToEmptyEntringOtherFragments(getString(R.string.empty_string));
+                    Log.d("test_flow4", "this should triggered after enter new fragment");
+                    resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
                     btnFA.hide();
                 }else{
@@ -469,15 +480,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void setToolBarToEmptyEntringOtherFragments(String fragmentTitle){
-        toolBar.getMenu().clear();
-        toolBar.setTitle(fragmentTitle);
-        toolBar.inflateMenu(R.menu.toolbar_empty);
-        textViewOnToolBar.setVisibility(View.GONE);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true
-        );
+    private void resetAdapterActionViewModelForEnteringAnotherFragment(){
         mAdapterActionViewModel.emptySelectedItems();
         mAdapterActionViewModel.setActionModeState(false);
+
+
     }
 
 
@@ -543,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
     private void displayToolbarIconsBasedOnNumberOfSelections(int integer) {
 
         if (isInActionModel) {
-            if (edit != null && ignore != null) {
+            if (mEditBtn != null && mIgnoreBtn != null) {
                 if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)) {
 
                     toolbarActionsIfCalledFromOverViewFragment(integer);
@@ -555,20 +562,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toolbarActionsIfCalledFromOverViewFragment(int integer) {
-        /*  when selected number ==0, show icon: selectAll and delete
-         *   when selected number ==1, show icon: edit, ignore, selectAll and delete
-         *   when selected number >1, show icon: ignore, selectAll and delete
+        /*  when selected number ==0, show icon: mSelectAllBtn and mDeleteBtn
+         *   when selected number ==1, show icon: mEditBtn, mIgnoreBtn, mSelectAllBtn and mDeleteBtn
+         *   when selected number >1, show icon: mIgnoreBtn, mSelectAllBtn and mDeleteBtn
          * */
         if (integer < 1) {
-            ignore.setVisible(false);
-            edit.setVisible(false);
+            mIgnoreBtn.setVisible(false);
+            mEditBtn.setVisible(false);
         } else if (integer == 1) {
-            ignore.setVisible(true);
-            edit.setVisible(true);
+            mIgnoreBtn.setVisible(true);
+            mEditBtn.setVisible(true);
         } else {
             //more than 1 items is selected
-            ignore.setVisible(true);
-            edit.setVisible(false);
+            mIgnoreBtn.setVisible(true);
+            mEditBtn.setVisible(false);
 
         }
     }
@@ -578,19 +585,19 @@ public class MainActivity extends AppCompatActivity {
                 if current fragment is the ledger fragment
                 (which is mostly likely already been tagged),
                 not to display selectALl btn icon, because I don't want user
-                accidently hit selectAll and hit delete.
+                accidently hit mSelectAllBtn and hit mDeleteBtn.
 
 
-        *   when selected number ==1, show icon: edit, and delete
-        *   when selected number ==0 or more than 1, show icon:delete
+        *   when selected number ==1, show icon: mEditBtn, and mDeleteBtn
+        *   when selected number ==0 or more than 1, show icon:mDeleteBtn
         */
-        ignore.setVisible(false);
-        selectAll.setVisible(false);
-        delete.setVisible(true);
+        mIgnoreBtn.setVisible(false);
+        mSelectAllBtn.setVisible(false);
+        mDeleteBtn.setVisible(true);
         if (integer != 1) {
-            edit.setVisible(false);
+            mEditBtn.setVisible(false);
         } else {
-            edit.setVisible(true);
+            mEditBtn.setVisible(true);
 
         }
     }
@@ -611,24 +618,28 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    //todo, input id from here
     private void openAddNEditTransactionFragment() {
+
         selectedFragment = new AddNEditTransactionFragment();
         addCurrentFragmentToBack(selectedFragment);
-        mAdapterActionViewModel.setmIsInAddNEditFragment(true);
+
+
     }
 
     private void addCurrentFragmentToBack(Fragment input){
-        setToolBarToOriginMode();
+
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.base_fragment, input)
                 .addToBackStack(null)
                 .commit();
+        Log.d("flow_test4", "end of entering new fragmnet");
     }
 
     private void setToolBarToOriginMode() {
-
+        Log.d("test_flow4", "setToolBarToOriginMode: ");
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.app_name);
         toolBar.inflateMenu(R.menu.toolbar_normal_mode);
@@ -650,27 +661,29 @@ public class MainActivity extends AppCompatActivity {
         assignMenuItemToVariableForDifferentCombinationNSetInitialState();
         if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMLEDGER)) {
 
-            selectAll.setVisible(false);
+            mSelectAllBtn.setVisible(false);
         } else {
-            selectAll.setVisible(true);
+            mSelectAllBtn.setVisible(true);
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
+
+
     private void assignMenuItemToVariableForDifferentCombinationNSetInitialState() {
 
-        /*  the ignore btn is for auto-set selected item to 'Others' category
+        /*  the mIgnoreBtn btn is for auto-set selected item to 'Others' category
          *  when entering toolbar action mode, no item has selected,
-         *  there is not need to display edit and ignore
+         *  there is not need to display mEditBtn and mIgnoreBtn
          * */
-        ignore = toolBar.getMenu().findItem(R.id.toolbar_ignore);
-        edit = toolBar.getMenu().findItem(R.id.toolbar_edit);
-        selectAll = toolBar.getMenu().findItem(R.id.toolbar_select_all);
-        delete = toolBar.getMenu().findItem(R.id.toolbar_delete);
-        ignore.setVisible(false);
-        edit.setVisible(false);
+        mIgnoreBtn = toolBar.getMenu().findItem(R.id.toolbar_ignore);
+        mEditBtn = toolBar.getMenu().findItem(R.id.toolbar_edit);
+        mSelectAllBtn = toolBar.getMenu().findItem(R.id.toolbar_select_all);
+        mDeleteBtn = toolBar.getMenu().findItem(R.id.toolbar_delete);
+        mIgnoreBtn.setVisible(false);
+        mEditBtn.setVisible(false);
     }
 
     private void insert20FakeData() {

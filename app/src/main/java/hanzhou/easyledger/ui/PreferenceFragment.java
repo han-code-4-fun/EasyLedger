@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.CheckBoxPreference;
@@ -17,6 +18,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat implements
 
     private AdapterNActionBarViewModel adapterNActionBarViewModel;
     private AppCompatActivity appCompatActivity;
+    private Toolbar toolbar;
 
     public PreferenceFragment() {
         // Required empty public constructor
@@ -41,6 +45,7 @@ public class PreferenceFragment extends PreferenceFragmentCompat implements
     public void onAttach(Context context) {
         super.onAttach(context);
         appCompatActivity = (AppCompatActivity) context;
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -136,6 +141,15 @@ public class PreferenceFragment extends PreferenceFragmentCompat implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViewModel();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        toolbar =  appCompatActivity.findViewById(R.id.toolbar_layout);
+        toolbar.setTitle(getString(R.string.title_settings_fragment));
+        toolbar.getMenu().clear();
+        inflater.inflate(R.menu.toolbar_empty, menu);
+        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

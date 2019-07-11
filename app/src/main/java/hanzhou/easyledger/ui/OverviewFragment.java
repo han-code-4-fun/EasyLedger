@@ -220,7 +220,7 @@ public class OverviewFragment extends Fragment{
                 ContextCompat.getColor(mBarChart.getContext(), R.color.color_money_out));
         //todo, important
         barDataSet.setBarShadowColor(
-                ContextCompat.getColor(mBarChart.getContext(), R.color.background_grid_white));
+                ContextCompat.getColor(mBarChart.getContext(), R.color.color_deactive));
         barDataSet.setValueTextSize(15f);
         barDataSet.setDrawValues(true);
 

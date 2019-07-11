@@ -9,10 +9,13 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,7 @@ public class QuestionFragment extends Fragment {
     private TextView explanationTxt;
     private AdapterNActionBarViewModel adapterNActionBarViewModel;
     private AppCompatActivity appCompatActivity;
+    private Toolbar toolbar;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -46,6 +50,7 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        setHasOptionsMenu(true);
         appCompatActivity = (AppCompatActivity)context;
     }
 
@@ -57,6 +62,7 @@ public class QuestionFragment extends Fragment {
         View rootView =inflater.inflate(R.layout.fragment_question, container, false);
 
         String dateString = UnitUtil.getMonthDayToday();
+
 
         uiInitialization(rootView);
 
@@ -72,6 +78,15 @@ public class QuestionFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViewModel();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        toolbar =  appCompatActivity.findViewById(R.id.toolbar_layout);
+        toolbar.setTitle(getString(R.string.title_question_fragment));
+        toolbar.getMenu().clear();
+        inflater.inflate(R.menu.toolbar_empty, menu);
+        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -136,5 +151,6 @@ public class QuestionFragment extends Fragment {
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
         adapterNActionBarViewModel.setmIsInQuestionFragment(true);
+
     }
 }

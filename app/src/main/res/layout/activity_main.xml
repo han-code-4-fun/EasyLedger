@@ -40,7 +40,8 @@
         android:layout_height="60dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="15dp"
-        android:src="@drawable/icon_floating_action_btn_add"
+        android:tint="@color/transaction_default_background"
+        app:srcCompat="@drawable/icon_floating_action_btn_add"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent" />
 

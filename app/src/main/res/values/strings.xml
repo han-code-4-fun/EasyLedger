@@ -76,6 +76,26 @@
     <string name="title_edit_transaction">Editing Transaction</string>
     <string name="title_add_transaction">Adding Transaction</string>
 
+    <string name="add_edit_transaction_money_flow">Money Flow</string>
+    <string name="add_edit_transaction_amount">Amount</string>
+    <string name="add_edit_transaction_date">Date</string>
+
+    <string name="add_edit_transaction_category">Category</string>
+    <string name="add_edit_transaction_ledger">Ledger</string>
+    <string name="add_edit_transaction_remark_hint">Something else to add?</string>
+    <string name="add_edit_transaction_amount_hint">0.00</string>
+    <string name="add_edit_transaction_date_deafult">Pick A Date</string>
+
+    <string name="add_edit_transaction_money_in">MONEY IN</string>
+    <string name="add_edit_transaction_money_out">MONEY OUT</string>
+
+    <string name="add_edit_transaction_warning_enter_categoty">Select A Category</string>
+    <string name="add_edit_transaction_warning_enter_amount">Enter An Amount</string>
+    <string name="add_edit_transaction_warning_enter_date">Select A Date</string>
+
+
+    <string name="dollor_sign">$</string>
+
 
     <string name="data_type_email">text/plain</string>
     <string name="no_email_app">You don\'t have an app to send email to me: </string>

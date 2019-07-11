@@ -23,6 +23,7 @@ import java.util.List;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.viewadapter.TransactionAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
@@ -166,7 +167,7 @@ public class DetailTransactionFragment extends Fragment{
         mAdapterActionViewModel.getActionModeState().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                mAdapter.isInActionMode = aBoolean;
+                mAdapter.setInActionMode(aBoolean);
                 //set to default style when the 'false' state is updated from user's input of action bar
                 if (!aBoolean) {
                     mAdapter.deselectAll();

@@ -10,6 +10,7 @@
     <color name="transaction_default_background">#FFFFFF</color>
     <color name="color_money_out">#F44336</color>
     <color name="color_money_in">#4CAF50</color>
-    <color name="background_grid_white">#FFFFFF</color>
+    <color name="color_deactive">#BBBBBB</color>
+    <color name="color_btn_effect">#FFEB3B</color>
 
 </resources>

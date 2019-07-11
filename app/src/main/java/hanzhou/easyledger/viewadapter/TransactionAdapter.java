@@ -1,9 +1,7 @@
-package hanzhou.easyledger.ui;
+package hanzhou.easyledger.viewadapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +9,14 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
-import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
-import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
@@ -34,12 +27,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 //    private CustomListItemClickListener mOnClickListener;
     private List<TransactionEntry> mTransactionEntryList;
     private AdapterNActionBarViewModel mViewModel;
-    boolean isInActionMode;
+
+    private boolean isInActionMode;
 
 
-    public interface CustomListItemClickListener {
-        void customOnListItemClick(int position);
-    }
 
     public TransactionAdapter( AdapterNActionBarViewModel inputVM) {
 
@@ -96,11 +87,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         this.notifyDataSetChanged();
     }
 
+    public boolean isInActionMode() {
+        return isInActionMode;
+    }
 
-//
-//    public TransactionEntry getClickedEntry(int input) {
-//        return mTransactionEntryList.get(input);
-//    }
+    public void setInActionMode(boolean inActionMode) {
+        isInActionMode = inActionMode;
+    }
 
 
     @NonNull
@@ -187,6 +180,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                 if(isInActionMode){updateSelectedItemsArray(position);}
                 else{
                     int id = mTransactionEntryList.get(position).getId();
+                    Log.d("test_flow11", "transactionadapter onClick: id -> "+ id);
                     //open new activity/fragment from ui activity/fragment which implement this listener
 //                    mOnClickListener.customOnListItemClick(id);
                     mViewModel.setmClickedEntryID(id);

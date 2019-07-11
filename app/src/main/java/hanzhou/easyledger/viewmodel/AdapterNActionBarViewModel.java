@@ -1,6 +1,7 @@
 package hanzhou.easyledger.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private MutableLiveData<Integer> mClickedEntryID;
 
+    private MutableLiveData<String> mSelectedCategory;
+
+
 
 
     public AdapterNActionBarViewModel(@NonNull Application application) {
@@ -69,7 +73,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         currentLedger = Constant.CALLFROMOVERVIEW;
 
         mIsInQuestionFragment = new MutableLiveData<>();
-        mIsInQuestionFragment.setValue(false);
+//        mIsInQuestionFragment.setValue(false);
 
         mClickedEntryID = new MutableLiveData<>();
         mClickedEntryID.setValue(null);
@@ -79,6 +83,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         mIsInAddNEditFragment = new MutableLiveData<>();
         mIsInAddNEditFragment.setValue(false);
+
+        mSelectedCategory = new MutableLiveData<>();
+        mSelectedCategory.setValue("");
     }
 
 
@@ -180,6 +187,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     }
 
     public void setmIsInQuestionFragment(Boolean input) {
+        Log.d("test_flow5", "setmIsInQuestionFragment: the viewmodel is "+this.hashCode());
         this.mIsInQuestionFragment.setValue(input);
     }
 
@@ -203,13 +211,23 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.mIsInSettingsFragment.setValue(input);
     }
 
-    public MutableLiveData<Boolean> getmIsInAddNEditFragment() {
+    public LiveData<Boolean> getmIsInAddNEditFragment() {
         return mIsInAddNEditFragment;
     }
 
     public void setmIsInAddNEditFragment(Boolean input) {
         this.mIsInAddNEditFragment.setValue(input);
     }
+
+
+    public MutableLiveData<String> getmSelectedCategory() {
+        return mSelectedCategory;
+    }
+
+    public void setmSelectedCategory(String input) {
+        this.mSelectedCategory.setValue(input);
+    }
+
 
 
 
