@@ -31,7 +31,6 @@ public class TransactionDBViewModel extends AndroidViewModel {
         transactionsByLedger = mDB.transactionDAO().loadTransactionByLedger(Constant.UNTAGGED);
         allTransactions = mDB.transactionDAO().loadAllTransactions();
 
-
     }
 
 

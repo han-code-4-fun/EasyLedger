@@ -1,26 +1,27 @@
 package hanzhou.easyledger.utility;
 
-import android.icu.util.LocaleData;
-import android.os.Build;
 import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
 public class UnitUtil {
     private static final String TAG = UnitUtil.class.getSimpleName();
+
+    private static LocalDate now = LocalDate.now();
 
     public static String displayPositiveMoney(double input){
         double temp = Math.abs(input);
         return String.valueOf(temp);
     }
+
+
 
 
     public static String getMonthDayToday() {
@@ -34,16 +35,6 @@ public class UnitUtil {
         return moneyFormater.format(money);
     }
 
-    //return format YYMMDD
-    public static int getHalfYearTime(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            LocalDate halfYear = LocalDate.now().minusDays(180);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-
-            return Integer.valueOf(halfYear.format(formatter));
-        }
-        return 100000;
-    }
 
     public static int formatTime(Date inputDate){
         SimpleDateFormat formatterDBTime = new SimpleDateFormat("yyMMdd", Locale.getDefault());
@@ -68,5 +59,57 @@ public class UnitUtil {
 
     public static int setDatePickerDateIntoAppIntDate(int year, int month, int day){
         return (year-2000)*10000+ (month+1)*100+day;
+    }
+
+    public static int getStartingDateCurrentWeek(){
+        int daysPastCurrentWeek = now.getDayOfWeek();
+
+        int year = (now.getYear())-2000;
+        int month = now.getMonthOfYear();
+        int dayBeginOfWeek = (now.getDayOfMonth()) - daysPastCurrentWeek +1;
+
+        int startingDate =year*10000+month*100+dayBeginOfWeek;
+        Log.d("test_flow13", "setRevenueDateCurrentWeek: "+ startingDate);
+
+        return startingDate;
+    }
+
+    public static int getStartingDateCurrentMonth(){
+        int year = (now.getYear())-2000;
+        int month = now.getMonthOfYear();
+
+        int startingDate =year*10000+month*100+1;
+        Log.d("test_flow13", "setRevenueDateCurrentMonth: "+ startingDate);
+
+        return startingDate;
+    }
+
+    public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareMonths(int numberOfMonths){
+
+        List<Integer> result = new ArrayList<>();
+        for (int i = numberOfMonths; i >0; i--) {
+            int[] temp = getStartingEndDateOfAMonth(now.minusMonths(i));
+            result.add(temp[0]);
+            result.add(temp[1]);
+        }
+
+
+        return result;
+    }
+
+    public static int[] getStartingEndDateOfAMonth(LocalDate inputDate){
+        int[] output = new int[2];
+
+        int inputDateNum = Integer.parseInt(fromJodaTimeLocalDateToAppDateString(inputDate.withDayOfMonth(1)));
+        int endofDateNum = Integer.parseInt(fromJodaTimeLocalDateToAppDateString(inputDate.dayOfMonth().withMaximumValue()));
+
+        output[0] = inputDateNum;
+        output[1] = endofDateNum;
+
+        return output;
+    }
+
+    public static String fromJodaTimeLocalDateToAppDateString(LocalDate inputDate){
+        return DateTimeFormat.forPattern("YYMMdd").print(inputDate);
     }
 }

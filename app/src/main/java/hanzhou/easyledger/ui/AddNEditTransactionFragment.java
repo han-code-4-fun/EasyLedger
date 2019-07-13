@@ -33,15 +33,13 @@ import com.sackcentury.shinebuttonlib.ShineButton;
 
 import org.joda.time.LocalDate;
 
-import java.util.Calendar;
-
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.FakeTestingData;
 import hanzhou.easyledger.utility.UnitUtil;
-import hanzhou.easyledger.viewadapter.AddNEditFragmentCategoryAdapter;
+import hanzhou.easyledger.viewadapter.CategoryAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.AddTransactionVMFactory;
 import hanzhou.easyledger.viewmodel.AddTransactionViewModel;
@@ -88,7 +86,7 @@ implements DatePickerDialog.OnDateSetListener{
     private FloatingActionButton mSaveBtn;
 
     private RecyclerView mCategoryRecyclerView;
-    private AddNEditFragmentCategoryAdapter mCategoryAdapter;
+    private CategoryAdapter mCategoryAdapter;
     private ArrayAdapter<String> mSpinnerLedgerAdapter;
 
 //    private boolean mIsNewTransaction;
@@ -165,7 +163,7 @@ implements DatePickerDialog.OnDateSetListener{
         mCategoryRecyclerView.setLayoutManager(layoutManager);
         mCategoryRecyclerView.setHasFixedSize(true);
 
-        mCategoryAdapter = new AddNEditFragmentCategoryAdapter(getContext(), mAdapterActionViewModel);
+        mCategoryAdapter = new CategoryAdapter(getContext(), mAdapterActionViewModel);
 
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
 

@@ -1,7 +1,6 @@
 package hanzhou.easyledger.viewadapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,9 @@ import java.util.List;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
-import hanzhou.easyledger.viewmodel.AddTransactionViewModel;
 
-public class AddNEditFragmentCategoryAdapter
-        extends RecyclerView.Adapter<AddNEditFragmentCategoryAdapter.CategoryViewHolder> {
+public class CategoryAdapter
+        extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private List<String> mCategories;
     private Context mContext;
@@ -28,7 +26,7 @@ public class AddNEditFragmentCategoryAdapter
     private int mActivePosition;
 
 
-    public AddNEditFragmentCategoryAdapter(Context context , AdapterNActionBarViewModel mInputVM) {
+    public CategoryAdapter(Context context , AdapterNActionBarViewModel mInputVM) {
         mContext = context;
         mViewModel = mInputVM;
         mCategories = new ArrayList<>();

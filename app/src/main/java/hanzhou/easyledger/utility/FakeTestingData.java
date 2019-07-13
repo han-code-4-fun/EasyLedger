@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,6 +58,7 @@ public class FakeTestingData {
     }
 
 
+    //todo, make "others" undeletable
     public static List<String> getRevenueCategory() {
         List<String> output = new ArrayList<>();
 
@@ -96,6 +98,8 @@ public class FakeTestingData {
         return output;
     }
 
+
+
     public static List<TransactionEntry> create10kTransactions() {
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
@@ -124,8 +128,7 @@ public class FakeTestingData {
     }
 
     private static int getRandomMonthNDateWithThisWeek() {
-        DateTime dt = new DateTime();
-        int dayOfWeek = dt.getDayOfWeek();
+        int dayOfWeek = LocalDate.now().getDayOfWeek();
         return getRandomMonthNDateWithinXdays(dayOfWeek);
     }
 
@@ -150,8 +153,7 @@ public class FakeTestingData {
     }
 
     private static int getRandomMonthNDateWithThisMonth() {
-        DateTime dt = new DateTime();
-        int dayOfMonth = dt.getDayOfMonth();
+        int dayOfMonth = LocalDate.now().getDayOfMonth();
         return getRandomMonthNDateWithinXdays(dayOfMonth);
     }
 
@@ -179,8 +181,9 @@ public class FakeTestingData {
     }
 
     private static int getRandomMonthNDateWithinXdays(int daysBackFromToday) {
-        Date today = LocalDate.now().minusDays(return0toXRandom(daysBackFromToday)).toDate();
-        return UnitUtil.formatTime(today);
+        int randomDays = return0toXRandom(daysBackFromToday);
+        String date = DateTimeFormat.forPattern("YYMMdd").print(LocalDate.now().minusDays(randomDays));
+        return Integer.parseInt(date);
     }
 
     private static int return0toXRandom(int daysBackFromToday) {
@@ -188,11 +191,11 @@ public class FakeTestingData {
     }
 
 
-    public static List<TransactionEntry> create20Transactions() {
+    public static List<TransactionEntry> create1000Transactions() {
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 1000; i++) {
             transactionEntryList.add(getARandomTransaction());
         }
 
@@ -260,8 +263,10 @@ public class FakeTestingData {
     }
 
     private static int getRandomMonthNDate() {
+        String[] year = {"18","19"};
 
-        String output = "19";
+        String output = year[(int) (Math.random() * year.length)];
+
         int temp = (int) (Math.random() * 12 + 1);
         if (temp < 10) {
             output += ("0" + temp);

@@ -28,12 +28,17 @@ public interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE time >= :time7DaysBackwards ORDER BY time DESC, id DESC")
     LiveData<List<TransactionEntry>> loadTransactionByTime7days(int time7DaysBackwards);
 
-//    LiveData<List<TransactionEntry>> loadTransactionByTime14days();
-//
-//    LiveData<List<TransactionEntry>> loadTransactionByTimeCurrentMonth();
+
+    @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount>=0 ORDER BY time DESC, id DESC")
+    LiveData<List<TransactionEntry>> loadTransactionRevenuePeriod(int startingDate);
+    @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount<0 ORDER BY time DESC, id DESC")
+    LiveData<List<TransactionEntry>> loadTransactionExpensePeriod(int startingDate);
 
     @Query("SELECT * FROM transactions WHERE time >= :timeDaysBackwards ORDER BY time DESC, id DESC")
     LiveData<List<TransactionEntry>> loadTransactionByTimeUserDefined(int timeDaysBackwards);
+
+    @Query("SELECT * FROM transactions WHERE time >= :startDate and time<= :endDate ORDER BY time ASC, id ASC")
+    LiveData<List<TransactionEntry>> loadTransactionInPeriodForChart(int startDate, int endDate);
 
 
     @Insert

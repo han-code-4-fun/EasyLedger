@@ -41,6 +41,7 @@ import androidx.lifecycle.ViewModelProviders;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 sendEmailToDeveloper();
                 break;
             case R.id.menu_insert_data:
-                insert20FakeData();
+                insert1000FakeData();
                 break;
             case R.id.menu_delete_all_data:
                 deleteAll();
@@ -321,9 +322,8 @@ public class MainActivity extends AppCompatActivity {
 
         mDb = TransactionDB.getInstance(this);
 
-        Date halfYear = LocalDate.now().minusDays(180).toDate();
-
-        int time = UnitUtil.formatTime(halfYear);
+        String halfyear = DateTimeFormat.forPattern("YYMMdd").print(LocalDate.now().minusDays(180));
+        int time = Integer.parseInt(halfyear);
 
         OverviewFragmentVMFactory factory = new OverviewFragmentVMFactory(time, mDb);
         mOverviewViewModel = ViewModelProviders.of(this, factory).
@@ -686,11 +686,11 @@ public class MainActivity extends AppCompatActivity {
         mEditBtn.setVisible(false);
     }
 
-    private void insert20FakeData() {
+    private void insert1000FakeData() {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create20Transactions());
+                mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create1000Transactions());
             }
         });
     }

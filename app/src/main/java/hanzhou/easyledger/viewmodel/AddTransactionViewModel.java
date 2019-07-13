@@ -16,7 +16,6 @@ public class AddTransactionViewModel  extends ViewModel {
     private MutableLiveData<String> mSelectedCategory;
 
     public AddTransactionViewModel(TransactionDB DB, int transactionID) {
-        Log.d("test_flow11", "AddTransactionViewModel: id is "+ transactionID);
         transactionEntry =DB.transactionDAO().loadTransactionByID(transactionID);
         mSelectedCategory = new MutableLiveData<>();
         mSelectedCategory.setValue("");
