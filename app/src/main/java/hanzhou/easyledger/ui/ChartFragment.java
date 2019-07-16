@@ -1,6 +1,7 @@
 package hanzhou.easyledger.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +27,7 @@ import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -42,6 +45,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,64 +53,90 @@ import java.util.List;
 import java.util.Map;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.chartsetting.LabelFormatterCurrentBarChart;
+import hanzhou.easyledger.chartsetting.MonthValueFormatter;
+import hanzhou.easyledger.chartsetting.MyLargeValueFormatter;
+import hanzhou.easyledger.chartsetting.MyPercentFormatter;
+import hanzhou.easyledger.chartsetting.WeekValueFormatter;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.BackGroundColor;
+import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
 import hanzhou.easyledger.utility.MyMarkerView;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.ChartDataViewModel;
+import hanzhou.easyledger.viewmodel.ChartDataViewModelFactory;
+
+/*
+*   This Fragment shows 3 charts in one of two ways:
+*   1. expense piechart  +  revenue piechart + history comparison piechart
+*   2. expense barchart  +  revenue barchart + history comparison barchart
+*
+*   For each chart combination, user can select to display expense/revenue chart
+*   for current weeks or current months
+*
+*   for the history comparison barchart, user can select number of periods (week or month) to compare
+*
+* */
 
 public class ChartFragment extends Fragment implements
         OnChartValueSelectedListener {
 
     private static final String TAG = ChartFragment.class.getSimpleName();
 
-    public static final String CATEGORY_BARCHART = "user_choose_barchart";
-    public static final String CATEGORY_PIECHART = "user_choose_piechart";
+    private static final String CATEGORY_BARCHART = "user_choose_barchart";
+    private static final String CATEGORY_PIECHART = "user_choose_piechart";
 
-    public static final String CHART_REVENUE = "a_revenue_chart";
-    public static final String CHART_EXPENSE = "a_expense_chart";
+    private static final String CHART_REVENUE = "a_revenue_chart";
+    private static final String CHART_EXPENSE = "a_expense_chart";
 
     private TransactionDB mDb;
-    private AppCompatActivity mAppCompatActivity;
-    private ChartDataViewModel mChartDataViewModel;
 
-    private String userSelection;
+    /*belowing 4 items value based on sharedPreferencce*/
+    private int mHistoryPeriodType;
+    private int mNumberOfPeriodsToCompare;
+    private String mUserSelection;
+    private int mCurrentPeriodType;
+    private boolean mIsPieChartShowPercentage;
 
-    private int mDisplayStartingDate;
-    private int mNumberOfMonthsToCompare;
 
-    private List<Integer> monthsDateListForEachPeriod;
+    private int mCurrentChartStartingDate;
 
-    private PieChart mPieChartRevenue;
-    private PieChart mPieChartExpense;
-    private BarChart mBarChartComparison;
+
+    private List<Integer> mDateListForEachPeriod;
+
+    private PieChart mCurrentPieChartRevenue;
+    private PieChart mCurrentPieChartExpense;
+    private BarChart mCurrentBarChartRevenue;
+    private BarChart mCurrentBarChartExpense;
+
+    private BarChart mHistoryBarChart;
+
+    private TextView mHistoryChartDescription;
 
     private HashMap<String, Float> mCategoryRevenue;
     private HashMap<String, Float> mCategoryExpense;
 
-    private ArrayList<BarEntry> mRevenuesBarEntries;
-    private ArrayList<BarEntry> mExpensesBarEntries;
-
     private BackGroundColor mColors;
+
+    private SharedPreferences mAppPreferences;
+
+    private int testNumber = 0;
+
+    private int mHistoryChartStartDate, mHistoryChartEndDate;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mDb = TransactionDB.getInstance(context);
-        mAppCompatActivity = (AppCompatActivity) context;
-
-        //todo, user make selection
-        mDisplayStartingDate = UnitUtil.getStartingDateCurrentMonth();
-
-//        mDisplayStartingDate = UnitUtil.getStartingDateCurrentMonth();
-
-        mNumberOfMonthsToCompare = 6;
-        userSelection = CATEGORY_PIECHART;
+        AppCompatActivity mAppCompatActivity = (AppCompatActivity) context;
 
         mColors = new BackGroundColor();
 
+        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREF_SETTING, Context.MODE_PRIVATE);
+
+        loadPreferenceSetting();
 
     }
 
@@ -115,25 +145,16 @@ public class ChartFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chart, container, false);
 
-        mChartDataViewModel = ViewModelProviders.of(mAppCompatActivity).get(ChartDataViewModel.class);
+        mCurrentPieChartRevenue = rootView.findViewById(R.id.chart_current_piechart_revenue);
+        mCurrentPieChartExpense = rootView.findViewById(R.id.chart_current_piechart_expense);
 
-        setDataStartingDate();
-        setComparisonMonths();
+        mCurrentBarChartRevenue = rootView.findViewById(R.id.chart_current_barchart_revenue);
+        mCurrentBarChartExpense= rootView.findViewById(R.id.chart_current_barchart_expense);
 
-        mPieChartRevenue = rootView.findViewById(R.id.chart_piechart_revenue);
-        mPieChartExpense = rootView.findViewById(R.id.chart_piechart_expense);
+        mHistoryBarChart = rootView.findViewById(R.id.chart_history_barchart);
 
-        mBarChartComparison = rootView.findViewById(R.id.chart_barchart_comparision);
-
-//        mCategoryRevenue = new HashMap<>();
-//        mCategoryExpense = new HashMap<>();
-
-        mRevenuesBarEntries = new ArrayList<>();
-        mExpensesBarEntries = new ArrayList<>();
-
-
-        initializeComparisonBarChart();
-
+        /*this bar chart will always show*/
+        initializeHistoryBarChart();
 
         return rootView;
     }
@@ -143,34 +164,43 @@ public class ChartFragment extends Fragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        setupViewModel();
+    }
+
+    private void setupViewModel() {
+
+        ChartDataViewModelFactory factory = new ChartDataViewModelFactory(mCurrentChartStartingDate, mHistoryChartStartDate, mHistoryChartEndDate, mDb);
+        //this view model only works for the fragment itself
+        ChartDataViewModel mChartDataViewModel = ViewModelProviders.of(this, factory).get(ChartDataViewModel.class);
+
+        mChartDataViewModel.setmChartSettingChanged(false);
+
         mChartDataViewModel.getmExpenseListEntry().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
-
                 mCategoryExpense = new HashMap<>();
-                initializeHashMap(mCategoryExpense, FakeTestingData.getSpendCategory());
-
-                for (TransactionEntry entry : transactionEntryList) {
-//                    sumValuesToCategory(entry, mCategoryRevenue, mCategoryExpense);
-//                    sumValuesToCategory(entry, mCategoryRevenue, mCategoryExpense);
+                initializeHashMap(mCategoryExpense, FakeTestingData.getExpenseCategory());
+                for (int i = 0; i < transactionEntryList.size(); i++) {
+                    TransactionEntry entry = transactionEntryList.get(i);
                     categorizeExpenseValues(entry, mCategoryExpense);
-
                 }
-
-                setDataForRevenueNExpendseChart(CHART_EXPENSE);
+                setDataForCurrentChart(CHART_EXPENSE);
             }
         });
 
         mChartDataViewModel.getmRevenueListEntry().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
+
                 mCategoryRevenue = new HashMap<>();
+
                 initializeHashMap(mCategoryRevenue, FakeTestingData.getRevenueCategory());
 
                 for (TransactionEntry entry : transactionEntryList) {
                     categorizeRevenueValues(entry, mCategoryRevenue);
                 }
-                setDataForRevenueNExpendseChart(CHART_REVENUE);
+
+                setDataForCurrentChart(CHART_REVENUE);
 
             }
         });
@@ -179,33 +209,28 @@ public class ChartFragment extends Fragment implements
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
 
-                Log.d("test_ff2", "getmAllListEntryPeriod  -> onChanged:  total ->" + transactionEntryList.size());
-
-                //todo, add each into dataset of multiple barchart
-                setDataComparisonBarChart(transactionEntryList);
-
+                setDataHistoryBarChart(transactionEntryList);
             }
         });
-
     }
 
 
-    private void initializeComparisonBarChart() {
-        mBarChartComparison.setOnChartValueSelectedListener(this);
-        mBarChartComparison.getDescription().setEnabled(false);
-        //todo, may need to change this
-        mBarChartComparison.setPinchZoom(true);
-        mBarChartComparison.setDrawBarShadow(false);
-        mBarChartComparison.setDrawGridBackground(false);
+    private void initializeHistoryBarChart() {
 
-        MyMarkerView mv = new MyMarkerView(mAppCompatActivity, R.layout.barchart_marker_view);
+        mHistoryBarChart.setOnChartValueSelectedListener(this);
+        mHistoryBarChart.getDescription().setEnabled(true);
 
+        mHistoryBarChart.setPinchZoom(true);
+        mHistoryBarChart.setDrawBarShadow(false);
+        mHistoryBarChart.setDrawGridBackground(false);
+
+        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view);
         // For bounds control
-        mv.setChartView(mBarChartComparison);
-        // Set the marker to the mBarChartComparison
-        mBarChartComparison.setMarker(mv);
+        mv.setChartView(mHistoryBarChart);
+        // Set the marker to the mHistoryBarChart
+        mHistoryBarChart.setMarker(mv);
 
-        Legend l = mBarChartComparison.getLegend();
+        Legend l = mHistoryBarChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
@@ -213,40 +238,33 @@ public class ChartFragment extends Fragment implements
         l.setYOffset(0f);
         l.setXOffset(10f);
         l.setYEntrySpace(0f);
-        l.setTextSize(8f);
+        l.setTextSize(12f);
+
+        if (mHistoryPeriodType != R.id.dialog_history_period_by_month) {
+            /*display an extra legend to explain the meaning of weekly x-axis label*/
+            List<LegendEntry> entries = new ArrayList<>();
+            LegendEntry lEntry = new LegendEntry();
+            lEntry.label = getString(R.string.chart_history_chart_description);
+            lEntry.formColor = Color.WHITE;
+            entries.add(lEntry);
+            l.setExtra(entries);
+        }
 
 
-        XAxis xAxis = mBarChartComparison.getXAxis();
-
-        xAxis.setGranularity(1f);
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        ValueFormatter xAxisFormatter = new MonthValueFormatter(mBarChartComparison);
-        xAxis.setValueFormatter(xAxisFormatter);
-//        xAxis.setValueFormatter(new ValueFormatter() {
-//            @Override
-//            public String getFormattedValue(float value) {
-//                return String.valueOf((int) value);
-//            }
-//        });
-
-
-        YAxis leftAxis = mBarChartComparison.getAxisLeft();
+        YAxis leftAxis = mHistoryBarChart.getAxisLeft();
         leftAxis.setValueFormatter(new LargeValueFormatter());
         leftAxis.setDrawGridLines(false);
         /*Sets the top axis space in percent of the full range.*/
         leftAxis.setSpaceTop(35f);
 
         leftAxis.setAxisMinimum(0f);
-        mBarChartComparison.getAxisRight().setEnabled(false);
+        mHistoryBarChart.getAxisRight().setEnabled(false);
 
 
     }
 
 
-    private void setDataComparisonBarChart(List<TransactionEntry> allEntries) {
-
+    private void setDataHistoryBarChart(List<TransactionEntry> allEntries) {
 
         float groupSpace = 0.08f;
         float barSpace = 0.06f;
@@ -255,211 +273,304 @@ public class ChartFragment extends Fragment implements
         List<Float> chartDataRevenueSums = new ArrayList<>();
         List<Float> chartDataExpenseSums = new ArrayList<>();
 
-        //seperating allEntries to individual period
-
-        processEntireEntriesToByPeriodEnries(allEntries, chartDataRevenueSums, chartDataExpenseSums);
-
-        Log.d("test_ff2", "chartDataRevenueSums.size(): " + chartDataRevenueSums.size());
-        Log.d("test_ff2", "chartDataExpenseSums.size(): " + chartDataExpenseSums.size());
-
-        for (int i =0; i< chartDataExpenseSums.size(); i++) {
-            Log.d("test_ff3", "fffffffff: " + chartDataExpenseSums.get(i));
-            Log.d("test_ff3", "fffffffff: " + chartDataRevenueSums.get(i));
-
-        }
-
+        extractEntriesToRevenueAndExpenseVariableForHistoryChart(allEntries, chartDataRevenueSums, chartDataExpenseSums);
 
         ArrayList<BarEntry> mRevenuesBarEntries = new ArrayList<>();
         ArrayList<BarEntry> mExpensesBarEntries = new ArrayList<>();
 
-        for (int i = 0; i < mNumberOfMonthsToCompare; i++) {
+        Log.d("test_tt", "bar entries before fill data" + mRevenuesBarEntries.toString() + "  ()()()  " + mExpensesBarEntries.toString());
+        convertTwoSumListIntoBarEntriesList(mRevenuesBarEntries, mExpensesBarEntries, chartDataRevenueSums, chartDataExpenseSums);
+        Log.d("test_tt", "bar entries after fill data" + mRevenuesBarEntries.toString() + "  ()()()  " + mExpensesBarEntries.toString());
 
-
-            //todo
-
-
-
-//            int currentMonth = LocalDate.now().minusMonths(mNumberOfMonthsToCompare-i).getMonthOfYear();
-            int currentMonth =  LocalDate.now().minusMonths(mNumberOfMonthsToCompare-i).getMonthOfYear()+
-                    LocalDate.now().minusMonths(mNumberOfMonthsToCompare-i).getYear()*100;
-            mRevenuesBarEntries.add(new BarEntry( currentMonth, chartDataRevenueSums.get(i)));
-            mExpensesBarEntries.add(new BarEntry(currentMonth, chartDataExpenseSums.get(i)));
-        }
 
         BarDataSet barDataSetR, barDataSetE;
 
-        if (mBarChartComparison.getData() != null && mBarChartComparison.getData().getDataSetCount() > 0) {
 
-            barDataSetR = (BarDataSet) mBarChartComparison.getData().getDataSetByIndex(0);
-            barDataSetE = (BarDataSet) mBarChartComparison.getData().getDataSetByIndex(1);
-            barDataSetR.setValues(mRevenuesBarEntries);
-            barDataSetE.setValues(mExpensesBarEntries);
-            mBarChartComparison.getData().notifyDataChanged();
-            mBarChartComparison.notifyDataSetChanged();
-        }else{
-            barDataSetR = new BarDataSet(mRevenuesBarEntries, getString(R.string.bar_chart_comparison_label_revenue));
-            barDataSetR.setColor(getResources().getColor(R.color.color_money_in));
-            barDataSetE = new BarDataSet(mExpensesBarEntries, getString(R.string.bar_chart_comparison_label_expense));
-            barDataSetE.setColor(getResources().getColor(R.color.color_money_out));
+        barDataSetR = new BarDataSet(mRevenuesBarEntries, getString(R.string.bar_chart_comparison_label_revenue));
+        barDataSetR.setColor(getResources().getColor(R.color.color_money_in));
+        barDataSetE = new BarDataSet(mExpensesBarEntries, getString(R.string.bar_chart_comparison_label_expense));
+        barDataSetE.setColor(getResources().getColor(R.color.color_money_out));
 
-            BarData data = new BarData(barDataSetR, barDataSetE);
-            data.setValueFormatter(new LargeValueFormatter());
+        BarData data = new BarData(barDataSetR, barDataSetE);
+        data.setValueFormatter(new MyLargeValueFormatter());
 
-            mBarChartComparison.setData(data);
-        }
+        mHistoryBarChart.setData(data);
 
         // specify the width each bar should have
-        mBarChartComparison.getBarData().setBarWidth(barWidth);
+        mHistoryBarChart.getBarData().setBarWidth(barWidth);
 
+        int barChartXAxisStartTime;
 
-        //todo
+        if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
+            barChartXAxisStartTime = Integer.parseInt(
+                    DateTimeFormat.forPattern("YYYYMM").print(
+                            LocalDate.now().minusMonths(mNumberOfPeriodsToCompare)));
+            //todo   THIS IS AFTER FORMATER
+            Log.d("test_ff7", " month starting point  " + barChartXAxisStartTime);
 
+        } else {
+            barChartXAxisStartTime = 0;
+            Log.d("test_flow555", " week  starting point  " + barChartXAxisStartTime);
 
-        int startMonth = LocalDate.now().minusMonths(mNumberOfMonthsToCompare).getMonthOfYear()+
-                LocalDate.now().minusMonths(mNumberOfMonthsToCompare).getYear()*100;
+        }
 
-        // restrict the x-axis range
-        mBarChartComparison.getXAxis().setAxisMinimum(startMonth);
+        XAxis xAxis = mHistoryBarChart.getXAxis();
 
-        // barData.getGroupWith(...) is a helper that calculates the width each group needs based on the provided parameters
-        mBarChartComparison.getXAxis().setAxisMaximum(startMonth + mBarChartComparison.getBarData().getGroupWidth(groupSpace, barSpace) * mNumberOfMonthsToCompare);
-        mBarChartComparison.groupBars(startMonth, groupSpace, barSpace);
-        mBarChartComparison.invalidate();
+        xAxis.setGranularity(1f);
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMinimum(barChartXAxisStartTime);
+        xAxis.setAxisMaximum(barChartXAxisStartTime + mHistoryBarChart.getBarData().getGroupWidth(groupSpace, barSpace) * mNumberOfPeriodsToCompare);
+        if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
+            ValueFormatter xAxisFormatter = new MonthValueFormatter();
+            xAxis.setValueFormatter(xAxisFormatter);
+        } else {
 
+            WeekValueFormatter xAxisFormatter = new WeekValueFormatter(mHistoryBarChart);
+            xAxisFormatter.setMaxPeriod(mNumberOfPeriodsToCompare);
+            xAxis.setValueFormatter(xAxisFormatter);
+
+        }
+        mHistoryBarChart.groupBars(barChartXAxisStartTime, groupSpace, barSpace);
+
+        mHistoryBarChart.invalidate();
 
     }
 
-    private void processEntireEntriesToByPeriodEnries(List<TransactionEntry> allEntries,List<Float> revenues,List<Float> expenses) {
+    private void convertTwoSumListIntoBarEntriesList(
+            ArrayList<BarEntry> mRevenuesBarEntries, ArrayList<BarEntry> mExpensesBarEntries,
+            List<Float> revenueSumList, List<Float> expenseSumList) {
+
+        /* i < revenueSumList.size() is to handle the case where there is no entrys */
+        for (int i = 0; i < mNumberOfPeriodsToCompare && i < revenueSumList.size(); i++) {
+
+            if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
+                //display by month-period data where x-axis value will be displayed on YYYYMM
+
+                float currentMonth = Integer.parseInt(
+                        DateTimeFormat.forPattern("YYYYMM").print(
+                                LocalDate.now().minusMonths(mNumberOfPeriodsToCompare - i)));
+                Log.d("test_ff7", "currentMonth is : " + currentMonth);
+                mRevenuesBarEntries.add(new BarEntry(currentMonth, revenueSumList.get(i)));
+                mExpensesBarEntries.add(new BarEntry(currentMonth, expenseSumList.get(i)));
+            } else {
+                Log.d("test_ff7", "currentweek is : " + i);
+
+                //display by week-period data whic x-axis value will be displayed by number of weeks
+                mRevenuesBarEntries.add(new BarEntry(i, revenueSumList.get(i)));
+                mExpensesBarEntries.add(new BarEntry(i, expenseSumList.get(i)));
+            }
+        }
+    }
+
+
+    private void extractEntriesToRevenueAndExpenseVariableForHistoryChart
+            (List<TransactionEntry> allEntries, List<Float> revenues, List<Float> expenses) {
+
+
+        int testCounterRevenue = 0;
+        int testCounterExpense = 0;
+        int testCounterTotalOfEntries = 0;
 
         /*pointer in odd number to get ending date of a period*/
         int pointerForDates = 1;
-        float tempRevenue = 0f;
-        float tempExpense = 0f;
+        float tempRevenueSum = 0f;
+        float tempExpenseSum = 0f;
         for (TransactionEntry entry : allEntries) {
 
-            //when this reach last period, it will not add them
-            if (entry.getTime() > monthsDateListForEachPeriod.get(pointerForDates)) {
-                if (pointerForDates < monthsDateListForEachPeriod.size() - 1) {
-                    pointerForDates += 2;
-                }
-
-                revenues.add(tempRevenue);
-                tempRevenue = 0;
-                expenses.add(tempExpense);
-                tempExpense = 0;
+            while (entry.getTime() > mDateListForEachPeriod.get(pointerForDates)) {
+                revenues.add(tempRevenueSum);
+                tempRevenueSum = 0;
+                expenses.add(tempExpenseSum);
+                tempExpenseSum = 0;
+                pointerForDates += 2;
 
             }
 
             if (entry.getAmount() >= 0) {
                 //add to revenue
-                tempRevenue += entry.getAmount();
+                tempRevenueSum += entry.getAmount();
+                testCounterRevenue++;
             } else {
                 //add to expense
-                tempExpense += Math.abs(entry.getAmount());
+                tempExpenseSum += Math.abs(entry.getAmount());
+                testCounterExpense++;
             }
 
-
         }
-
         //add last period's sum
-        revenues.add(tempRevenue);
-        expenses.add(tempExpense);
+        revenues.add(tempRevenueSum);
+        expenses.add(tempExpenseSum);
+
 
     }
 
-    private float[] sumEntriesValues(List<TransactionEntry> entries) {
-        float[] output = new float[2];
-        float revenueSum = 0f;
-        float expenseSum = 0f;
-        for (TransactionEntry entry : entries) {
-            if (entry.getAmount() >= 0) {
-                revenueSum += entry.getAmount();
+
+
+    private void setDataForCurrentChart(String type) {
+
+        if (mUserSelection.equals(CATEGORY_PIECHART)) {
+            enableCurrentPieChart();
+            if (type.equals(CHART_EXPENSE)) {
+                initializePieChart(mCurrentPieChartExpense, CHART_EXPENSE);
+
+                setPieChartData(mCurrentPieChartExpense, mCategoryExpense, CHART_EXPENSE);
+
             } else {
-                expenseSum += entry.getAmount();
+                initializePieChart(mCurrentPieChartRevenue, CHART_REVENUE);
+                setPieChartData(mCurrentPieChartRevenue, mCategoryRevenue, CHART_REVENUE);
+            }
+
+        } else {
+            enableCurrentBarChart();
+
+            if (type.equals(CHART_EXPENSE)) {
+                //populate CHART_EXPENSE chart
+                initializeCurrentBarChart(mCurrentBarChartExpense);
+                setCurrentBarChartData(mCurrentBarChartExpense,mCategoryExpense, CHART_EXPENSE);
+            }else{
+                //populate CHART_REVENUE chart
+                initializeCurrentBarChart(mCurrentBarChartRevenue);
+                setCurrentBarChartData(mCurrentBarChartRevenue,mCategoryRevenue, CHART_REVENUE);
+
             }
 
         }
-        output[0] = revenueSum;
-        output[1] = expenseSum;
+
+    }
+
+    private void setCurrentBarChartData(BarChart barChart, HashMap<String, Float> hashMap, String type) {
+
+        ArrayList<BarEntry> values = new ArrayList<>();
+        String[] categoriesArray;
+        String barDataSetString;
+        List<Integer> colors;
+
+        if(type.equals(CHART_REVENUE)){
+            categoriesArray = new String[FakeTestingData.getRevenueCategory().size()];
+            barDataSetString =getString(R.string.chart_name_text_revenue);
+            colors = mColors.getNonRepeatingLightColors(FakeTestingData.getRevenueCategory().size());
+        }else{
+            categoriesArray =  new String[FakeTestingData.getExpenseCategory().size()];
+            barDataSetString =getString(R.string.chart_name_text_expense);
+            colors = mColors.getNonRepeatingDarkColors(FakeTestingData.getExpenseCategory().size());
+
+        }
+        extractHashMapToArrayListOfBarEntryNCategories(hashMap,values,categoriesArray);
+
+        BarDataSet barDataSet;
+
+        barDataSet = new BarDataSet(values, barDataSetString);
+        barDataSet.setDrawIcons(false);
+
+        barDataSet.setColors(colors);
+
+        int[] colorArray = covertFromListToArray(colors);
+
+
+        Legend l = barChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setWordWrapEnabled(true);
+        l.setDrawInside(true);
+        l.setYOffset(0f);
+        l.setXOffset(0f);
+        l.setYEntrySpace(0f);
+        l.setTextSize(10f);
+
+        l.setExtra(colorArray,categoriesArray);
+
+
+        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view, categoriesArray);
+        // For bounds control
+        mv.setChartView(barChart);
+        barChart.setMarker(mv);
+
+        BarData data = new BarData(barDataSet);
+        data.setBarWidth(0.9f);
+        data.setValueFormatter(new MyLargeValueFormatter());
+
+
+        barChart.setData(data);
+
+
+        XAxis xAxis = barChart.getXAxis();
+
+        xAxis.setGranularity(1f);
+
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMaximum(categoriesArray.length);
+        xAxis.setValueFormatter(new LabelFormatterCurrentBarChart(categoriesArray));
+
+        barChart.invalidate();
+
+    }
+
+    private int[] covertFromListToArray(List<Integer> colors) {
+        int[] output = new int[colors.size()];
+        for (int i = 0; i < colors.size(); i++) {
+            output[i] = colors.get(i);
+        }
         return output;
     }
 
+    private void initializeCurrentBarChart(BarChart barChart) {
+        barChart.setOnChartValueSelectedListener(this);
+        barChart.getDescription().setEnabled(false);
 
-    private void setDataStartingDate() {
-        mChartDataViewModel.setmRevenueListEntry(mDisplayStartingDate);
-        mChartDataViewModel.setmExpenseListEntry(mDisplayStartingDate);
+
+
+        barChart.setPinchZoom(false);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawGridBackground(false);
+
+
+
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setValueFormatter(new LargeValueFormatter());
+        leftAxis.setDrawGridLines(false);
+        /*Sets the top axis space in percent of the full range.*/
+        leftAxis.setSpaceTop(35f);
+
+        leftAxis.setAxisMinimum(0f);
+        barChart.getAxisRight().setEnabled(false);
+
     }
 
-    private void setComparisonMonths() {
-
-        monthsDateListForEachPeriod = UnitUtil.getArrayOfStartEndDatesOnNumberOfCompareMonths(mNumberOfMonthsToCompare);
-//        for (int[] months : monthsDateListForEachPeriod) {
-//            //todo, called the DB multiple times to get data for multiple data
-//            mChartDataViewModel.setmAllListEntryPeriod(months[0], months[1]);
-//        }
-        int startDate = monthsDateListForEachPeriod.get(0);
-
-        //get the last value in the monthsDateListForEachPeriod;
-        int endDate = monthsDateListForEachPeriod.get(monthsDateListForEachPeriod.size() - 1);
-        mChartDataViewModel.setmAllListEntryPeriod(startDate, endDate);
-        Log.d("test_ff2", "setComparisonMonths: startdate+enddate is " + startDate + " + " + endDate);
+    private void enableCurrentPieChart(){
+        /*enable piechart, disable barchart*/
+        mCurrentBarChartExpense.setVisibility(View.GONE);
+        mCurrentBarChartRevenue.setVisibility(View.GONE);
+        mCurrentPieChartRevenue.setVisibility(View.VISIBLE);
+        mCurrentPieChartExpense.setVisibility(View.VISIBLE);
     }
 
-    private void setDataForRevenueNExpendseChart(String type) {
-//        int numRevenueCategory = FakeTestingData.getRevenueCategory().size();
-//        int numExpenseCategory = FakeTestingData.getSpendCategory().size();
-//
-//        int numberOfDateInPieChart = numExpenseCategory;
+    private void enableCurrentBarChart(){
+        /*enable barchart, disable piechart*/
+        mCurrentPieChartExpense.setVisibility(View.GONE);
+        mCurrentPieChartRevenue.setVisibility(View.GONE);
+        mCurrentBarChartExpense.setVisibility(View.VISIBLE);
+        mCurrentBarChartRevenue.setVisibility(View.VISIBLE);
+    }
 
-        if (userSelection.equals(CATEGORY_PIECHART)) {
-            //display piechart, disable barchart
-
-            if (type.equals(CHART_EXPENSE)) {
-                initializePieChart(
-                        mPieChartExpense,
-                        generateCenterSpannableText(
-                                getString(R.string.chart_pie_center_text_expense), mCategoryExpense.size()
-                        ),
-                        mCategoryExpense,
-                        CHART_EXPENSE);
-            } else {
-                initializePieChart(
-                        mPieChartRevenue,
-                        generateCenterSpannableText(
-                                getString(R.string.chart_pie_center_text_revenue), mCategoryRevenue.size()
-                        ),
-                        mCategoryRevenue,
-                        CHART_REVENUE
-                );
-            }
+    private void initializePieChart(PieChart chart, String chartType) {
 
 
-        } else {
-            //display barchart, disable piechart
+        //todo enabled percentage
+        //enable percentage
+        if(mIsPieChartShowPercentage){
+            chart.setUsePercentValues(true);
+        }else{
+            chart.setUsePercentValues(false);
         }
-
-
-        //display multiple barchart
-
-
-    }
-
-    private void initializePieChart(
-            PieChart chart,
-            SpannableString inputString,
-            HashMap<String, Float> categoryHashMap,
-            String chartType) {
-
-//        chart.setUsePercentValues(true);
         chart.getDescription().setEnabled(false);
 
         //chart.setExtraOffsets(5, 10, 5, 5);
 
         chart.setDragDecelerationFrictionCoef(0.9f);
-
-        //chart.setCenterTextTypeface(tfLight);
-
-        chart.setCenterText(inputString);
 
         chart.setDrawHoleEnabled(true);
 
@@ -494,30 +605,13 @@ public class ChartFragment extends Fragment implements
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
 
-        if (chartType.equals(CHART_EXPENSE)) {
-            chart.setEntryLabelColor(Color.WHITE);
-        } else {
-            chart.setEntryLabelColor(Color.BLACK);
-
-        }
-
-        //        chart.setEntryLabelTypeface(tfRegular);
-
         chart.setEntryLabelTextSize(12f);
 
-        setPieChartData(chart, categoryHashMap, chartType);
     }
 
     private void setPieChartData(PieChart chart, HashMap<String, Float> categoryHashMap, String chartType) {
         //PieEntry entry = new PieEntry(float, String(name));
-        ArrayList<PieEntry> entries = new ArrayList<>();
-
-        for (Map.Entry<String, Float> entry : categoryHashMap.entrySet()) {
-            String key = entry.getKey();
-            Float value = entry.getValue();
-            entries.add(new PieEntry(value, key));
-
-        }
+        ArrayList<PieEntry> entries = fromHashMapToArrayListOfPieEntry(categoryHashMap);
 
         PieDataSet pieDataSet = new PieDataSet(entries, "Categories");
         pieDataSet.setDrawIcons(false);
@@ -526,29 +620,49 @@ public class ChartFragment extends Fragment implements
         pieDataSet.setSelectionShift(9f);
 
         ArrayList<Integer> colors;
+
+        SpannableString charCenterTxt;
+
+        PieData data = new PieData();
+
+
         if (chartType.equals(CHART_EXPENSE)) {
+            chart.setEntryLabelColor(Color.WHITE);
+            pieDataSet.setValueTextColor(Color.WHITE);
+
             colors = mColors.getNonRepeatingDarkColors(entries.size());
-        } else {
-            colors = mColors.getNonRepeatingLightColors(entries.size());
-        }
 
-        pieDataSet.setColors(colors);
 
-        PieData data = new PieData(pieDataSet);
-//        data.setValueFormatter(new PercentFormatter(chart));
-        data.setValueTextSize(11f);
-        if (chartType.equals(CHART_EXPENSE)) {
             data.setValueTextColor(Color.WHITE);
+            charCenterTxt = generateCenterSpannableText(
+                    getString(R.string.chart_name_text_expense),
+                    mCategoryExpense.size(),
+                    entries.size()
+            );
         } else {
-            data.setValueTextColor(Color.BLACK);
-        }
+            chart.setEntryLabelColor(Color.BLACK);
+            pieDataSet.setValueTextColor(Color.BLACK);
+            colors = mColors.getNonRepeatingLightColors(entries.size());
 
-//        data.setValueTypeface(tfLight);
+            data.setValueTextColor(Color.BLACK);
+            charCenterTxt = generateCenterSpannableText(
+                    getString(R.string.chart_name_text_revenue),
+                    mCategoryRevenue.size(),
+                    entries.size()
+            );
+        }
+        pieDataSet.setColors(colors);
+        ;
+
+        data.setDataSet(pieDataSet);
+        data.setValueFormatter(new MyPercentFormatter(chart));
+        data.setValueTextSize(11f);
         chart.setData(data);
+
+        chart.setCenterText(charCenterTxt);
 
         // undo all highlights
         chart.highlightValues(null);
-
         chart.invalidate();
     }
 
@@ -563,11 +677,39 @@ public class ChartFragment extends Fragment implements
         //do nothing
     }
 
+
+    private ArrayList<PieEntry> fromHashMapToArrayListOfPieEntry(HashMap<String, Float> categoryHashMap){
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        for (Map.Entry<String, Float> entry : categoryHashMap.entrySet()) {
+            String key = entry.getKey();
+            Float value = entry.getValue();
+            if (value != 0.0f) {
+                /*do not display 0 value entry in piechart*/
+                entries.add(new PieEntry(value, key));
+            }
+        }
+        return entries;
+    }
+    private void extractHashMapToArrayListOfBarEntryNCategories(
+            HashMap<String, Float> categoryHashMap, ArrayList<BarEntry> entries,  String[] categoriesArray){
+
+        int counter = 0;
+        for (Map.Entry<String, Float> entry : categoryHashMap.entrySet()) {
+            String key = entry.getKey();
+
+            Float value = entry.getValue();
+
+            entries.add(new BarEntry(counter, value));
+            categoriesArray[counter]= key;
+            counter++;
+        }
+
+    }
+
     private void initializeHashMap(HashMap<String, Float> stringValueSet, List<String> listCategory) {
         for (String s : listCategory) {
             stringValueSet.put(s, 0f);
         }
-
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -596,7 +738,7 @@ public class ChartFragment extends Fragment implements
         } else {
                 /*
                     if this category was not in user's current category
-                    e.g. untagged transactions, add to others
+                    e.g. untagged transactions, past deleted category, add to others
                 */
             temp = inputHashMap.get(getString(R.string.category_others));
             temp += entry.getAmount();
@@ -605,25 +747,114 @@ public class ChartFragment extends Fragment implements
     }
 
 
-    private SpannableString generateCenterSpannableText(String input, int numCategory) {
+    private SpannableString generateCenterSpannableText(String input, int numCategory, int availableCategory) {
         String tempCategory = String.valueOf(numCategory);
-        int length = tempCategory.length();
+        String tempAvailable = String.valueOf(availableCategory);
+        int lengthTotalCategory = tempCategory.length();
+        int lengthAvailableCategory = tempAvailable.length();
 
-        SpannableString s = new SpannableString(input + "\nYour have " + numCategory + " categories");
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, input.length(), 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), input.length(), s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), input.length(), s.length(), 0);
-        s.setSpan(new RelativeSizeSpan(.8f), input.length(), s.length(), 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - (11 + length), s.length() - 11, 0);
+
+        SpannableString s;
+        if (numCategory == availableCategory) {
+            s = new SpannableString(input + "\nData from all " + numCategory + " categories");
+            s.setSpan(new RelativeSizeSpan(1.7f), 0, input.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), input.length(), s.length(), 0);
+            s.setSpan(new ForegroundColorSpan(Color.GRAY), input.length(), s.length(), 0);
+            s.setSpan(new RelativeSizeSpan(.8f), input.length(), s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
+            /*set keywords color*/
+            s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()),
+                    s.length() - (11 + lengthTotalCategory),
+                    s.length() - 11,
+                    0);
+
+        } else {
+            s = new SpannableString(input + "\nData comes from " + availableCategory + "/" + numCategory + " categories");
+            s.setSpan(new RelativeSizeSpan(1.7f), 0, input.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), input.length(), s.length(), 0);
+            s.setSpan(new ForegroundColorSpan(Color.GRAY), input.length(), s.length(), 0);
+            s.setSpan(new RelativeSizeSpan(.8f), input.length(), s.length(), 0);
+            /*set keywords color*/
+            s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()),
+                    s.length() - (11 + lengthTotalCategory + lengthAvailableCategory + 1),
+                    s.length() - (11 + lengthTotalCategory + 1),
+                    0);
+            s.setSpan(new StyleSpan(Typeface.BOLD_ITALIC),
+                    s.length() - (11 + lengthTotalCategory + lengthAvailableCategory + 1),
+                    s.length() - (11 + lengthTotalCategory + 1),
+                    0);
+
+
+        }
+
+
         return s;
     }
 
-    private void setmNumberOfMonthsToCompare(int input) {
-        mNumberOfMonthsToCompare = input;
-        mRevenuesBarEntries = new ArrayList<>();
-        mExpensesBarEntries = new ArrayList<>();
+
+
+
+    private void loadPreferenceSetting() {
+
+        mHistoryPeriodType = mAppPreferences.getInt(
+                getString(R.string.setting_chart_dialog_history_period_type_key),
+                R.id.dialog_history_period_by_month);
+
+        mNumberOfPeriodsToCompare = mAppPreferences.getInt(
+                getString(R.string.setting_chart_dialog_history_period_number_key),
+                getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));
+
+        Log.d("test_ff7", "mNumberOfPeriodsToCompare  is assign : " + mNumberOfPeriodsToCompare);
+
+        int currentChartType = mAppPreferences.getInt(
+                getString(R.string.setting_chart_dialog_current_chart_type_key),
+                R.id.radioButton_current_period_type_piechart
+        );
+        if (currentChartType == R.id.radioButton_current_period_type_piechart) {
+            mUserSelection = CATEGORY_PIECHART;
+        } else {
+            mUserSelection = CATEGORY_BARCHART;
+        }
+
+        mCurrentPeriodType = mAppPreferences.getInt(
+                getString(R.string.setting_chart_dialog_current_period_type_key),
+                R.id.radioButton_current_period_type_month
+        );
+
+        mIsPieChartShowPercentage = mAppPreferences.getBoolean(
+                getString(R.string.setting_chart_dialog_percentage_amount_key),
+                getResources().getBoolean(R.bool.setting_char_dialog_percentage_amount_switch_default)
+        );
+
+
+        setDataCurrentPeriod();
+        setPeriodForHistoryChart();
     }
 
+    private void setDataCurrentPeriod() {
+        if (mCurrentPeriodType == R.id.radioButton_current_period_type_month) {
+            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentMonth();
+        } else {
+            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentWeek();
+        }
+    }
 
+    private void setPeriodForHistoryChart() {
+
+        if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
+
+            mDateListForEachPeriod =
+                    UnitUtil.getArrayOfStartEndDatesOnNumberOfCompareMonths(mNumberOfPeriodsToCompare);
+        } else {
+
+            mDateListForEachPeriod =
+                    UnitUtil.getArrayOfStartEndDatesOnNumberOfCompareWeeks(mNumberOfPeriodsToCompare);
+        }
+
+        mHistoryChartStartDate = mDateListForEachPeriod.get(0);
+
+        //get the last value in the mDateListForEachPeriod;
+        mHistoryChartEndDate = mDateListForEachPeriod.get(mDateListForEachPeriod.size() - 1);
+
+    }
 }

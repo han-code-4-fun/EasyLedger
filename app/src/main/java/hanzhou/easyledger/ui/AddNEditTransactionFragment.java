@@ -48,7 +48,7 @@ import hanzhou.easyledger.viewmodel.AddTransactionViewModel;
  * A simple {@link Fragment} subclass.
  */
 public class AddNEditTransactionFragment extends Fragment
-implements DatePickerDialog.OnDateSetListener{
+        implements DatePickerDialog.OnDateSetListener {
 
     // Constant for default task id to be used when not in update mode
     private static final int DEFAULT_TASK_ID = -1;
@@ -103,8 +103,6 @@ implements DatePickerDialog.OnDateSetListener{
     private int mPositionInSpinner;
 
 
-
-
     public AddNEditTransactionFragment() {
         // Required empty public constructor
     }
@@ -120,13 +118,14 @@ implements DatePickerDialog.OnDateSetListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("test_flow4", "onCreateView");
+
         toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
 
 //        mIsNewTransaction = false;
-
-
-        //setup view
         View rootView = inflater.inflate(R.layout.fragment_add_n_edit_transaction, container, false);
+
+
         mEditTextAmount = rootView.findViewById(R.id.add_edit_transaction_amount);
 
         mEditTextRemark = rootView.findViewById(R.id.add_edit_transaction_remark);
@@ -143,10 +142,13 @@ implements DatePickerDialog.OnDateSetListener{
         mTVCategory = rootView.findViewById(R.id.add_edit_transaction_category_display_current);
 
         mMoneyIn = rootView.findViewById(R.id.add_edit_transaction_btn_money_in);
+        mMoneyIn.init(mAppCompatActivity);
 
         mTvMoneyIn = rootView.findViewById(R.id.add_edit_transaction_tv_money_in);
 
+
         mMoneyOut = rootView.findViewById(R.id.add_edit_transaction_btn_money_out);
+        mMoneyOut.init(mAppCompatActivity);
 
         mTvMoneyOut = rootView.findViewById(R.id.add_edit_transaction_tv_money_out);
 
@@ -155,7 +157,8 @@ implements DatePickerDialog.OnDateSetListener{
         mSaveBtn = rootView.findViewById(R.id.add_edit_transaction_save_btn);
         mSaveBtn.setOnClickListener(saveBtnOnlickListener);
 
-        mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
+        Log.d("test_flow4", "before create view model");
+        mAdapterActionViewModel = ViewModelProviders.of(getActivity()).get(AdapterNActionBarViewModel.class);
 
         //setup recyclerview
         RecyclerView.LayoutManager layoutManager =
@@ -166,7 +169,6 @@ implements DatePickerDialog.OnDateSetListener{
         mCategoryAdapter = new CategoryAdapter(getContext(), mAdapterActionViewModel);
 
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
-
 
 
         //setup Spinner
@@ -182,6 +184,7 @@ implements DatePickerDialog.OnDateSetListener{
 
 
         return rootView;
+
     }
 
     @Override
@@ -192,8 +195,6 @@ implements DatePickerDialog.OnDateSetListener{
 
         mAdapterActionViewModel.setmIsInAddNEditFragment(true);
 
-
-
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_TASK_ID)) {
             mTransactionId = savedInstanceState.getInt(INSTANCE_TASK_ID, DEFAULT_TASK_ID);
         }
@@ -201,18 +202,18 @@ implements DatePickerDialog.OnDateSetListener{
         mAdapterActionViewModel.getmClickedEntryID().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                Log.d("test_flow11", "getmClickedEntryID observer onChanged: "+ integer);
+                Log.d("test_flow11", "getmClickedEntryID observer onChanged: " + integer);
                 mAdapterActionViewModel.getmClickedEntryID().removeObservers(getViewLifecycleOwner());
                 if (integer != null) {
-                    Log.d("test_flow8", "getmClickedEntryID the id is "+ integer);
+                    Log.d("test_flow8", "getmClickedEntryID the id is " + integer);
                     /*  edit an existing transaction*/
                     toolbar.setTitle(R.string.title_edit_transaction);
                     mTransactionId = integer;
-                    AddTransactionVMFactory factory =new AddTransactionVMFactory(mDB, mTransactionId);
+                    AddTransactionVMFactory factory = new AddTransactionVMFactory(mDB, mTransactionId);
 
                     //todo, check error
                     /* this viewmodel can only stay within the fragment */
-                    final AddTransactionViewModel mAddTransactionViewModel = ViewModelProviders.of(AddNEditTransactionFragment.this,factory).get(AddTransactionViewModel.class);
+                    final AddTransactionViewModel mAddTransactionViewModel = ViewModelProviders.of(AddNEditTransactionFragment.this, factory).get(AddTransactionViewModel.class);
                     mAddTransactionViewModel.getTransactionEntry().observe(getViewLifecycleOwner(), new Observer<TransactionEntry>() {
                         @Override
                         public void onChanged(TransactionEntry transactionEntry) {
@@ -240,7 +241,6 @@ implements DatePickerDialog.OnDateSetListener{
                 mTVCategory.setText(s);
             }
         });
-
 
 
         mMoneyIn.setOnClickListener(moneyInBtnListener);
@@ -273,7 +273,7 @@ implements DatePickerDialog.OnDateSetListener{
     }
 
     private void setMoneyInActive() {
-        Log.d("test_flow7", " response money in is "+ mMoneyIn.isChecked());
+        Log.d("test_flow7", " response money in is " + mMoneyIn.isChecked());
 
         mMoneyIn.setChecked(true);
         mTvMoneyIn.setTextColor(getResources().getColor(R.color.color_money_in));
@@ -283,7 +283,7 @@ implements DatePickerDialog.OnDateSetListener{
     }
 
     private void setMoneyInDeActive() {
-        Log.d("test_flow7", " response money in is "+ mMoneyIn.isChecked());
+        Log.d("test_flow7", " response money in is " + mMoneyIn.isChecked());
 
         mMoneyIn.setChecked(false);
         mTvMoneyIn.setTextColor(getResources().getColor(R.color.color_deactive));
@@ -291,8 +291,8 @@ implements DatePickerDialog.OnDateSetListener{
     }
 
     private void setMoneyOutActive() {
-        Log.d("test_flow7", "response money out is "+ mMoneyOut.isChecked());
-        mCategoryAdapter.setData(FakeTestingData.getSpendCategory());
+        Log.d("test_flow7", "response money out is " + mMoneyOut.isChecked());
+        mCategoryAdapter.setData(FakeTestingData.getExpenseCategory());
 
         mMoneyOut.setChecked(true);
         mTvMoneyOut.setTextColor(getResources().getColor(R.color.color_money_out));
@@ -302,7 +302,7 @@ implements DatePickerDialog.OnDateSetListener{
     }
 
     private void setMoneyOutDeActive() {
-        Log.d("test_flow7", "response money out is "+ mMoneyOut.isChecked());
+        Log.d("test_flow7", "response money out is " + mMoneyOut.isChecked());
 
         mMoneyOut.setChecked(false);
         mTvMoneyOut.setTextColor(getResources().getColor(R.color.color_deactive));
@@ -311,11 +311,11 @@ implements DatePickerDialog.OnDateSetListener{
     private Button.OnClickListener moneyInBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d("test_flow7", "onclick, money in is "+ mMoneyIn.isChecked());
-            if(mMoneyIn.isChecked()){
+            Log.d("test_flow7", "onclick, money in is " + mMoneyIn.isChecked());
+            if (mMoneyIn.isChecked()) {
                 setMoneyInActive();
                 setMoneyOutDeActive();
-            }else{
+            } else {
                 setMoneyInDeActive();
                 setMoneyOutActive();
             }
@@ -325,11 +325,11 @@ implements DatePickerDialog.OnDateSetListener{
     private Button.OnClickListener moneyOutBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d("test_flow7", "onclick, money out is "+ mMoneyOut.isChecked());
-            if(mMoneyOut.isChecked()){
+            Log.d("test_flow7", "onclick, money out is " + mMoneyOut.isChecked());
+            if (mMoneyOut.isChecked()) {
                 setMoneyOutActive();
                 setMoneyInDeActive();
-            }else{
+            } else {
                 setMoneyOutDeActive();
                 setMoneyInActive();
             }
@@ -341,12 +341,12 @@ implements DatePickerDialog.OnDateSetListener{
         public void onClick(View view) {
             /*open date picker diaglo box*/
             int year = LocalDate.now().getYear();
-            int month = LocalDate.now().getMonthOfYear()-1;
+            int month = LocalDate.now().getMonthOfYear() - 1;
             int day = LocalDate.now().getDayOfMonth();
 
 
-            if(mTransactionId == DEFAULT_TASK_ID){
-                DatePickerDialog dialog =  new DatePickerDialog(
+            if (mTransactionId == DEFAULT_TASK_ID) {
+                DatePickerDialog dialog = new DatePickerDialog(
                         mAppCompatActivity,
                         AddNEditTransactionFragment.this,
                         year,
@@ -354,13 +354,13 @@ implements DatePickerDialog.OnDateSetListener{
                         day);
                 dialog.show();
 
-            }else{
+            } else {
                 String tempDate = Integer.toString(mDateNum);
-                year = Integer.parseInt(tempDate.substring(0,2))+2000;
-                month = Integer.parseInt(tempDate.substring(2,4)) - 1;
-                day = Integer.parseInt(tempDate.substring(4,6));
+                year = Integer.parseInt(tempDate.substring(0, 2)) + 2000;
+                month = Integer.parseInt(tempDate.substring(2, 4)) - 1;
+                day = Integer.parseInt(tempDate.substring(4, 6));
 
-                Log.d("test_flow12", "onClick: y+m+d"+year+" "+month+" "+day);
+                Log.d("test_flow12", "onClick: y+m+d" + year + " " + month + " " + day);
                 DatePickerDialog dialog = new DatePickerDialog(
                         mAppCompatActivity,
                         AddNEditTransactionFragment.this,
@@ -377,8 +377,8 @@ implements DatePickerDialog.OnDateSetListener{
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
-        mDateNum = UnitUtil.setDatePickerDateIntoAppIntDate(i,i1,i2);
-        Log.d("test_flow12", "onDateSet: "+ mDateNum);
+        mDateNum = UnitUtil.setDatePickerDateIntoAppIntDate(i, i1, i2);
+        Log.d("test_flow12", "onDateSet: " + mDateNum);
         mTVDate.setText(UnitUtil.getTimeIntInMoreReadableFormat(mDateNum));
 
     }
@@ -387,11 +387,11 @@ implements DatePickerDialog.OnDateSetListener{
             = new FloatingActionButton.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(checkIfUserEnteredNecessaryDate()){
-                    //String ledger, int time, Float amount, String category, String remark
+            if (checkIfUserEnteredNecessaryDate()) {
+                //String ledger, int time, Float amount, String category, String remark
                 float tempAmount = Float.parseFloat(mEditTextAmount.getText().toString());
-                if(mMoneyOut.isChecked()){
-                    tempAmount = 0- tempAmount;
+                if (mMoneyOut.isChecked()) {
+                    tempAmount = 0 - tempAmount;
                 }
                 final TransactionEntry entry = new TransactionEntry(
                         mSpinner.getSelectedItem().toString(),
@@ -404,11 +404,11 @@ implements DatePickerDialog.OnDateSetListener{
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if(mTransactionId == DEFAULT_TASK_ID){
+                        if (mTransactionId == DEFAULT_TASK_ID) {
 
                             Log.d("test_flow13", "save new data ");
                             mDB.transactionDAO().insertTransaction(entry);
-                        }else{
+                        } else {
                             /*update existing records*/
                             Log.d("test_flow13", "update existing data ");
                             entry.setId(mTransactionId);
@@ -426,18 +426,17 @@ implements DatePickerDialog.OnDateSetListener{
     };
 
 
-
     private void populateUIWithExistingData(TransactionEntry transactionEntry) {
-        if(transactionEntry == null){
+        if (transactionEntry == null) {
             Log.d("test_flow11", "populateUIWithExistingData: transactionEntry is null");
             return;
         }
-        Log.d("test_flow8", "populateUIWithExistingData: ledger is "+ transactionEntry.getLedger());
-        if(transactionEntry.getAmount()>=0){
+        Log.d("test_flow8", "populateUIWithExistingData: ledger is " + transactionEntry.getLedger());
+        if (transactionEntry.getAmount() >= 0) {
             //this transaction is revenue, need to active the money In btn
             setMoneyInActive();
             setMoneyOutDeActive();
-        }else{
+        } else {
             //this transaction is revenue, need to active the money out btn
             setMoneyInDeActive();
             setMoneyOutActive();
@@ -452,9 +451,9 @@ implements DatePickerDialog.OnDateSetListener{
         mEditTextRemark.setText(transactionEntry.getRemark());
 
         //set category
-        if(mMoneyNum>= 0){
-        }else{
-            mCategoryAdapter.setData(FakeTestingData.getSpendCategory());
+        if (mMoneyNum >= 0) {
+        } else {
+            mCategoryAdapter.setData(FakeTestingData.getExpenseCategory());
         }
 
         mCurrentTransactionCategory = transactionEntry.getCategory();
@@ -462,15 +461,14 @@ implements DatePickerDialog.OnDateSetListener{
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
 
         //select spinner
-        mPositionInSpinner =mSpinnerLedgerAdapter.getPosition(transactionEntry.getLedger());
-        if(mPositionInSpinner != -1){
+        mPositionInSpinner = mSpinnerLedgerAdapter.getPosition(transactionEntry.getLedger());
+        if (mPositionInSpinner != -1) {
             mSpinner.setSelection(mPositionInSpinner);
         }
 
         //IDK what is this now
 //        //todo, change it to real category data source
 //        FakeTestingData.getLedgers().indexOf(transactionEntry.getCategory());
-
 
 
         //set date
@@ -484,29 +482,29 @@ implements DatePickerDialog.OnDateSetListener{
     private boolean checkIfUserEnteredNecessaryDate() {
         boolean process = true;
         /*save new records*/
-        if(mDateNum == -1){
+        if (mDateNum == -1) {
             mTVDateLabel.setBackground(getResources().getDrawable(R.drawable.datepicker_tv_background));
             mTVDateLabel.setText(getString(R.string.add_edit_transaction_warning_enter_date));
             process = false;
-        }else{
+        } else {
             mTVDateLabel.setBackground(null);
             mTVDateLabel.setText(getString(R.string.add_edit_transaction_date));
         }
-        if(mCategoryAdapter.getmActivePosition() ==-1){
+        if (mCategoryAdapter.getmActivePosition() == -1) {
             process = false;
             mCategoryLabel.setBackground(getResources().getDrawable(R.drawable.datepicker_tv_background));
             mCategoryLabel.setText(getString(R.string.add_edit_transaction_warning_enter_categoty));
-        }else{
+        } else {
             mCategoryLabel.setBackground(null);
             mCategoryLabel.setText(getString(R.string.add_edit_transaction_category));
         }
 
-        if(mEditTextAmount.getText().toString().length() == 0 || Float.parseFloat(mEditTextAmount.getText().toString()) == 0){
+        if (mEditTextAmount.getText().toString().length() == 0 || Float.parseFloat(mEditTextAmount.getText().toString()) == 0) {
             mAmountLabel.setBackground(getResources().getDrawable(R.drawable.datepicker_tv_background));
             mAmountLabel.setText(getString(R.string.add_edit_transaction_warning_enter_amount));
             process = false;
 
-        }else{
+        } else {
             mAmountLabel.setBackground(null);
             mAmountLabel.setText(getString(R.string.add_edit_transaction_amount));
         }

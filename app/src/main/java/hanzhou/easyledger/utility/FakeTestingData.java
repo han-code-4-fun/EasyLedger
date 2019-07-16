@@ -78,7 +78,7 @@ public class FakeTestingData {
         return output;
     }
 
-    public static List<String> getSpendCategory() {
+    public static List<String> getExpenseCategory() {
         List<String> output = new ArrayList<>();
 
         output.add("Travel");

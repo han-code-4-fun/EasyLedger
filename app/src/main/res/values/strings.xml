@@ -140,11 +140,53 @@
     <string name="pref_size_label">default_edittxt_label</string>
 
 
-    <string name="chart_pie_center_text_expense">Expense Chart</string>
-    <string name="chart_pie_center_text_revenue">Reveune Chart</string>
+    <string name="chart_name_text_expense">Expense Chart</string>
+    <string name="chart_name_text_revenue">Reveune Chart</string>
+    <string name="chart_history_chart_description">NO. of weeks from now</string>
 
     <string name="bar_chart_comparison_label_revenue">Total Revenues Each Period</string>
     <string name="bar_chart_comparison_label_expense">Total Expenses Each Period</string>
+
+    <string name="title_dialog_chart_setting">Chart Setting</string>
+
+    <string name="dialog_main_1_current_period">Setting for current period</string>
+    <string name="dialog_main_2_history_period">Setting for history period</string>
+
+
+    <string name="dialog_chart_title_revene_expense_type">Choose Revenues/Expenses Type</string>
+
+    <string name="dialog_chart_type_week">Show Current Week</string>
+
+    <string name="dialog_chart_type_month">Show Current Month</string>
+
+
+    <string name="dialog_chart_select_bar_char">Display Bar Chart</string>
+    <string name="dialog_chart_select_pie_chart">Display Pie Chart</string>
+    <string name="dialog_chart_radiogroup_title">Chart Type For Revenue &amp; Expense</string>
+
+
+    <string name="dialog_chart_title_select_period">Number Of Periods To Compare</string>
+    <string name="dialog_chart_title_select_period_type">Length Of Each Period</string>
+
+    <string name="dialog_history_period_by_week">Set Period By Week</string>
+    <string name="dialog_history_period_by_month">Set Period By Month</string>
+
+    <string name="dialog_switch_percentage_amount_title">Use %(on) or $(off)</string>
+
+    <string name="dialog_add_btn">+</string>
+    <string name="dialog_minus_btn">-</string>
+
+    
+    
+    <string name="setting_chart_dialog_history_period_type_key">history_period_type</string>
+    <string name="setting_chart_dialog_history_period_number_key">history_period_number</string>
+    <string name="setting_chart_dialog_current_chart_type_key">current_chart_type</string>
+    <string name="setting_chart_dialog_current_period_type_key">current_chart_period</string>
+
+    <string name="setting_chart_dialog_percentage_amount_key">percentage_or_amount</string>
+
+    <string name="dialog_negative_btn_title">Cancel</string>
+    <string name="dialog_positive_btn_title">Save</string>
 
 
     <string name="category_others">Others</string>

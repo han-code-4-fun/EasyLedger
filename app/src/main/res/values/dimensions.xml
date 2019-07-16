@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dialog_sub_item_margin_start">20dp</dimen>
+    <dimen name="dialog_sub_item_margin_end">20dp</dimen>
+
+</resources>

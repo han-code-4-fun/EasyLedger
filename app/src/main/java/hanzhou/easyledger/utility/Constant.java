@@ -18,6 +18,10 @@ public class Constant {
 
     public static final String TESTFLOW = "test_";
 
+    public static final String APP_PREF_SETTING = "sharedPreferences";
+
+    public static final String SHARED_PREF_INITIAL = "shared_preference_initialization";
+
 
 
 }

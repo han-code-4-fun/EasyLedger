@@ -62,13 +62,13 @@ public class UnitUtil {
     }
 
     public static int getStartingDateCurrentWeek(){
-        int daysPastCurrentWeek = now.getDayOfWeek();
+//        int daysPastCurrentWeek = now.getDayOfWeek();
+//
+//        int year = (now.getYear())-2000;
+//        int month = now.getMonthOfYear();
+//        int dayBeginOfWeek = (now.getDayOfMonth()) - daysPastCurrentWeek +1;
 
-        int year = (now.getYear())-2000;
-        int month = now.getMonthOfYear();
-        int dayBeginOfWeek = (now.getDayOfMonth()) - daysPastCurrentWeek +1;
-
-        int startingDate =year*10000+month*100+dayBeginOfWeek;
+        int startingDate =fromJodaTimeLocalDateToAppDateInteger(now.dayOfWeek().withMinimumValue());
         Log.d("test_flow13", "setRevenueDateCurrentWeek: "+ startingDate);
 
         return startingDate;
@@ -78,7 +78,8 @@ public class UnitUtil {
         int year = (now.getYear())-2000;
         int month = now.getMonthOfYear();
 
-        int startingDate =year*10000+month*100+1;
+//        int startingDate =year*10000+month*100+1;
+        int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.dayOfMonth().withMinimumValue());
         Log.d("test_flow13", "setRevenueDateCurrentMonth: "+ startingDate);
 
         return startingDate;
@@ -97,19 +98,52 @@ public class UnitUtil {
         return result;
     }
 
+    public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareWeeks (int numberOfWeeks){
+        List<Integer> result = new ArrayList<>();
+        for (int i = numberOfWeeks; i >0; i--) {
+            int[] temp = getStartingEndDateOfAWeek(now.minusWeeks(i));
+            result.add(temp[0]);
+            result.add(temp[1]);
+        }
+
+
+        return result;
+    }
+
+
+
     public static int[] getStartingEndDateOfAMonth(LocalDate inputDate){
         int[] output = new int[2];
 
-        int inputDateNum = Integer.parseInt(fromJodaTimeLocalDateToAppDateString(inputDate.withDayOfMonth(1)));
-        int endofDateNum = Integer.parseInt(fromJodaTimeLocalDateToAppDateString(inputDate.dayOfMonth().withMaximumValue()));
+        int startDateOfMonth = fromJodaTimeLocalDateToAppDateInteger(inputDate.withDayOfMonth(1));
+        int endDateOfMonth = fromJodaTimeLocalDateToAppDateInteger(inputDate.dayOfMonth().withMaximumValue());
 
-        output[0] = inputDateNum;
-        output[1] = endofDateNum;
+        output[0] = startDateOfMonth;
+        output[1] = endDateOfMonth;
+
+        return output;
+    }
+    private static int[] getStartingEndDateOfAWeek(LocalDate inputDate) {
+        int[] output = new int[2];
+
+
+        int startDateOfWeek = fromJodaTimeLocalDateToAppDateInteger(inputDate.dayOfWeek().withMinimumValue());
+        int endDateOfWeek = fromJodaTimeLocalDateToAppDateInteger(inputDate.dayOfWeek().withMaximumValue());
+
+        output[0] = startDateOfWeek;
+        output[1] = endDateOfWeek;
 
         return output;
     }
 
-    public static String fromJodaTimeLocalDateToAppDateString(LocalDate inputDate){
-        return DateTimeFormat.forPattern("YYMMdd").print(inputDate);
+    private static Integer fromJodaTimeLocalDateToAppDateInteger(LocalDate inputDate){
+        return  Integer.parseInt(DateTimeFormat.forPattern("YYMMdd").print(inputDate));
     }
+
+    public static String fromJodaTimeLocalDateToMonthLabel(LocalDate inputDate){
+
+        return  DateTimeFormat.forPattern("YYYY/MMM").print(inputDate);
+    }
+
+
 }

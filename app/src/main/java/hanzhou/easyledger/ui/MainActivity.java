@@ -22,13 +22,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
+import hanzhou.easyledger.chartsetting.ChartDialogSetting;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
-import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentVMFactory;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
@@ -43,7 +43,6 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
-import java.util.Date;
 import java.util.List;
 
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
@@ -52,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final String CHART_FRAGMENT= "in_chart_fragment";
+    private static final String NON_CHART_FRAGMENT= "not_in_chart_fragment";
 
     private IntentFilter mSmsIntentFilter;
     private SmsBroadcastReceiver mSmsReceiver;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private TransactionDBViewModel mTransactionViewModel;
     private OverviewFragmentViewModel mOverviewViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
+
 
     private Fragment selectedFragment;
 
@@ -239,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
                     setToolBarToOriginMode();
                 }else if (isInQuestionFragment){
 
-
                     //todo, jump back to previous fragment
                     getSupportFragmentManager().popBackStack();
                     btnFA.show();
@@ -249,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
                     btnFA.show();
                 }else if(isInAddNEditFragment){
                     //todo, combine this and previous into one logic
-
                     getSupportFragmentManager().popBackStack();
                     btnFA.show();
                 }
@@ -300,13 +300,18 @@ public class MainActivity extends AppCompatActivity {
             setToolBarToOriginMode();
         } else if(isInQuestionFragment){
             getSupportFragmentManager().popBackStack();
+
             btnFA.show();
+
         }else if(isInSettingsFragment){
             getSupportFragmentManager().popBackStack();
             btnFA.show();
+
+
         }else if(isInAddNEditFragment) {
             getSupportFragmentManager().popBackStack();
             btnFA.show();
+
 
         }
         else{
@@ -355,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
 
         btnFA = findViewById(R.id.btn_floating_aciton);
-        btnFA.setOnClickListener(fabOnClickListener);
+
 
     }
 
@@ -425,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
                 if(aBoolean){
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
-                    btnFA.hide();
+//                    btnFA.hide();
                 }else{
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
@@ -440,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
                 if(aBoolean){
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
-                    btnFA.hide();
+//                    btnFA.hide();
                 }else{
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
@@ -467,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("test_flow4", "this should triggered after enter new fragment");
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
-                    btnFA.hide();
+//                    btnFA.hide();
                 }else{
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
@@ -483,8 +488,6 @@ public class MainActivity extends AppCompatActivity {
     private void resetAdapterActionViewModelForEnteringAnotherFragment(){
         mAdapterActionViewModel.emptySelectedItems();
         mAdapterActionViewModel.setActionModeState(false);
-
-
     }
 
 
@@ -498,15 +501,17 @@ public class MainActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_overview:
                             selectedFragment = new OverviewFragment();
-                            btnFA.show();
+                            setFloatingActionBtn(selectedFragment);
+
                             break;
                         case R.id.navigation_transaction:
                             selectedFragment = new LedgerFragment();
-                            btnFA.show();
+                            setFloatingActionBtn(selectedFragment);
+
                             break;
                         case R.id.navigation_charts:
                             selectedFragment = new ChartFragment();
-                            btnFA.hide();
+                            setFloatingActionBtn(selectedFragment);
                             break;
 
                     }
@@ -519,13 +524,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     //todo, FAB should create a new fragment
-    private FloatingActionButton.OnClickListener fabOnClickListener
+    private FloatingActionButton.OnClickListener fabOnClickListenerOpenFragment
             = new FloatingActionButton.OnClickListener() {
         @Override
         public void onClick(View view) {
 
             mAdapterActionViewModel.setmClickedEntryIDToNull();
             openAddNEditTransactionFragment();
+
+        }
+    };
+    private FloatingActionButton.OnClickListener fabOnClickListenerOpenDialog
+            = new FloatingActionButton.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            ChartDialogSetting dialogSetting = new ChartDialogSetting();
+            dialogSetting.show(getSupportFragmentManager(), null);
 
         }
     };
@@ -610,6 +625,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void switchFragmentWithinActivity(Fragment input) {
 
+        setFloatingActionBtn(input);
+
         setToolBarToOriginMode();
 
         getSupportFragmentManager()
@@ -629,6 +646,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addCurrentFragmentToBack(Fragment input){
 
+        setFloatingActionBtn(input);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -772,6 +790,24 @@ public class MainActivity extends AppCompatActivity {
             startActivity(emailIntent);
         } else {
             Toast.makeText(this, getString(R.string.no_email_app) + getString(R.string.developer_email_addr), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void setFloatingActionBtn(Fragment inputFragment){
+        if(inputFragment instanceof ChartFragment){
+            btnFA.setImageResource(R.drawable.ic_chart_setting);
+            btnFA.show();
+            btnFA.setOnClickListener(null);
+            btnFA.setOnClickListener(fabOnClickListenerOpenDialog);
+
+        }else if (inputFragment instanceof OverviewFragment || inputFragment instanceof LedgerFragment){
+            btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
+            btnFA.show();
+            btnFA.setOnClickListener(null);
+
+            btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
+        }else{
+            btnFA.hide();
         }
     }
 

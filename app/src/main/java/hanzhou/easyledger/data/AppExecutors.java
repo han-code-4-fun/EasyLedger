@@ -4,9 +4,10 @@ package hanzhou.easyledger.data;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-/* A repository class that
-*   1. can be further developer for taking network data
-*   2. add an abstraction layout
+/* A Helper class that
+*   1. handling diskio operations, in current version, interact with DB
+*   2. can be further developer for handling network data
+*   3. add an abstraction layout
 * */
 
 public class AppExecutors {
@@ -35,7 +36,6 @@ public class AppExecutors {
     public Executor diskIO() {
         return diskIO;
     }
-
 
 
 }

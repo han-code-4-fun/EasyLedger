@@ -29,9 +29,9 @@ public interface TransactionDAO {
     LiveData<List<TransactionEntry>> loadTransactionByTime7days(int time7DaysBackwards);
 
 
-    @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount>=0 ORDER BY time DESC, id DESC")
+    @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount>=0 ORDER BY time ASC, id DESC")
     LiveData<List<TransactionEntry>> loadTransactionRevenuePeriod(int startingDate);
-    @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount<0 ORDER BY time DESC, id DESC")
+    @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount<0 ORDER BY time ASC, id DESC")
     LiveData<List<TransactionEntry>> loadTransactionExpensePeriod(int startingDate);
 
     @Query("SELECT * FROM transactions WHERE time >= :timeDaysBackwards ORDER BY time DESC, id DESC")

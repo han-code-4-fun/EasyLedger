@@ -2,6 +2,7 @@ package hanzhou.easyledger.utility;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.components.MarkerView;
@@ -17,19 +18,30 @@ import hanzhou.easyledger.R;
  * Custom implementation of the MarkerView.
  *
  * @author Philipp Jahoda
- *
+ * <p>
  * modified by Han Zhou
- *
  */
 
 public class MyMarkerView extends MarkerView {
 
     private final TextView tvContent;
 
+    private String[] mCategories;
+
+
     public MyMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
 
         tvContent = findViewById(R.id.tvContent);
+
+    }
+
+
+    public MyMarkerView(Context context, int layoutResource, String[] categories) {
+        super(context, layoutResource);
+
+        tvContent = findViewById(R.id.tvContent);
+        mCategories = categories;
     }
 
     // runs every time the MarkerView is redrawn, can be used to update the
@@ -38,14 +50,42 @@ public class MyMarkerView extends MarkerView {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
 
+        Log.d("test_flow_entry", "e.describeContents() is  ---> " + e.describeContents());
+        Log.d("test_flow_entry", "e.toString() is  ---> " + e.toString());
+        Log.d("test_flow_entry", "e.getX() is  ---> " + e.getX());
+
+
         if (e instanceof CandleEntry) {
 
             CandleEntry ce = (CandleEntry) e;
 
-            tvContent.setText(getResources().getString(R.string.dollor_sign)+Utils.formatNumber(ce.getHigh(), 0, false));
+            if (mCategories != null) {
+                int position = (int) e.getX();
+                String temp = mCategories[position];
+                tvContent.setText(
+                        temp +"\n" +
+                        getResources().getString(R.string.dollor_sign) +
+                        Utils.formatNumber(ce.getHigh(), 0, false));
+
+            } else {
+                tvContent.setText(getResources().getString(R.string.dollor_sign) + Utils.formatNumber(ce.getHigh(), 0, false));
+            }
+
+
         } else {
 
-            tvContent.setText(getResources().getString(R.string.dollor_sign)+Utils.formatNumber(e.getY(), 0, false));
+            if (mCategories != null) {
+                int position = (int) e.getX();
+                String temp = mCategories[position];
+                tvContent.setText(
+                        temp + "\n" +
+                        getResources().getString(R.string.dollor_sign) +
+                        Utils.formatNumber(e.getY(), 0, false));
+
+            } else {
+                tvContent.setText(getResources().getString(R.string.dollor_sign) + Utils.formatNumber(e.getY(), 0, false));
+
+            }
         }
 
         super.refreshContent(e, highlight);

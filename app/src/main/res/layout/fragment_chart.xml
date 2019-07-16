@@ -1,54 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/chart_current_piechart_expense"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Some settings for the graph"
-                android:textSize="30sp" />
-        </FrameLayout>
+                android:layout_height="500dp" />
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/chart_piechart_expense"
-            android:layout_width="match_parent"
-            android:layout_height="500dp" />
+            <!--by default not visible unless user set it-->
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_current_barchart_expense"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                />
 
-        <!--by default not visible unless user set it-->
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_barchart_expense"
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:visibility="gone"/>
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/chart_current_piechart_revenue"
+                android:layout_width="match_parent"
+                android:layout_height="500dp" />
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/chart_piechart_revenue"
-            android:layout_width="match_parent"
-            android:layout_height="500dp" />
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_current_barchart_revenue"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                />
 
-        <!--by default not visible unless user set it-->
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/chart_barchart_revenue"
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:visibility="gone"/>
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_history_barchart"
+                android:layout_width="match_parent"
+                android:layout_height="500dp">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:id="@+id/chart_barchart_comparision" />
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+
+            </com.github.mikephil.charting.charts.BarChart>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
