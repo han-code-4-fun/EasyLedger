@@ -67,6 +67,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overview_tv_moneyin" />
 
+
     <com.github.mikephil.charting.charts.HorizontalBarChart
         android:id="@+id/overview_total_balance_barchart"
         android:layout_width="0dp"
