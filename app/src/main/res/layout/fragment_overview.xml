@@ -38,36 +38,64 @@
         app:layout_constraintTop_toTopOf="@+id/overview_total_balance_title"
         tools:text="$23432.54" />
 
-    <com.github.mikephil.charting.charts.HorizontalBarChart
-        android:id="@+id/overview_total_balance_barchart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <TextView
+        android:id="@+id/overview_tv_moneyin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:gravity="center|end"
+        android:text="@string/add_edit_transaction_money_in"
+        app:layout_constraintBottom_toTopOf="@+id/overview_tv_moneyout"
+
+        app:layout_constraintEnd_toEndOf="@+id/overview_tv_moneyout"
+        app:layout_constraintStart_toStartOf="@+id/overview_tv_moneyout"
+        app:layout_constraintTop_toBottomOf="@+id/overview_total_balance_title" />
+
+    <TextView
+        android:id="@+id/overview_tv_moneyout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center|end"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/add_edit_transaction_money_out"
+
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toStartOf="@id/overview_total_balance_barchart"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overview_tv_moneyin" />
+
+    <com.github.mikephil.charting.charts.HorizontalBarChart
+        android:id="@+id/overview_total_balance_barchart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintStart_toEndOf="@+id/overview_tv_moneyout"
         app:layout_constraintTop_toBottomOf="@+id/overview_total_balance_title"
-        app:layout_constraintVertical_weight="3"></com.github.mikephil.charting.charts.HorizontalBarChart>
+        app:layout_constraintVertical_weight="3">
+
+    </com.github.mikephil.charting.charts.HorizontalBarChart>
 
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+
         android:gravity="center_horizontal"
         android:text="@string/overview_transaction_tag_textview_title"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/overview_recyclerview_for_untagged_transactions"
         app:layout_constraintTop_toBottomOf="@+id/overview_total_balance_barchart"
-        app:layout_constraintVertical_weight="1"
-         />
+        app:layout_constraintVertical_weight="1" />
 
 
     <FrameLayout
@@ -78,8 +106,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_weight="7"
-         />
+        app:layout_constraintVertical_weight="7" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

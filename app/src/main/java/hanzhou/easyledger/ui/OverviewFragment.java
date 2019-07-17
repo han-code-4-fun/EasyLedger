@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,6 +93,8 @@ public class OverviewFragment extends Fragment{
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_overview,container,false);
 
+
+
         mBarChart = root.findViewById(R.id.overview_total_balance_barchart);
 
         initiazlizeBarChart();
@@ -163,7 +166,7 @@ public class OverviewFragment extends Fragment{
 
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-        xAxis.setEnabled(true);
+        xAxis.setEnabled(false);
 //        xAxis.setXOffset(5f);
 
         xAxis.setDrawGridLinesBehindData(true);
@@ -173,15 +176,17 @@ public class OverviewFragment extends Fragment{
         xAxis.setDrawAxisLine(false);
 
         //only display revenue and spend
-        xAxis.setLabelCount(2);
+//        xAxis.setLabelCount(2);
 
-        String[] balanceTitle = {
-
-                getString(R.string.overview_balance_spend),
-                getString(R.string.overview_balance_revenue)
-        };
-
-        xAxis.setValueFormatter(new OverViewBalanceXAxisValueFormatter(balanceTitle));
+//        String[] balanceTitle = {
+//
+//                getString(R.string.overview_balance_spend),
+//                getString(R.string.overview_balance_revenue)
+//        };
+//
+//        xAxis.setValueFormatter(new OverViewBalanceXAxisValueFormatter(balanceTitle));
+/* getString(R.string.overview_balance_spend),
+                getString(R.string.overview_balance_revenue)*/
 
 
     }
