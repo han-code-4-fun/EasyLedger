@@ -94,7 +94,7 @@ public class ChartFragment extends Fragment implements
 
     private TransactionDB mDb;
 
-    /*belowing 4 items value based on sharedPreferencce*/
+    /*belowing 5 items value based on sharedPreferencce*/
     private int mHistoryPeriodType;
     private int mNumberOfPeriodsToCompare;
     private String mUserSelection;

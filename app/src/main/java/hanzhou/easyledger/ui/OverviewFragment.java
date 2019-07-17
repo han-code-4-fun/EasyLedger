@@ -1,12 +1,12 @@
 package hanzhou.easyledger.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +27,6 @@ import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 
-import hanzhou.easyledger.OverViewBalanceXAxisValueFormatter;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
@@ -41,21 +40,23 @@ public class OverviewFragment extends Fragment{
     HorizontalBarChart mBarChart;
     BarDataSet barDataSet;
 
-    LinearLayoutManager layoutManager;
+    LinearLayoutManager mLayoutManager;
 
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
 
-    private AppCompatActivity appCompatActivity;
+    private AppCompatActivity mAppCompatActivity;
+
+    private SharedPreferences mAppPreferences;
 
     /*two variable are boolean triggers that only update UI when both data updated*/
-    private boolean receivedRevenueData;
-    private boolean receivedSpendData;
+    private boolean mReceivedRevenueData;
+    private boolean mReceivedExpenseData;
 
-    private float revenueF;
-    private float spendF;
+    private float mRevenueFloatingPoint;
+    private float mExpenseFloatingPoint;
 
     /* get from revenus/spend comparision to set barchart range*/
-    private float biggerNumber;
+    private float mBiggerNumber;
 
 
 
@@ -63,13 +64,20 @@ public class OverviewFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        appCompatActivity = (AppCompatActivity) context;
-        receivedRevenueData =false;
-        receivedSpendData = false;
-        spendF = 0f;
-        revenueF = 0f;
+        mAppCompatActivity = (AppCompatActivity) context;
+        mReceivedRevenueData =false;
+        mReceivedExpenseData = false;
+        mExpenseFloatingPoint = 0f;
+        mRevenueFloatingPoint = 0f;
         //todo, they should retrieve data from savedinstance
-        biggerNumber = Math.max(spendF, revenueF);
+        mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
+        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREF_SETTING, Context.MODE_PRIVATE);
+
+        loadPreference();
+    }
+
+    private void loadPreference() {
+
     }
 
 
@@ -84,7 +92,7 @@ public class OverviewFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-//        biggerNumber = Math.max(spendF, revenueF);
+//        mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
     }
 
     @Nullable
@@ -99,7 +107,7 @@ public class OverviewFragment extends Fragment{
 
         initiazlizeBarChart();
 
-        appCompatActivity.getSupportFragmentManager()
+        mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.overview_recyclerview_for_untagged_transactions,
                         new DetailTransactionFragment(Constant.CALLFROMOVERVIEW))
@@ -119,7 +127,7 @@ public class OverviewFragment extends Fragment{
     @Override
     public void onDetach() {
         super.onDetach();
-        appCompatActivity = null;
+        mAppCompatActivity = null;
         Log.d("test_flow2", "overview onDetach now!!!! ");
     }
 
@@ -197,7 +205,7 @@ public class OverviewFragment extends Fragment{
         YAxis yLeftAxis = mBarChart.getAxisLeft();
 
         /*set YLeftAxis' maximum based on the maximum get from DB*/
-        yLeftAxis.setAxisMaximum(biggerNumber);
+        yLeftAxis.setAxisMaximum(mBiggerNumber);
 
         yLeftAxis.setAxisMinimum(0f);
 
@@ -209,8 +217,8 @@ public class OverviewFragment extends Fragment{
 
         /*use the data come from viewmodel*/
         //place revenue on top of spend in barchart
-        BarEntry revenue = new BarEntry(1f, revenueF);
-        BarEntry spend = new BarEntry(0f,spendF);
+        BarEntry revenue = new BarEntry(1f, mRevenueFloatingPoint);
+        BarEntry spend = new BarEntry(0f, mExpenseFloatingPoint);
 
         ArrayList<BarEntry> entries = new ArrayList<>();
         entries.add(revenue);
@@ -250,13 +258,13 @@ public class OverviewFragment extends Fragment{
 
 
     private void setupViewModel() {
-        mOverviewFragmentViewModel = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
+        mOverviewFragmentViewModel = ViewModelProviders.of(mAppCompatActivity).get(OverviewFragmentViewModel.class);
 
         mOverviewFragmentViewModel.getRevenue().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
             public void onChanged(Float aDouble) {
-                revenueF = aDouble;
-                receivedRevenueData = true;
+                mRevenueFloatingPoint = aDouble;
+                mReceivedRevenueData = true;
                 synchronizeBalanceData();
             }
         });
@@ -264,8 +272,8 @@ public class OverviewFragment extends Fragment{
         mOverviewFragmentViewModel.getSpend().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
             public void onChanged(Float aDouble) {
-                spendF = Math.abs(aDouble);
-                receivedSpendData = true;
+                mExpenseFloatingPoint = Math.abs(aDouble);
+                mReceivedExpenseData = true;
                 synchronizeBalanceData();
 
             }
@@ -275,14 +283,14 @@ public class OverviewFragment extends Fragment{
 
     private void synchronizeBalanceData(){
         //only update UI when two values are received
-        if(receivedRevenueData && receivedSpendData){
-            biggerNumber = Math.max(spendF, revenueF);
+        if(mReceivedRevenueData && mReceivedExpenseData){
+            mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
             setYLeftAxis();
             setChartData();
 
             //after update UI, set back to false to be prepared to next update
-            receivedRevenueData = false;
-            receivedSpendData = false;
+            mReceivedRevenueData = false;
+            mReceivedExpenseData = false;
         }
 
     }
