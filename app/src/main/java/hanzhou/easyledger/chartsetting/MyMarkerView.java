@@ -1,4 +1,4 @@
-package hanzhou.easyledger.utility;
+package hanzhou.easyledger.chartsetting;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -50,9 +50,6 @@ public class MyMarkerView extends MarkerView {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
 
-        Log.d("test_flow_entry", "e.describeContents() is  ---> " + e.describeContents());
-        Log.d("test_flow_entry", "e.toString() is  ---> " + e.toString());
-        Log.d("test_flow_entry", "e.getX() is  ---> " + e.getX());
 
 
         if (e instanceof CandleEntry) {

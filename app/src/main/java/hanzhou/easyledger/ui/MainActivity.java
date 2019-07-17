@@ -1,9 +1,11 @@
 package hanzhou.easyledger.ui;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -539,8 +541,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
 
+
             ChartDialogSetting dialogSetting = new ChartDialogSetting();
+
             dialogSetting.show(getSupportFragmentManager(), null);
+
 
         }
     };

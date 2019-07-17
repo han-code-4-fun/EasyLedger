@@ -31,10 +31,10 @@ public class ChartDataViewModel extends ViewModel {
     public ChartDataViewModel(int CurrentChartStartDate, int HistoryChartStartDate,
                               int HistoryChartEndDate, TransactionDB transactionDB){
         mDB = transactionDB;
-        Log.d("test_111_starting  VM", "VM  current startingdate is "+ CurrentChartStartDate);
+        Log.d("test_f_custom_dates  VM", "VM  current startingdate is "+ CurrentChartStartDate);
         mRevenueListEntry = mDB.transactionDAO().loadTransactionRevenuePeriod(CurrentChartStartDate);
         mExpenseListEntry = mDB.transactionDAO().loadTransactionExpensePeriod(CurrentChartStartDate);
-        Log.d("test_111_starting  VM", "VM  HISTORY startingdate & enddate is "+ HistoryChartStartDate+" ()() "+HistoryChartEndDate);
+        Log.d("test_f_custom_dates  VM", "VM  HISTORY startingdate & enddate is "+ HistoryChartStartDate+" ()() "+HistoryChartEndDate);
 
         mAllListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
                 HistoryChartStartDate, HistoryChartEndDate);
@@ -45,11 +45,12 @@ public class ChartDataViewModel extends ViewModel {
 
 
     public LiveData<List<TransactionEntry>> getmRevenueListEntry(){
-        Log.d("test_flow49", "VM get revenue list: "+mRevenueListEntry.hashCode());
+        Log.d("test_f_custom_dates", "VM get revenue list: "+mRevenueListEntry.hashCode());
         return mRevenueListEntry;
     }
 
     public LiveData<List<TransactionEntry>> getmExpenseListEntry(){
+        Log.d("test_f_custom_dates", "VM get expense list: "+mExpenseListEntry.hashCode());
 
         return mExpenseListEntry;
     }

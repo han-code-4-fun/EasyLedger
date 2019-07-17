@@ -4,14 +4,18 @@ import android.util.Log;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import org.joda.time.IllegalFieldValueException;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
 import hanzhou.easyledger.utility.UnitUtil;
 
 
-public class MonthValueFormatter extends IndexAxisValueFormatter
+//public class MonthValueFormatter extends IndexAxisValueFormatter
+public class MonthValueFormatter extends ValueFormatter
+
 {
 
     private final String[] mMonths = new String[]{
@@ -27,19 +31,58 @@ public class MonthValueFormatter extends IndexAxisValueFormatter
         mInitialValue = -1000;
     }
 
+    public void setStartDate(LocalDate inputDate){
+        mStartingDate = inputDate;
+        mInitialValue = Integer.parseInt(
+                DateTimeFormat.forPattern("YYYYMM").print(
+                        mStartingDate));
+    }
+
     @Override
     public String getFormattedValue(float value) {
 
-        /*set first value as a starting point for counting the x-axis labels*/
-        if(mInitialValue == -1000){
-            mInitialValue = (int)value;
-            mStartingDate = LocalDate.parse(""+mInitialValue, DateTimeFormat.forPattern("YYYYMM"));
+        int difference = (int) value - mInitialValue;
+        LocalDate displayDate;
+        if(difference >0){
+            displayDate = mStartingDate.plusMonths(difference);
+        }else if(difference<0){
+            displayDate = mStartingDate.minusMonths(difference);
+        }else{
+            displayDate = mStartingDate;
         }
 
-        int difference = (int)value - mInitialValue;
+        return UnitUtil.fromJodaTimeLocalDateToMonthLabel(displayDate);
 
 
-        return UnitUtil.fromJodaTimeLocalDateToMonthLabel(mStartingDate.plusMonths(difference));
+//        try {
+//            Log.d("test_ff7", "formatter    getFormattedValue: " + value);
+//
+//            /*set first value as a starting point for counting the x-axis labels*/
+//            if (mInitialValue == -1000) {
+//                mInitialValue = (int) value;
+//                mStartingDate = LocalDate.parse("" + (int)value, DateTimeFormat.forPattern("YYYYMM"));
+//            }
+//
+//            int difference = (int) value - mInitialValue;
+//            Log.d("test_ff7", "formatter    mInitialValue: " + mInitialValue);
+//
+//            Log.d("test_ff7", "formatter    difference: " + difference);
+//
+//
+//            return UnitUtil.fromJodaTimeLocalDateToMonthLabel(mStartingDate.plusMonths(difference));
+//
+//        }catch(IllegalFieldValueException e){
+//            Log.d("test_ff7", "formatter    catch exception: " + value);
+//
+//            /*set first value as a starting point for counting the x-axis labels*/
+//            if (mInitialValue == -1000) {
+//                mInitialValue = (int) value;
+//                mStartingDate = LocalDate.parse("" + value, DateTimeFormat.forPattern("YYYYMM"));
+//            }
+//
+//
+//            return ""+value;
+//        }
 
     }
 

@@ -153,7 +153,9 @@
     <string name="dialog_main_2_history_period">Setting for history period</string>
 
 
-    <string name="dialog_chart_title_revene_expense_type">Choose Revenues/Expenses Type</string>
+    <string name="dialog_chart_title_revene_expense_type">Choose Revenues/Expenses Length</string>
+    <string name="dialog_enter_length_label">Enter a Length </string>
+    <string name="dialog_enter_length_edittext_hint">NO. of days back</string>
 
     <string name="dialog_chart_type_week">Show Current Week</string>
 
@@ -183,10 +185,18 @@
     <string name="setting_chart_dialog_current_chart_type_key">current_chart_type</string>
     <string name="setting_chart_dialog_current_period_type_key">current_chart_period</string>
 
+    <string name="setting_chart_dialog_custom_current_period_key">custom_current_period</string>
+
     <string name="setting_chart_dialog_percentage_amount_key">percentage_or_amount</string>
+
+    <string name="setting_warning_cannot_be_blank">Enter An Integer</string>
 
     <string name="dialog_negative_btn_title">Cancel</string>
     <string name="dialog_positive_btn_title">Save</string>
+
+    <string name="dialog_toast_saved">Setting Saved</string>
+    <string name="dialog_toast_setting_not_change">No Change Made</string>
+    <string name="dialog_toast_not_saved">Setting NOT Saved</string>
 
 
     <string name="category_others">Others</string>

@@ -85,6 +85,14 @@ public class UnitUtil {
         return startingDate;
     }
 
+    public static int getStartingDateCurrentCustom(int customDays) {
+
+        int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.minusDays(customDays));
+        Log.d("test_f_custom_dates", "getStartingDateCurrentCustom: "+ startingDate);
+
+        return startingDate;
+    }
+
     public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareMonths(int numberOfMonths){
 
         List<Integer> result = new ArrayList<>();
@@ -144,6 +152,7 @@ public class UnitUtil {
 
         return  DateTimeFormat.forPattern("YYYY/MMM").print(inputDate);
     }
+
 
 
 }

@@ -35,18 +35,49 @@
 
             <RadioButton
                 android:id="@+id/radioButton_current_period_type_month"
+                style="@style/dialog_sub_class_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_chart_type_month" />
 
             <RadioButton
                 android:id="@+id/radioButton_current_period_type_week"
+                style="@style/dialog_sub_class_margin"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_chart_type_week" />
 
+            <RadioButton
+                android:id="@+id/radioButton_current_period_type_custom"
+                style="@style/dialog_sub_class_margin"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_enter_length_label" />
+
 
         </RadioGroup>
+
+        <LinearLayout
+            style="@style/dialog_sub_class_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+        <EditText
+
+            style="@style/dialog_sub_class_margin"
+            android:id="@+id/dialog_number_of_days_before"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_enter_length_edittext_hint"
+            android:ems="10"
+            android:inputType="number" />
+        </LinearLayout>
+
 
         <RadioGroup
             android:id="@+id/dialog_rgroup_revenue_expense_chart_type"
@@ -62,12 +93,16 @@
                 android:textSize="20sp" />
 
             <RadioButton
+                style="@style/dialog_sub_class_margin"
+
                 android:id="@+id/radioButton_current_period_type_piechart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_chart_select_pie_chart" />
 
             <RadioButton
+                style="@style/dialog_sub_class_margin"
+
                 android:id="@+id/radioButton_current_period_type_barchart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -85,6 +120,8 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/dialog_sub_class_margin"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_switch_percentage_amount_title"
@@ -122,6 +159,8 @@
             android:orientation="horizontal">
 
             <Button
+                style="@style/dialog_sub_class_margin"
+
                 android:id="@+id/dialog_plus_number"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -159,12 +198,16 @@
                 android:textSize="20sp" />
 
             <RadioButton
+                style="@style/dialog_sub_class_margin"
+
                 android:id="@+id/dialog_history_period_by_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_history_period_by_month" />
 
             <RadioButton
+                style="@style/dialog_sub_class_margin"
+
                 android:id="@+id/dialog_history_period_by_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
