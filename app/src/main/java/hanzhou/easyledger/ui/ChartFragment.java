@@ -866,8 +866,11 @@ public class ChartFragment extends Fragment implements
 
             mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentWeek();
 
-        } else {
+        } else if(mCurrentPeriodType == R.id.radioButton_current_period_type_year){
 
+            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentYear();
+
+        }else{
             /*it's custom period*/
             mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentCustom(customDays);
 

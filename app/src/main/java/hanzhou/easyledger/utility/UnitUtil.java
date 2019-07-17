@@ -85,6 +85,14 @@ public class UnitUtil {
         return startingDate;
     }
 
+    public static int getStartingDateCurrentYear() {
+        int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.dayOfYear().withMinimumValue());
+        Log.d("test_flow_teststartyear", "getStartingDateCurrentYear: "+ startingDate);
+
+        return startingDate;
+
+    }
+
     public static int getStartingDateCurrentCustom(int customDays) {
 
         int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.minusDays(customDays));

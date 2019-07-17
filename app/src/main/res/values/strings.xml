@@ -154,12 +154,16 @@
 
 
     <string name="dialog_chart_title_revene_expense_type">Choose Revenues/Expenses Length</string>
-    <string name="dialog_enter_length_label">Enter a Length </string>
+    <string name="dialog_custom_length_label">Pick A Time </string>
+
+    <string name="dialog_custom_length_result_display_left_part">From\u0020</string>
+    <string name="dialog_custom_length_result_display_right_part">\u0020days back to today</string>
+
     <string name="dialog_enter_length_edittext_hint">NO. of days back</string>
 
     <string name="dialog_chart_type_week">Show Current Week</string>
-
     <string name="dialog_chart_type_month">Show Current Month</string>
+    <string name="dialog_chart_type_year">Show Current Year</string>
 
 
     <string name="dialog_chart_select_bar_char">Display Bar Chart</string>

@@ -1,21 +1,19 @@
 package hanzhou.easyledger.chartsetting;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +48,9 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
     private RadioGroup mRGroupHistoryPeriodType;
 
     private RadioButton mRBtnTypeCustomNumberOfDays;
-    private EditText mETNumberOfDaysBefore;
+
+    private TextView mTVNumberOfDaysBefore;
+    private SeekBar mSBNumberOfDaysBefore;
 
 
     private Button mBtnPlus;
@@ -72,8 +72,9 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
 
     private int mNumberDays;
     private boolean mIsSettingChanged;
-    private boolean mIsDaysEntryValid;
 
+
+    private LinearLayout mSeekbarLayout;
 
 
     @Override
@@ -83,7 +84,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         mAppPreferences = mAppCompatActivity.getSharedPreferences(
                 Constant.APP_PREF_SETTING, Context.MODE_PRIVATE
         );
-        mIsDaysEntryValid = true;
     }
 
     @NonNull
@@ -97,8 +97,11 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 inflate(R.layout.dialog_chart_setting, null);
 
 
-        mETNumberOfDaysBefore = view.findViewById(R.id.dialog_number_of_days_before);
-        mETNumberOfDaysBefore.addTextChangedListener(textWatcher);
+        mSeekbarLayout = view.findViewById(R.id.dialog_custom_days_layout);
+
+        mTVNumberOfDaysBefore = view.findViewById(R.id.dialog_custom_number_of_days_before_tv);
+        mSBNumberOfDaysBefore = view.findViewById(R.id.dialog_custom_number_of_days_before_seekbar);
+        mSBNumberOfDaysBefore.setOnSeekBarChangeListener(seekBarChangeListener);
 
         mSwitchPercentageAmountLayout = view.findViewById(R.id.dialog_layout_switch_percentage_amount);
 
@@ -177,8 +180,11 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 getString(R.string.setting_chart_dialog_custom_current_period_key),
                 getResources().getInteger(R.integer.setting_chart_dialog_default_number_of_days_back)
         );
+
         Log.d(TAG, "loadPreferenceSetting: numberDays -> " + mNumberDays);
-        mETNumberOfDaysBefore.setText(String.valueOf(mNumberDays));
+
+//        mSBNumberOfDaysBefore.setText(String.valueOf(mNumberDays));
+        mSBNumberOfDaysBefore.setProgress(mNumberDays);
 
         boolean isPercentage = mAppPreferences.getBoolean(
                 getString(R.string.setting_chart_dialog_percentage_amount_key),
@@ -234,9 +240,9 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                     mIsSettingChanged = true;
 
                     if (i == R.id.radioButton_current_period_type_custom) {
-                        mETNumberOfDaysBefore.setVisibility(View.VISIBLE);
+                        mSeekbarLayout.setVisibility(View.VISIBLE);
                     } else {
-                        mETNumberOfDaysBefore.setVisibility(View.GONE);
+                        mSeekbarLayout.setVisibility(View.GONE);
                     }
                 }
             };
@@ -293,49 +299,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         }
     };
 
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            Log.d(TAG, "beforeTextChanged: ");
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            mIsSettingChanged = true;
-            if (charSequence.toString().equals("")) {
-
-                Log.d(TAG, "onTextChanged: charSequence.toString().equals(\"\")  set mIsDaysEntryValid == false");
-
-                mIsDaysEntryValid = false;
-            } else {
-                Log.d(TAG, "onTextChanged: set mIsDaysEntryValid");
-                mIsDaysEntryValid = true;
-
-            }
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-
-            if (!mIsDaysEntryValid) {
-                mNumberDays = 0;
-                Log.d(TAG, "afterTextChanged: number days set to 0");
-                mETNumberOfDaysBefore.setHintTextColor(Color.RED);
-                mETNumberOfDaysBefore.setHint(R.string.setting_warning_cannot_be_blank);
-
-
-
-            } else {
-                mNumberDays = Integer.parseInt(mETNumberOfDaysBefore.getText().toString());
-                Log.d(TAG, "afterTextChanged: mNumberDays  -> " + mNumberDays);
-
-
-            }
-
-        }
-    };
 
     private DialogInterface.OnClickListener userInputValid = new DialogInterface.OnClickListener() {
 
@@ -345,19 +308,13 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
             Log.d(TAG, "onClick: saveBTN   ");
             if (mIsSettingChanged) {
 
-                /*the dialog screen will save current setting*/
-                if(mIsDaysEntryValid){
-                    Log.d(TAG, "onClick: mIsSettingChanged");
-                    //todo, here
-                    Toast.makeText(mAppCompatActivity, getString(R.string.dialog_toast_saved), Toast.LENGTH_LONG).show();
-                    savePreferenceSetting();
+                Log.d(TAG, "onClick: mIsSettingChanged");
+                //todo, here
+                Toast.makeText(mAppCompatActivity, getString(R.string.dialog_toast_saved), Toast.LENGTH_LONG).show();
+                savePreferenceSetting();
 
-                    BottomNavigationView bottomNavigationView = mAppCompatActivity.findViewById(R.id.bottom_navigation);
-                    bottomNavigationView.setSelectedItemId(R.id.navigation_charts);
-                }else{
-                    /*the dialog screen will not save current setting*/
-                    Toast.makeText(mAppCompatActivity, getString(R.string.dialog_toast_not_saved), Toast.LENGTH_LONG).show();
-                }
+                BottomNavigationView bottomNavigationView = mAppCompatActivity.findViewById(R.id.bottom_navigation);
+                bottomNavigationView.setSelectedItemId(R.id.navigation_charts);
 
             } else {
                 Log.d(TAG, "onClick: mIssetting   not changed");
@@ -374,6 +331,32 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
 
             Toast.makeText(mAppCompatActivity, "No Change Made", Toast.LENGTH_LONG).show();
 
+
+        }
+    };
+
+    private SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            mIsSettingChanged = true;
+            mTVNumberOfDaysBefore.setText(
+                    getString(R.string.dialog_custom_length_result_display_left_part) +
+                    progress +
+                    getString(R.string.dialog_custom_length_result_display_right_part));
+
+            if (mNumberDays != progress) {
+                mNumberDays = progress;
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
 
         }
     };
