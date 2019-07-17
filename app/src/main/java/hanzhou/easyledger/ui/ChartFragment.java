@@ -671,6 +671,7 @@ public class ChartFragment extends Fragment implements
         ;
 
         data.setDataSet(pieDataSet);
+
         data.setValueFormatter(new MyPercentFormatter(chart));
         data.setValueTextSize(11f);
         chart.setData(data);
@@ -858,13 +859,16 @@ public class ChartFragment extends Fragment implements
 
     private void setDataCurrentPeriod(int customDays) {
         if (mCurrentPeriodType == R.id.radioButton_current_period_type_month) {
+
             mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentMonth();
+
         } else if (mCurrentPeriodType == R.id.radioButton_current_period_type_week) {
+
             mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentWeek();
+
         } else {
+
             /*it's custom period*/
-
-
             mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentCustom(customDays);
 
         }

@@ -9,6 +9,14 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.text.DecimalFormat;
 
+/*
+*   @author Michael P.
+*
+*
+*   modified by Han Zhou
+*
+*
+* */
 
 public class MyPercentFormatter extends ValueFormatter {
 
@@ -47,7 +55,7 @@ public class MyPercentFormatter extends ValueFormatter {
             return getFormattedValue(value);
         } else {
             // raw value, skip percent sign
-            return mFormat.format(value);
+            return "$"+mFormat.format(value);
         }
     }
 
