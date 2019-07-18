@@ -25,7 +25,6 @@ import android.widget.TextView;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
-import hanzhou.easyledger.viewmodel.OverviewFragmentVMFactory;
 
 /**
  * A simple {@link Fragment} subclass.
