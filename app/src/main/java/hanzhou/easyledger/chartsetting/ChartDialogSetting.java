@@ -19,13 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.lifecycle.Observer;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.Test.SharedPreferenceIntegerLiveData;
 import hanzhou.easyledger.utility.Constant;
 
 
@@ -42,6 +45,8 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
 
     private AppCompatActivity mAppCompatActivity;
     private SharedPreferences mAppPreferences;
+
+    private SharedPreferences mTestSP;
 
     private RadioGroup mRGroupCurrentPeriodType;
     private RadioGroup mRGroupCurrentChartType;
@@ -82,6 +87,11 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
         mAppPreferences = mAppCompatActivity.getSharedPreferences(
+                Constant.APP_PREF_SETTING, Context.MODE_PRIVATE
+        );
+
+        //todo, test SP livedata
+        mTestSP = mAppCompatActivity.getSharedPreferences(
                 Constant.APP_PREF_SETTING, Context.MODE_PRIVATE
         );
     }
@@ -142,6 +152,31 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
 
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        testSharedPreference();
+    }
+
+    private void testSharedPreference() {
+        //todo, testing VM preference
+        SharedPreferenceIntegerLiveData historyPeriodNumberLD =
+                new SharedPreferenceIntegerLiveData(
+                        mTestSP,
+                        getString(R.string.setting_chart_dialog_history_period_number_key),
+                        getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));
+        historyPeriodNumberLD.getIntegerLiveData(
+                getString(R.string.setting_chart_dialog_history_period_number_key),
+                getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number))
+                .observe(this, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer integer) {
+
+                        Toast.makeText(mAppCompatActivity, "Change in CID " + integer, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
 
     private void loadPreferenceSetting() {
         Log.d(TAG, "loadPreferenceSetting: ");
@@ -192,6 +227,7 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         );
 
         mSwitchPercentageAmount.setChecked(isPercentage);
+
 
         mIsSettingChanged = false;
 
@@ -342,8 +378,8 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
             mIsSettingChanged = true;
             mTVNumberOfDaysBefore.setText(
                     getString(R.string.dialog_custom_length_result_display_left_part) +
-                    progress +
-                    getString(R.string.dialog_custom_length_result_display_right_part));
+                            progress +
+                            getString(R.string.dialog_custom_length_result_display_right_part));
 
             if (mNumberDays != progress) {
                 mNumberDays = progress;

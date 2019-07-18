@@ -38,7 +38,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -53,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.Test.MyMonitorFormatter;
 import hanzhou.easyledger.chartsetting.LabelFormatterCurrentBarChart;
 import hanzhou.easyledger.chartsetting.MonthValueFormatter;
 import hanzhou.easyledger.chartsetting.MyLargeValueFormatter;
@@ -71,8 +69,8 @@ import hanzhou.easyledger.viewmodel.ChartDataViewModelFactory;
 
 /*
  *   This Fragment shows 3 charts in one of two ways:
- *   1. expense piechart  +  revenue piechart + history comparison piechart
- *   2. expense barchart  +  revenue barchart + history comparison barchart
+ *       expense piechart  +  revenue piechart + history comparison piechart
+ *   OR  expense barchart  +  revenue barchart + history comparison barchart
  *
  *   For each chart combination, user can select to display expense/revenue chart
  *   for current weeks or current months
