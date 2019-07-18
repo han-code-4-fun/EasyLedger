@@ -22,11 +22,11 @@ public class ChartDataHistoryVMUpdateFactory extends ViewModelProvider.NewInstan
 
     }
 
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ChartDataViewModel(mHistoryChartStartDate,
-                mHistoryChartEndDate);
-    }
+//    @NonNull
+//    @Override
+//    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//        return (T) new ChartDataViewModel(mHistoryChartStartDate,
+//                mHistoryChartEndDate);
+//    }
 
 }

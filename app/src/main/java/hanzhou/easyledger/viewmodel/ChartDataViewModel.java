@@ -58,24 +58,6 @@ public class ChartDataViewModel extends ViewModel {
 ////                mHistoryStartDateNew.getValue(), mHistoryEndDateNew.getValue());
 //    }
 
-    public ChartDataViewModel(int HistoryChartStartDate,
-                              int HistoryChartEndDate) {
-
-        Log.d("test_new", " VM  all list updated ");
-
-
-
-        mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
-                HistoryChartStartDate, HistoryChartEndDate);
-//        mAppexecutor.diskIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
-//                        mHistoryStartDate, mHistoryEndDate);
-//            }
-//        });
-
-    }
     public ChartDataViewModel(int CurrentChartStartDate, int HistoryChartStartDate,
                               int HistoryChartEndDate, TransactionDB transactionDB){
         mDB = transactionDB;

@@ -52,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.Test.ChartDataHistoryVMUpdateFactory;
 import hanzhou.easyledger.Test.SPViewModel;
 import hanzhou.easyledger.chartsetting.LabelFormatterCurrentBarChart;
 import hanzhou.easyledger.chartsetting.MonthValueFormatter;
@@ -148,9 +147,7 @@ public class ChartFragment extends Fragment implements
         loadPreferenceSetting();
 
 
-
     }
-
 
 
     @Nullable
@@ -228,11 +225,6 @@ public class ChartFragment extends Fragment implements
         });
 
 
-
-
-
-
-
         //todo, test custom LIvedata SP
         sharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
         );
@@ -241,18 +233,16 @@ public class ChartFragment extends Fragment implements
             @Override
             public void onChanged(Integer integer) {
 
-                Log.d("test_new", " get new number of period  -> "+ integer);
+                Log.d("test_new", " get new number of period  -> " + integer);
 
                 if (mNumberOfPeriodsToCompare != integer) {
 
                     mNumberOfPeriodsToCompare = integer;
                     setPeriodForHistoryChartOnPeriodType();
-                    ChartDataHistoryVMUpdateFactory factory1 = new ChartDataHistoryVMUpdateFactory(mHistoryChartStartDate, mHistoryChartEndDate);
-                    mChartDataViewModel = ViewModelProviders.of(mAppCompatActivity, factory1).get(ChartDataViewModel.class);
 
-                    //  mChartDataViewModel.setmAllListEntryPeriod(mHistoryChartStartDate, mHistoryChartEndDate);
+                    mChartDataViewModel.setmAllListEntryPeriod(mHistoryChartStartDate, mHistoryChartEndDate);
 
-                    Log.d("test_new", " get new number of period  -> start date and end date"+ mHistoryChartStartDate+" + "+mHistoryChartEndDate);
+                    Log.d("test_new", " get new number of period  -> start date and end date" + mHistoryChartStartDate + " + " + mHistoryChartEndDate);
 
                 }
             }
@@ -297,11 +287,11 @@ public class ChartFragment extends Fragment implements
             @Override
             public void onChanged(Integer integer) {
 
-                if(mCurrentPeriodType != integer){
+                if (mCurrentPeriodType != integer) {
 
                     mCurrentPeriodType = integer;
 
-                    if (mCurrentPeriodType != R.id.radioButton_current_period_type_custom ) {
+                    if (mCurrentPeriodType != R.id.radioButton_current_period_type_custom) {
                         setDataCurrentPeriod(mNumOfCustomDays);
                         mChartDataViewModel.setmExpenseListEntry(mCurrentChartStartingDate);
                         mChartDataViewModel.setmRevenueListEntry(mCurrentChartStartingDate);
@@ -316,11 +306,11 @@ public class ChartFragment extends Fragment implements
             @Override
             public void onChanged(Integer integer) {
 
-                if( mNumOfCustomDays != integer){
+                if (mNumOfCustomDays != integer) {
 
                     mNumOfCustomDays = integer;
 
-                    if (mCurrentPeriodType == R.id.radioButton_current_period_type_custom ) {
+                    if (mCurrentPeriodType == R.id.radioButton_current_period_type_custom) {
                         mIsCustomCurrentPeriod = true;
                         setDataCurrentPeriod(integer);
                         mChartDataViewModel.setmExpenseListEntry(mCurrentChartStartingDate);
@@ -353,7 +343,6 @@ public class ChartFragment extends Fragment implements
 //        ChartDataViewModel mChartDataViewModel = ViewModelProviders.of(mAppCompatActivity).get(ChartDataViewModel.class);
 
 //        mChartDataViewModel.setmChartSettingChanged(false);
-
 
 
     }
@@ -1009,7 +998,6 @@ public class ChartFragment extends Fragment implements
 
 
     private void loadPreferenceSetting() {
-
 
 
         mHistoryPeriodType = mAppPreferences.getInt(
