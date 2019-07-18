@@ -29,7 +29,7 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        return new DetailTransactionFragment(Constant.CALLFROMLEDGER);
+        return new DetailTransactionFragment(Constant.FRAG_CALL_FROM_LEDGER);
     }
 
     @Nullable

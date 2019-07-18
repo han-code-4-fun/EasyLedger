@@ -146,7 +146,7 @@ public class DetailTransactionFragment extends Fragment{
 
         //todo, 2nd stage, handle different data for different ledgers
 
-        if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)){
+        if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)){
             OverviewFragmentViewModel mOverviewVM = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
             mOverviewVM.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
                 @Override

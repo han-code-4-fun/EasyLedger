@@ -1,11 +1,10 @@
 package hanzhou.easyledger.ui;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -24,6 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
+import hanzhou.easyledger.Test.SPVMFactory;
+import hanzhou.easyledger.Test.SPViewModel;
 import hanzhou.easyledger.chartsetting.ChartDialogSetting;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
@@ -341,6 +342,9 @@ public class MainActivity extends AppCompatActivity {
         mAdapterActionViewModel = ViewModelProviders.of(this).get(AdapterNActionBarViewModel.class);
 
 
+        //todo, test SharePreference with VM and LiveData
+        SharedPreferences sp =getSharedPreferences(Constant.APP_PREF_SETTING, Context.MODE_PRIVATE);
+
 
     }
 
@@ -483,6 +487,54 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        SharedPreferences sp = getSharedPreferences(
+                Constant.APP_PREF_SETTING, Context.MODE_PRIVATE
+        );
+
+
+
+        //todo, testing VM preference
+
+
+        /*SPIntLiveData historyPeriodNumberLD =
+                new SPIntLiveData(
+                        sp,
+                        getString(R.string.setting_chart_dialog_history_period_number_key),
+                        getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));
+
+
+        historyPeriodNumberLD.getIntegerLiveData(
+                getString(R.string.setting_chart_dialog_history_period_number_key),
+                getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number))
+                .observe(this, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer integer) {
+                        Log.d(TAG, "Mainactivity onChanged: Change in CID  "+integer);
+                        Toast.makeText(getApplication(), "Change in CID " + integer, Toast.LENGTH_SHORT).show();
+                    }
+                });*/
+//        SPVMFactory factory = new SPVMFactory(
+//                sp,
+//                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_KEY,
+//                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_DEFAULT
+//
+//        );
+
+        //initialize sharedpreference VM
+        SPVMFactory factory = new SPVMFactory( sp);
+
+
+        SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(this,factory).get(SPViewModel.class
+        );
+
+//        sharedPreferenceViewModel.getChartHistoryPeriodNumber().observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(Integer integer) {
+//                Log.d(TAG, "MAINACTIVITRY   Change in ChartHistoryPeriodNumber " + integer);
+//            }
+//        });
+
+
     }
 
 
@@ -571,7 +623,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (isInActionModel) {
             if (mEditBtn != null && mIgnoreBtn != null) {
-                if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)) {
+                if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
 
                     toolbarActionsIfCalledFromOverViewFragment(integer);
                 } else {
@@ -682,7 +734,7 @@ public class MainActivity extends AppCompatActivity {
         textViewOnToolBar.setVisibility(View.VISIBLE);
 
         assignMenuItemToVariableForDifferentCombinationNSetInitialState();
-        if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMLEDGER)) {
+        if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_LEDGER)) {
 
             mSelectAllBtn.setVisible(false);
         } else {
@@ -736,7 +788,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
 
             final List<TransactionEntry> entries;
-            if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.CALLFROMOVERVIEW)){
+            if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)){
                 entries = mOverviewViewModel.getUntaggedTransactions().getValue();
             }else{
                 entries = mTransactionViewModel.getAllTransactions().getValue();

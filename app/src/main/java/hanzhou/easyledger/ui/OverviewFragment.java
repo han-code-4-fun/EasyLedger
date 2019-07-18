@@ -111,7 +111,7 @@ public class OverviewFragment extends Fragment{
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.overview_recyclerview_for_untagged_transactions,
-                        new DetailTransactionFragment(Constant.CALLFROMOVERVIEW))
+                        new DetailTransactionFragment(Constant.FRAG_CALL_FROM_OVERVIEW))
                 .commit();
 
         return root;

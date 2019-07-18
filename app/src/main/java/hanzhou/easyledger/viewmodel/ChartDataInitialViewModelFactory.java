@@ -6,15 +6,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import hanzhou.easyledger.data.TransactionDB;
 
-public class ChartDataViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class ChartDataInitialViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private int mCurrentChartStartDate;
     private int mHistoryChartStartDate;
     private int mHistoryChartEndDate;
 
     private TransactionDB transactionDB;
 
-    public ChartDataViewModelFactory(int mCurrentChartStartDate, int mHistoryChartStartDate,
-                                     int mHistoryChartEndDate, TransactionDB transactionDB) {
+    public ChartDataInitialViewModelFactory(int mCurrentChartStartDate, int mHistoryChartStartDate,
+                                            int mHistoryChartEndDate, TransactionDB transactionDB) {
         this.mCurrentChartStartDate = mCurrentChartStartDate;
         this.mHistoryChartStartDate = mHistoryChartStartDate;
         this.mHistoryChartEndDate = mHistoryChartEndDate;

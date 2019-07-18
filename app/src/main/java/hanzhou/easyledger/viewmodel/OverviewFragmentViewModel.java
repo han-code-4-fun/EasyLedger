@@ -67,7 +67,7 @@ public class OverviewFragmentViewModel extends ViewModel {
     //todo, convert back Adpater class from singleton to normall
     /*
 
-      if (currentLedger.equals(Constant.CALLFROMOVERVIEW)) {
+      if (currentLedger.equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
             entries = untaggedTransactions.getValue();
         } else {
 

@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="setting_chart_dialog_default_history_period_number">6</integer>
-    <integer name="setting_chart_dialog_default_number_of_days_back">0</integer>
 </resources>

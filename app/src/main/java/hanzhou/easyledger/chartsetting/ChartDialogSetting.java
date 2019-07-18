@@ -24,11 +24,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.lifecycle.Observer;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.lifecycle.ViewModelProviders;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.Test.SharedPreferenceIntegerLiveData;
+import hanzhou.easyledger.Test.SPViewModel;
 import hanzhou.easyledger.utility.Constant;
 
 
@@ -159,9 +158,15 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
     }
 
     private void testSharedPreference() {
+
+
         //todo, testing VM preference
-        SharedPreferenceIntegerLiveData historyPeriodNumberLD =
-                new SharedPreferenceIntegerLiveData(
+
+
+
+
+      /*  SPIntLiveData historyPeriodNumberLD =
+                new SPIntLiveData(
                         mTestSP,
                         getString(R.string.setting_chart_dialog_history_period_number_key),
                         getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));
@@ -171,10 +176,23 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 .observe(this, new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer integer) {
+                        Log.d(TAG, "OBSERVER    Change in CID " + integer);
 
-                        Toast.makeText(mAppCompatActivity, "Change in CID " + integer, Toast.LENGTH_SHORT).show();
                     }
-                });
+                });*/
+
+
+      //todo, if new testing VM is not working, try to un comment below
+
+//        SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
+//        );
+//
+//        sharedPreferenceViewModel.getChartHistoryPeriodNumber().observe(this, new Observer<Integer>() {
+//            @Override
+//            public void onChanged(Integer integer) {
+//                Log.d(TAG, "CHARTDIALOG SETTING    Change in ChartHistoryPeriodNumber " + integer);
+//            }
+//        });
 
     }
 
@@ -184,18 +202,19 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         int temp;
 
         temp = mAppPreferences.getInt(
-                getString(R.string.setting_chart_dialog_history_period_number_key),
-                getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));
+                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_KEY,
+                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_DEFAULT
+        );
         mTVDisplayHistoryPeriods.setText(String.valueOf(temp));
 
         temp = mAppPreferences.getInt(
-                getString(R.string.setting_chart_dialog_history_period_type_key),
-                R.id.dialog_history_period_by_month);
+                Constant.SETTING_CHART_HISTORY_PERIOD_TYPE_KEY,
+                Constant.SETTING_CHART_HISTORY_PERIOD_TYPE_DEFAULT_VAL);
         mRGroupHistoryPeriodType.check(temp);
 
         temp = mAppPreferences.getInt(
-                getString(R.string.setting_chart_dialog_current_chart_type_key),
-                R.id.radioButton_current_period_type_piechart
+                Constant.SETTING_CHART_CURRENT_CHART_TYPE_KEY,
+                Constant.SETTING_CHART_CURRENT_CHART_TYPE_DEFAULT_VAL
         );
         mRGroupCurrentChartType.check(temp);
 
@@ -206,14 +225,14 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         }
 
         temp = mAppPreferences.getInt(
-                getString(R.string.setting_chart_dialog_current_period_type_key),
-                R.id.radioButton_current_period_type_month
+                Constant.SETTING_CHART_CURRENT_CHART_PERIOD_KEY,
+                Constant.SETTING_CHART_CURRENT_CHART_PERIOD_DEFAULT_VAL
         );
         mRGroupCurrentPeriodType.check(temp);
 
         mNumberDays = mAppPreferences.getInt(
-                getString(R.string.setting_chart_dialog_custom_current_period_key),
-                getResources().getInteger(R.integer.setting_chart_dialog_default_number_of_days_back)
+                Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_KEY,
+                Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_DEFAULT_VAL
         );
 
         Log.d(TAG, "loadPreferenceSetting: numberDays -> " + mNumberDays);
@@ -222,8 +241,8 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         mSBNumberOfDaysBefore.setProgress(mNumberDays);
 
         boolean isPercentage = mAppPreferences.getBoolean(
-                getString(R.string.setting_chart_dialog_percentage_amount_key),
-                getResources().getBoolean(R.bool.setting_char_dialog_percentage_amount_switch_default)
+                Constant.SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_KEY,
+                Constant.SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_DEFAULT_VAL
         );
 
         mSwitchPercentageAmount.setChecked(isPercentage);
@@ -238,36 +257,42 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
 
         SharedPreferences.Editor editor = mAppPreferences.edit();
 
-        editor.putInt(getString(R.string.setting_chart_dialog_history_period_number_key),
+        editor.putInt(
+                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_KEY,
                 Integer.parseInt(mTVDisplayHistoryPeriods.getText().toString())
         );
 
         editor.putInt(
-                getString(R.string.setting_chart_dialog_history_period_type_key),
+                Constant.SETTING_CHART_HISTORY_PERIOD_TYPE_KEY,
                 mRGroupHistoryPeriodType.getCheckedRadioButtonId()
         );
 
-        editor.putInt(getString(R.string.setting_chart_dialog_current_chart_type_key),
+        editor.putInt(
+                Constant.SETTING_CHART_CURRENT_CHART_TYPE_KEY,
                 mRGroupCurrentChartType.getCheckedRadioButtonId()
         );
 
-        editor.putInt(getString(R.string.setting_chart_dialog_current_period_type_key),
+        editor.putInt(
+                Constant.SETTING_CHART_CURRENT_CHART_PERIOD_KEY,
                 mRGroupCurrentPeriodType.getCheckedRadioButtonId()
         );
 
         if (mRGroupCurrentPeriodType.getCheckedRadioButtonId() == R.id.radioButton_current_period_type_custom) {
             editor.putInt(
-                    getString(R.string.setting_chart_dialog_custom_current_period_key),
+                    Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_KEY,
                     mNumberDays
             );
             Log.d("test_f_custom_dates", "save preference:  number  of days is  " + mNumberDays);
         }
 
-        editor.putBoolean(getString(R.string.setting_chart_dialog_percentage_amount_key),
+        editor.putBoolean(
+                Constant.SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_KEY,
                 mSwitchPercentageAmount.isChecked());
 
         editor.apply();
     }
+
+
 
     private RadioGroup.OnCheckedChangeListener radioGroupCurrentPeriodTypeChangeListenerGeneral =
             new RadioGroup.OnCheckedChangeListener() {
@@ -349,8 +374,11 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 Toast.makeText(mAppCompatActivity, getString(R.string.dialog_toast_saved), Toast.LENGTH_LONG).show();
                 savePreferenceSetting();
 
-                BottomNavigationView bottomNavigationView = mAppCompatActivity.findViewById(R.id.bottom_navigation);
-                bottomNavigationView.setSelectedItemId(R.id.navigation_charts);
+
+                //todo, test VM
+
+                /*BottomNavigationView bottomNavigationView = mAppCompatActivity.findViewById(R.id.bottom_navigation);
+                bottomNavigationView.setSelectedItemId(R.id.navigation_charts);*/
 
             } else {
                 Log.d(TAG, "onClick: mIssetting   not changed");
@@ -366,8 +394,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         public void onClick(DialogInterface dialogInterface, int i) {
 
             Toast.makeText(mAppCompatActivity, "No Change Made", Toast.LENGTH_LONG).show();
-
-
         }
     };
 

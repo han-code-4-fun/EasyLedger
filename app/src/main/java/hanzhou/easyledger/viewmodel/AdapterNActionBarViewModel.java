@@ -70,7 +70,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         selectedBooleanArrayViewMode = new SparseBooleanArray();
 
-        currentLedger = Constant.CALLFROMOVERVIEW;
+        currentLedger = Constant.FRAG_CALL_FROM_OVERVIEW;
 
         mIsInQuestionFragment = new MutableLiveData<>();
 //        mIsInQuestionFragment.setValue(false);

@@ -1,10 +1,7 @@
 package hanzhou.easyledger.viewmodel;
 
-import android.app.Application;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -21,13 +18,64 @@ public class ChartDataViewModel extends ViewModel {
 
     private LiveData<List<TransactionEntry>> mRevenueListEntry;
     private LiveData<List<TransactionEntry>> mExpenseListEntry;
-    private LiveData<List<TransactionEntry>> mAllListEntryPeriod;
+    private LiveData<List<TransactionEntry>> mHistoryListEntryPeriod;
+
+
+    private MutableLiveData<List<TransactionEntry>> mAllListMutable;
 
     private MutableLiveData<Boolean> mChartSettingChanged;
 
     private TransactionDB mDB;
 
+    private int mHistoryStartDate;
+    private int mHistoryEndDate;
 
+    private MutableLiveData<Integer> mHistoryStartDateNew;
+    private MutableLiveData<Integer> mHistoryEndDateNew;
+
+
+
+
+//    public ChartDataViewModel(@NonNull Application application) {
+//        super(application);
+//
+//            mDB = TransactionDB.getInstance(application);
+//
+//
+//
+//
+//
+//            mChartSettingChanged = new MutableLiveData<>();
+//            mChartSettingChanged.setValue(false);
+//
+//
+//
+////        mHistoryStartDateNew = new MutableLiveData<>();
+////        mHistoryStartDateNew.setValue(HistoryChartStartDate);
+////        mHistoryEndDateNew = new MutableLiveData<>();
+////        mHistoryEndDateNew.setValue(HistoryChartEndDate);
+////        mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+////                mHistoryStartDateNew.getValue(), mHistoryEndDateNew.getValue());
+//    }
+
+    public ChartDataViewModel(int HistoryChartStartDate,
+                              int HistoryChartEndDate) {
+
+        Log.d("test_new", " VM  all list updated ");
+
+
+
+        mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+                HistoryChartStartDate, HistoryChartEndDate);
+//        mAppexecutor.diskIO().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+//                        mHistoryStartDate, mHistoryEndDate);
+//            }
+//        });
+
+    }
     public ChartDataViewModel(int CurrentChartStartDate, int HistoryChartStartDate,
                               int HistoryChartEndDate, TransactionDB transactionDB){
         mDB = transactionDB;
@@ -36,28 +84,37 @@ public class ChartDataViewModel extends ViewModel {
         mExpenseListEntry = mDB.transactionDAO().loadTransactionExpensePeriod(CurrentChartStartDate);
         Log.d("test_f_custom_dates  VM", "VM  HISTORY startingdate & enddate is "+ HistoryChartStartDate+" ()() "+HistoryChartEndDate);
 
-        mAllListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+        mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
                 HistoryChartStartDate, HistoryChartEndDate);
         mChartSettingChanged = new MutableLiveData<>();
         mChartSettingChanged.setValue(false);
+
+
+        mAppexecutor = AppExecutors.getInstance();
+//        mHistoryStartDateNew = new MutableLiveData<>();
+//        mHistoryStartDateNew.setValue(HistoryChartStartDate);
+//        mHistoryEndDateNew = new MutableLiveData<>();
+//        mHistoryEndDateNew.setValue(HistoryChartEndDate);
+//        mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+//                mHistoryStartDateNew.getValue(), mHistoryEndDateNew.getValue());
+
     }
+
+
 
 
 
     public LiveData<List<TransactionEntry>> getmRevenueListEntry(){
-        Log.d("test_f_custom_dates", "VM get revenue list: "+mRevenueListEntry.hashCode());
         return mRevenueListEntry;
     }
 
     public LiveData<List<TransactionEntry>> getmExpenseListEntry(){
-        Log.d("test_f_custom_dates", "VM get expense list: "+mExpenseListEntry.hashCode());
 
         return mExpenseListEntry;
     }
 
-    public LiveData<List<TransactionEntry>> getmAllListEntryPeriod(){
-
-        return mAllListEntryPeriod;
+    public LiveData<List<TransactionEntry>> getmHistoryListEntryPeriod(){
+        return mHistoryListEntryPeriod;
     }
 
 
@@ -68,6 +125,71 @@ public class ChartDataViewModel extends ViewModel {
     public void setmChartSettingChanged(Boolean input) {
         this.mChartSettingChanged.setValue(input);
     }
+
+    public void setmRevenueListEntry(int CurrentChartStartDate){
+        mRevenueListEntry = mDB.transactionDAO().loadTransactionRevenuePeriod(CurrentChartStartDate);
+    }
+
+    public void setmExpenseListEntry(int CurrentChartStartDate){
+
+        mExpenseListEntry = mDB.transactionDAO().loadTransactionExpensePeriod(CurrentChartStartDate);
+    }
+
+    public void setmAllListEntryPeriod(int HistoryChartStartDate,int HistoryChartEndDate){
+
+        mHistoryStartDate = HistoryChartStartDate;
+        mHistoryEndDate = HistoryChartEndDate;
+
+        mAppexecutor.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+                        mHistoryStartDate, mHistoryEndDate);
+            }
+        });
+
+        Log.d("test_new", " VM  all list updated ");
+        Log.d("test_new", " VM  all list size "+ mHistoryListEntryPeriod.getValue().size());
+
+
+    }
+
+
+    public void updateAllListStartDate(int newStartDate){
+        mHistoryStartDate = newStartDate;
+        mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+                mHistoryStartDate, mHistoryEndDate);
+
+    }
+    public void updateAllListEndDate(int newEndDate){
+        mHistoryEndDate = newEndDate;
+        mHistoryListEntryPeriod = mDB.transactionDAO().loadTransactionInPeriodForChart(
+                mHistoryStartDate, mHistoryEndDate);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -97,7 +219,7 @@ public class ChartDataViewModel extends ViewModel {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mAllListEntryPeriod= mDB.transactionDAO().loadTransactionInPeriodForChart(startingDay, endingDay);
+                mHistoryListEntryPeriod= mDB.transactionDAO().loadTransactionInPeriodForChart(startingDay, endingDay);
             }
 
         });

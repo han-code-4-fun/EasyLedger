@@ -171,27 +171,28 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/dialog_plus_number"
-
-                style="@style/dialog_sub_class_margin"
+                android:id="@+id/dialog_minus_number"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:text="@string/dialog_add_btn" />
+                android:text="@string/dialog_minus_btn"
+                />
 
             <TextView
                 android:id="@+id/dialog_display_number_history_periods"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                style="@style/dialog_sub_class_margin"
+
+                android:gravity="center"
                 android:text="@string/empty_string"
                 tools:text="12" />
-
             <Button
-                android:id="@+id/dialog_minus_number"
+                android:id="@+id/dialog_plus_number"
+
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:text="@string/dialog_minus_btn" />
+                android:text="@string/dialog_add_btn" />
+
         </LinearLayout>
 
 

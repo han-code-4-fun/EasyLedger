@@ -17,12 +17,13 @@ import androidx.lifecycle.LiveData;
 *
 * */
 
-public abstract class SharedPreferenceLiveData<T> extends LiveData<T> {
+public abstract class SPLiveData<T> extends LiveData<T> {
     SharedPreferences sharedPrefs;
+
     String key;
     public T defValue;
 
-    public SharedPreferenceLiveData(SharedPreferences prefs, String key, T defValue) {
+    public SPLiveData(SharedPreferences prefs, String key, T defValue) {
         this.sharedPrefs = prefs;
         this.key = key;
         this.defValue = defValue;
@@ -32,7 +33,7 @@ public abstract class SharedPreferenceLiveData<T> extends LiveData<T> {
             preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (SharedPreferenceLiveData.this.key.equals(key)) {
+            if (SPLiveData.this.key.equals(key)) {
                 setValue(getValueFromPreferences(key, defValue));
             }
         }
@@ -40,24 +41,18 @@ public abstract class SharedPreferenceLiveData<T> extends LiveData<T> {
 
     abstract T getValueFromPreferences(String key, T defValue);
 
-    public SharedPreferenceLiveData<Integer> getIntegerLiveData(String key, Integer defaultValue) {
-        return new SharedPreferenceIntegerLiveData(sharedPrefs, key, defaultValue);
-    }
-
     @Override
     protected void onActive() {
         super.onActive();
+
         setValue(getValueFromPreferences(key, defValue));
         sharedPrefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
     @Override
     protected void onInactive() {
-        sharedPrefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
         super.onInactive();
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
-    public SharedPreferenceLiveData<Boolean> getBooleanLiveData(String key, Boolean defaultValue) {
-        return new SharedPreferenceBooleanLiveData(sharedPrefs,key, defaultValue);
-    }
 }

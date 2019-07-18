@@ -2,8 +2,8 @@ package hanzhou.easyledger.Test;
 
 import android.content.SharedPreferences;
 
-public class SharedPreferenceBooleanLiveData extends SharedPreferenceLiveData<Boolean>{
-    public SharedPreferenceBooleanLiveData(SharedPreferences prefs, String key, Boolean defValue) {
+public class SPBoolLiveData extends SPLiveData<Boolean> {
+    public SPBoolLiveData(SharedPreferences prefs, String key, Boolean defValue) {
         super(prefs, key, defValue);
     }
 

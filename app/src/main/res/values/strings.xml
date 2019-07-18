@@ -184,14 +184,7 @@
 
     
     
-    <string name="setting_chart_dialog_history_period_type_key">history_period_type</string>
-    <string name="setting_chart_dialog_history_period_number_key">history_period_number</string>
-    <string name="setting_chart_dialog_current_chart_type_key">current_chart_type</string>
-    <string name="setting_chart_dialog_current_period_type_key">current_chart_period</string>
 
-    <string name="setting_chart_dialog_custom_current_period_key">custom_current_period</string>
-
-    <string name="setting_chart_dialog_percentage_amount_key">percentage_or_amount</string>
 
     <string name="setting_warning_cannot_be_blank">Enter An Integer</string>
 
