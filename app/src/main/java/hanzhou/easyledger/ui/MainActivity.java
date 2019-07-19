@@ -23,8 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
-import hanzhou.easyledger.Test.SPVMFactory;
-import hanzhou.easyledger.Test.SPViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chartsetting.ChartDialogSetting;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplication(), "Change in CID " + integer, Toast.LENGTH_SHORT).show();
                     }
                 });*/
-//        SPVMFactory factory = new SPVMFactory(
+//        SPViewModelFactory factory = new SPViewModelFactory(
 //                sp,
 //                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_KEY,
 //                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_DEFAULT
@@ -521,7 +521,7 @@ public class MainActivity extends AppCompatActivity {
 //        );
 
         //initialize sharedpreference VM
-        SPVMFactory factory = new SPVMFactory( sp);
+        SPViewModelFactory factory = new SPViewModelFactory( sp);
 
 
         SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(this,factory).get(SPViewModel.class

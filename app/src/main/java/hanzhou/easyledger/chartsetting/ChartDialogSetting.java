@@ -23,11 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.Test.SPViewModel;
 import hanzhou.easyledger.utility.Constant;
 
 
@@ -154,47 +151,8 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        testSharedPreference();
     }
 
-    private void testSharedPreference() {
-
-
-        //todo, testing VM preference
-
-
-
-
-      /*  SPIntLiveData historyPeriodNumberLD =
-                new SPIntLiveData(
-                        mTestSP,
-                        getString(R.string.setting_chart_dialog_history_period_number_key),
-                        getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));
-        historyPeriodNumberLD.getIntegerLiveData(
-                getString(R.string.setting_chart_dialog_history_period_number_key),
-                getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number))
-                .observe(this, new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer integer) {
-                        Log.d(TAG, "OBSERVER    Change in CID " + integer);
-
-                    }
-                });*/
-
-
-      //todo, if new testing VM is not working, try to un comment below
-
-//        SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
-//        );
-//
-//        sharedPreferenceViewModel.getChartHistoryPeriodNumber().observe(this, new Observer<Integer>() {
-//            @Override
-//            public void onChanged(Integer integer) {
-//                Log.d(TAG, "CHARTDIALOG SETTING    Change in ChartHistoryPeriodNumber " + integer);
-//            }
-//        });
-
-    }
 
     private void loadPreferenceSetting() {
         Log.d(TAG, "loadPreferenceSetting: ");
@@ -228,6 +186,8 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 Constant.SETTING_CHART_CURRENT_CHART_PERIOD_KEY,
                 Constant.SETTING_CHART_CURRENT_CHART_PERIOD_DEFAULT_VAL
         );
+
+        Log.d("test_year_bug", "dialogsetting, load current_chart-period_key "+temp);
         mRGroupCurrentPeriodType.check(temp);
 
         mNumberDays = mAppPreferences.getInt(
@@ -276,13 +236,16 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 Constant.SETTING_CHART_CURRENT_CHART_PERIOD_KEY,
                 mRGroupCurrentPeriodType.getCheckedRadioButtonId()
         );
+        Log.d("test_year_bug", "dialogsetting, save current_chart-period_key checked ->"+
+                mRGroupCurrentPeriodType.getCheckedRadioButtonId());
+
 
         if (mRGroupCurrentPeriodType.getCheckedRadioButtonId() == R.id.radioButton_current_period_type_custom) {
             editor.putInt(
                     Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_KEY,
                     mNumberDays
             );
-            Log.d("test_f_custom_dates", "save preference:  number  of days is  " + mNumberDays);
+            Log.d("test_year_bug", "dialogsetting  custom  number  of days is  " + mNumberDays);
         }
 
         editor.putBoolean(

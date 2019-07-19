@@ -22,7 +22,9 @@ public class UnitUtil {
     }
 
 
-
+    public static int getTodayInAppTimeFormat(){
+        return fromJodaTimeLocalDateToAppDateInteger(now);
+    }
 
     public static String getMonthDayToday() {
         Date today = new Date();
@@ -152,7 +154,7 @@ public class UnitUtil {
         return output;
     }
 
-    private static Integer fromJodaTimeLocalDateToAppDateInteger(LocalDate inputDate){
+    public static Integer fromJodaTimeLocalDateToAppDateInteger(LocalDate inputDate){
         return  Integer.parseInt(DateTimeFormat.forPattern("YYMMdd").print(inputDate));
     }
 

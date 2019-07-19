@@ -1,4 +1,4 @@
-package hanzhou.easyledger.Test;
+package hanzhou.easyledger.viewmodel.sharedpreference_viewmodel;
 
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -7,14 +7,14 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-public class SPVMFactory extends ViewModelProvider.NewInstanceFactory {
+public class SPViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final SharedPreferences sharedPreferences;
 //    private final String key;
 //    private final int defaultVal;
 
 
-    public SPVMFactory(SharedPreferences inputSharedPreferences) {
+    public SPViewModelFactory(SharedPreferences inputSharedPreferences) {
 
         sharedPreferences = inputSharedPreferences;
 //        key = inputKey;

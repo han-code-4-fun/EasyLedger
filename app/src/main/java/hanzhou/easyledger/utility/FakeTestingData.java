@@ -21,6 +21,12 @@ public class FakeTestingData {
             "RBC", "Cash"
     };
 
+    private static int mCurrentMonth = 1;
+
+    private static void synchronizeCurrentMonth(){
+        mCurrentMonth = UnitUtil.getTodayInAppTimeFormat()/100 - 1900;
+
+    }
 
     private static String[] categoryRevenue = {
             Constant.UNTAGGED, "Salary", "Commission", "Investment", "Interest",
@@ -108,6 +114,7 @@ public class FakeTestingData {
 
 
     public static List<TransactionEntry> create10DesignateTestingDataInCurrentWeek() {
+        synchronizeCurrentMonth();
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             transactionEntryList.add(getAnEntryRevenueWithinThisWeek());
@@ -133,6 +140,8 @@ public class FakeTestingData {
     }
 
     public static List<TransactionEntry> create10DesignateTestingDataInCurrentMonth() {
+        synchronizeCurrentMonth();
+
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             transactionEntryList.add(getAnEntryRevenueWithinThisMonth());
@@ -159,6 +168,8 @@ public class FakeTestingData {
 
 
     public static List<TransactionEntry> create10DesignateTestingDataInCertaindays(int daysBackFromToday) {
+        synchronizeCurrentMonth();
+
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
@@ -192,6 +203,8 @@ public class FakeTestingData {
 
 
     public static List<TransactionEntry> create1000Transactions() {
+        synchronizeCurrentMonth();
+
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
 
@@ -204,6 +217,8 @@ public class FakeTestingData {
     }
 
     public static List<TransactionEntry> create5UntaggedTransactions() {
+        synchronizeCurrentMonth();
+
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
 
@@ -263,24 +278,42 @@ public class FakeTestingData {
     }
 
     private static int getRandomMonthNDate() {
-        String[] year = {"18","19"};
+//        String[] year = {"18","19"};
+//        int selectYear = Integer.parseInt(year[(int) (Math.random() * year.length)]);
+//
+//        String output = String.valueOf(selectYear);
+//        int temp;
+//        if(selectYear == 19){
+//            temp = (int)(Math.random() * (mCurrentMonth) + 1);
+//        }else{
+//
+//            temp = (int) (Math.random() * 12 + 1);
+//
+//        }
+//
+//        if (temp < 10) {
+//            output += ("0" + temp);
+//        } else {
+//            output += temp;
+//        }
+//        if(selectYear == 19 && temp == 07){
+//
+//        }else{
+//            temp = (int) (Math.random() * 31 + 1);
+//        }
+//
+//        if (temp < 10) {
+//            output += "0" + temp;
+//        } else {
+//            output += temp;
+//        }
 
-        String output = year[(int) (Math.random() * year.length)];
+        int tempPastDays = (int)(Math.random()*400);
 
-        int temp = (int) (Math.random() * 12 + 1);
-        if (temp < 10) {
-            output += ("0" + temp);
-        } else {
-            output += temp;
-        }
-        temp = (int) (Math.random() * 31 + 1);
-        if (temp < 10) {
-            output += "0" + temp;
-        } else {
-            output += temp;
-        }
+        return UnitUtil.fromJodaTimeLocalDateToAppDateInteger(
+                LocalDate.now().minusDays(tempPastDays)
+        );
 
-        return Integer.parseInt(output);
     }
 
     private static String getRandomRemark() {

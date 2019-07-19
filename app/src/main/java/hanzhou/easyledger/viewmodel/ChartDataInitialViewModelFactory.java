@@ -14,17 +14,17 @@ public class ChartDataInitialViewModelFactory extends ViewModelProvider.NewInsta
     private TransactionDB transactionDB;
 
     public ChartDataInitialViewModelFactory(int mCurrentChartStartDate, int mHistoryChartStartDate,
-                                            int mHistoryChartEndDate, TransactionDB transactionDB) {
+                                            int mHistoryChartEndDate) {
         this.mCurrentChartStartDate = mCurrentChartStartDate;
         this.mHistoryChartStartDate = mHistoryChartStartDate;
         this.mHistoryChartEndDate = mHistoryChartEndDate;
-        this.transactionDB = transactionDB;
+
     }
 
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ChartDataViewModel(mCurrentChartStartDate, mHistoryChartStartDate,
-                mHistoryChartEndDate,  transactionDB);
-    }
+//    @NonNull
+//    @Override
+//    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//        return (T) new ChartDataViewModel(mCurrentChartStartDate, mHistoryChartStartDate,
+//                mHistoryChartEndDate);
+//    }
 }
