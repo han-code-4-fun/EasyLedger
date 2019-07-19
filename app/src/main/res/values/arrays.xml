@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Label ordering must match values -->
-    <array name="pref_color_option_labels">
-        <item>@string/pref_color_label_red</item>
-        <item>@string/pref_color_label_blue</item>
-        <item>@string/pref_color_label_green</item>
+    <array name="setting_general_overview_date_range_label">
+        <item>@string/setting_overview_date_range_week_label</item>
+        <item>@string/setting_overview_date_range_month_label</item>
+        <item>@string/setting_overview_date_range_custom_range_label</item>
     </array>
 
-    <array name="pref_color_option_values">
-        <item>@string/pref_color_red_value</item>
-        <item>@string/pref_color_blue_value</item>
-        <item>@string/pref_color_green_value</item>
+    <array name="setting_general_overview_date_range_values">
+        <item>@string/setting_overview_date_range_week_key</item>
+        <item>@string/setting_overview_date_range_month_key</item>
+        <item>@string/setting_overview_date_range_custom_range_key</item>
     </array>
 </resources>

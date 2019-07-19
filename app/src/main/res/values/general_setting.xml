@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="setting_category_overview_key">setting_category_overview_key</string>
+    <string name="setting_category_transactions_key">setting_category_transaction_key</string>
+    <string name="setting_category_others_key">setting_category_others_key</string>
+
+    <string name="setting_category_overview_title">Overview</string>
+    <string name="setting_category_transactions_title">Transactions</string>
+    <string name="setting_category_others_title">Others</string>
+
+    <string name="setting_general_overview_date_range_list_key">setting_general_overview_date_range_list_key</string>
+    <string name="setting_general_overview_date_range_list_label">Money Summary Time Range </string>
+
+    <string name="setting_overview_date_range_week_key" translatable="false">overview_by_week</string>
+    <string name="setting_overview_date_range_month_key" translatable="false">overview_by_month</string>
+    <string name="setting_overview_date_range_custom_range_key" translatable="false">overview_by_custom_range</string>
+
+    <string name="setting_overview_date_range_week_label" translatable="false">Start From Current Week</string>
+    <string name="setting_overview_date_range_month_label" translatable="false">Start From Current Month</string>
+    <string name="setting_overview_date_range_custom_range_label" translatable="false">Start From Custom Days Back</string>
+
+    <string name="setting_overview_custom_range_seekbar_key">setting_general_overview_date_range_custom_seekbar_key</string>
+
+    <string name="setting_transaction_edit_ledger_key">setting_transaction_edit_ledger_key</string>
+    <string name="setting_transaction_edit_ledger_title">Add/Edit your ledgers</string>
+
+    <string name="setting_others_key">setting_transaction_others_setting_key</string>
+    <string name="setting_others_title">Other Settings</string>
+
+
 
 </resources>

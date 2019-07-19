@@ -23,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
+import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chart_personalization.ChartDialogSetting;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isInQuestionFragment;
     private boolean isInSettingsFragment;
     private boolean isInAddNEditFragment;
+    private boolean isInEditLedgerFragment;
 
     private int mNumberOfSelection;
 
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.menu_setting_mainactivity:
                 setToolBarToOriginMode();
-                selectedFragment = new PreferenceFragment();
+                selectedFragment = new SettingMain();
                 addCurrentFragmentToBack(selectedFragment);
 
                 break;
@@ -242,12 +244,12 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 if (isInActionModel) {
                     setToolBarToOriginMode();
-                }else if (isInQuestionFragment){
+                }else if (isInQuestionFragment||isInSettingsFragment ||isInAddNEditFragment ||isInEditLedgerFragment){
 
                     //todo, jump back to previous fragment
                     getSupportFragmentManager().popBackStack();
                     btnFA.show();
-                }else if(isInSettingsFragment){
+                }/*else if(isInSettingsFragment){
                     //todo, combine this and previous into one logic
                     getSupportFragmentManager().popBackStack();
                     btnFA.show();
@@ -255,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     //todo, combine this and previous into one logic
                     getSupportFragmentManager().popBackStack();
                     btnFA.show();
-                }
+                }*/
                 break;
 
             case R.id.toolbar_edit:
@@ -301,12 +303,12 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionModel) {
             setToolBarToOriginMode();
-        } else if(isInQuestionFragment){
+        } else if(isInQuestionFragment||isInSettingsFragment||isInAddNEditFragment || isInEditLedgerFragment){
             getSupportFragmentManager().popBackStack();
 
             btnFA.show();
 
-        }else if(isInSettingsFragment){
+        }/*else if(isInSettingsFragment){
             getSupportFragmentManager().popBackStack();
             btnFA.show();
 
@@ -316,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
             btnFA.show();
 
 
-        }
+        }*/
         else{
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
@@ -474,6 +476,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isInAddNEditFragment = aBoolean;
+                if(aBoolean){
+                    Log.d("test_flow4", "this should triggered after enter new fragment");
+                    resetAdapterActionViewModelForEnteringAnotherFragment();
+                    bottomNavigation.setVisibility(View.GONE);
+//                    btnFA.hide();
+                }else{
+                    setToolBarToOriginMode();
+                    bottomNavigation.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mAdapterActionViewModel.getmIsInEditLedgerFragment().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                isInEditLedgerFragment = aBoolean;
                 if(aBoolean){
                     Log.d("test_flow4", "this should triggered after enter new fragment");
                     resetAdapterActionViewModelForEnteringAnotherFragment();

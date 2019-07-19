@@ -15,6 +15,8 @@ public class Constant {
 
     public static final String ledgerNumber = "number_of_ledgers";
 
+        public static final String SETTING_MAIN_TAG = "setting_main";
+
     public static final String FRAG_CALL_FROM_OVERVIEW = "this_recyclerview_open_from_overview_fragment";
     public static final String FRAG_CALL_FROM_LEDGER = "this_recyclerview_open_from_ledger_fragment";
 

@@ -44,6 +44,8 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mSelectedCategory;
 
+    private MutableLiveData<Boolean> mIsInEditLedgerFragment;
+
 
 
 
@@ -86,6 +88,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         mSelectedCategory = new MutableLiveData<>();
         mSelectedCategory.setValue("");
+
+        mIsInEditLedgerFragment = new MutableLiveData<>();
+        mIsInEditLedgerFragment.setValue(false);
     }
 
 
@@ -211,6 +216,8 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.mIsInSettingsFragment.setValue(input);
     }
 
+
+
     public LiveData<Boolean> getmIsInAddNEditFragment() {
         return mIsInAddNEditFragment;
     }
@@ -219,6 +226,13 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.mIsInAddNEditFragment.setValue(input);
     }
 
+    public MutableLiveData<Boolean> getmIsInEditLedgerFragment() {
+        return mIsInEditLedgerFragment;
+    }
+
+    public void setmIsInEditLedgerFragment(boolean input) {
+        this.mIsInEditLedgerFragment.setValue(input);
+    }
 
     public MutableLiveData<String> getmSelectedCategory() {
         return mSelectedCategory;
