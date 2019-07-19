@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
@@ -352,6 +353,7 @@ public class AddNEditTransactionFragment extends Fragment
                         year,
                         month,
                         day);
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 dialog.show();
 
             } else {
@@ -368,6 +370,8 @@ public class AddNEditTransactionFragment extends Fragment
                         month,
                         day
                 );
+
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 dialog.show();
             }
         }
