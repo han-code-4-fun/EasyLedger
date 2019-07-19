@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <EditTextPreference
@@ -14,7 +16,25 @@
         android:key="@string/pref_color_key"
         android:title="@string/pref_color_label" />
 
+    <PreferenceCategory
+        app:key = "category_overview_key"
+        app:title="Overview">
 
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key = "category_transaction_key"
+        app:title="Transaction">
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key = "category_others_key"
+        app:title="Others">
+
+
+
+
+    </PreferenceCategory>
 
 
 
