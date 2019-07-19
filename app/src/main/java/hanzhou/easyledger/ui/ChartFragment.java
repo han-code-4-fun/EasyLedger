@@ -54,17 +54,17 @@ import java.util.Map;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
-import hanzhou.easyledger.chartsetting.LabelFormatterCurrentBarChart;
-import hanzhou.easyledger.chartsetting.MonthValueFormatter;
-import hanzhou.easyledger.chartsetting.MyLargeValueFormatter;
-import hanzhou.easyledger.chartsetting.MyPercentFormatter;
-import hanzhou.easyledger.chartsetting.WeekValueFormatter;
+import hanzhou.easyledger.chart_personalization.LabelFormatterCurrentBarChart;
+import hanzhou.easyledger.chart_personalization.MonthValueFormatter;
+import hanzhou.easyledger.chart_personalization.MyLargeValueFormatter;
+import hanzhou.easyledger.chart_personalization.MyPercentFormatter;
+import hanzhou.easyledger.chart_personalization.WeekValueFormatter;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.BackGroundColor;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
-import hanzhou.easyledger.chartsetting.MyMarkerView;
+import hanzhou.easyledger.chart_personalization.MyMarkerView;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.ChartDataViewModel;
 

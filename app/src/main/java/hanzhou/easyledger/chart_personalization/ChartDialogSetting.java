@@ -1,4 +1,4 @@
-package hanzhou.easyledger.chartsetting;
+package hanzhou.easyledger.chart_personalization;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

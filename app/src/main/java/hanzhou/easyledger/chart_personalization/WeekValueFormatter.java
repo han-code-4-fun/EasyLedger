@@ -1,4 +1,4 @@
-package hanzhou.easyledger.chartsetting;
+package hanzhou.easyledger.chart_personalization;
 
 import android.util.Log;
 
@@ -6,8 +6,6 @@ import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.joda.time.LocalDate;
-import org.joda.time.Weeks;
-import org.joda.time.format.DateTimeFormat;
 
 public class WeekValueFormatter extends ValueFormatter {
     private final BarLineChartBase<?> chart;

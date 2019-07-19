@@ -25,7 +25,7 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
-import hanzhou.easyledger.chartsetting.ChartDialogSetting;
+import hanzhou.easyledger.chart_personalization.ChartDialogSetting;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;

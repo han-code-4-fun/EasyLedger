@@ -1,12 +1,7 @@
-package hanzhou.easyledger.chartsetting;
+package hanzhou.easyledger.chart_personalization;
 
-import android.util.Log;
-
-import com.github.mikephil.charting.charts.BarLineChartBase;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
-import org.joda.time.IllegalFieldValueException;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 

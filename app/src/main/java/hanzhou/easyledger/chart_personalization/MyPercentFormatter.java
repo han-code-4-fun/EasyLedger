@@ -1,10 +1,9 @@
-package hanzhou.easyledger.chartsetting;
+package hanzhou.easyledger.chart_personalization;
 
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.text.DecimalFormat;
