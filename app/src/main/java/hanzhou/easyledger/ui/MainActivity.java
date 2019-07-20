@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //todo, test SharePreference with VM and LiveData
-        SharedPreferences sp =getSharedPreferences(Constant.APP_PREF_SETTING, Context.MODE_PRIVATE);
+        SharedPreferences sp =getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
 
 
     }
@@ -506,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         SharedPreferences sp = getSharedPreferences(
-                Constant.APP_PREF_SETTING, Context.MODE_PRIVATE
+                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
         );
 
 

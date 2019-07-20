@@ -1,6 +1,7 @@
 package hanzhou.easyledger.ui.settings;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -142,5 +146,16 @@ public class SettingEditCategory extends Fragment {
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
         adapterNActionBarViewModel.setmIsInEditLedgerFragment(true);
+    }
+
+    private void loadListToSystem(){
+        SharedPreferences sharedPreferences = mAppCompatActivity.getSharedPreferences();
+
+        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+
+    }
+
+    private void saveListToSystem(){
+
     }
 }

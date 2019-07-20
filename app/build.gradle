@@ -46,11 +46,15 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.1.0'
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
 
+
+
     //todo, add license info
     implementation 'net.danlew:android.joda:2.10.2'
     implementation 'com.sackcentury:shinebutton:1.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'me.grantland:autofittextview:0.2.+'
+
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     //only support down to API 16
 //    implementation 'com.airbnb.android:lottie:3.0.7'

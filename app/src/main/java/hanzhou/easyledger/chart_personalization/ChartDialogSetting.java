@@ -83,12 +83,12 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
         mAppPreferences = mAppCompatActivity.getSharedPreferences(
-                Constant.APP_PREF_SETTING, Context.MODE_PRIVATE
+                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
         );
 
         //todo, test SP livedata
         mTestSP = mAppCompatActivity.getSharedPreferences(
-                Constant.APP_PREF_SETTING, Context.MODE_PRIVATE
+                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
         );
     }
 

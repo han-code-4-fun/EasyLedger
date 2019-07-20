@@ -142,7 +142,7 @@ public class ChartFragment extends Fragment implements
 
         mColors = new BackGroundColor();
 
-        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREF_SETTING, Context.MODE_PRIVATE);
+        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
 
         loadPreferenceSetting();
 

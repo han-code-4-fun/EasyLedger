@@ -72,7 +72,7 @@ public class OverviewFragment extends Fragment{
 
         //todo, they should retrieve data from savedinstance
         mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
-        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREF_SETTING, Context.MODE_PRIVATE);
+        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
 
         loadPreference();
     }
