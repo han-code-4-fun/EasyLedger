@@ -27,6 +27,15 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         mContext = inputContext;
     }
 
+    public void setData(ArrayList<String> inputList){
+        mList = inputList;
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<String> getData(){
+        return mList;
+    }
+
     @NonNull
     @Override
     public SettingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,7 +49,7 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull SettingViewHolder holder, int position) {
-        holder.textView.setText("Place " + mList.get(position));
+        holder.textView.setText(mList.get(position));
     }
 
     @Override
@@ -55,29 +64,26 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         Collections.swap(mList, positionFrom, positionTo);
         notifyItemMoved(positionFrom, positionTo);
 
-        String temp = "";
-        for (String x :
-                mList) {
-            temp +=x;
-        }
-        Log.d("test_setting", "after swapPosition: "+ temp);
+//        String temp = "";
+//        for (String x :
+//                mList) {
+//            temp +=x;
+//        }
+//        Log.d("test_setting", "after swapPosition: "+ temp);
     }
 
     public void remove(int position) {
         mList.remove(position);
         notifyDataSetChanged();
-        String temp = "";
-        for (String x :
-                mList) {
-            temp +=x;
-        }
-        Log.d("test_setting", "after remove: "+ temp);
+//        String temp = "";
+//        for (String x :
+//                mList) {
+//            temp +=x;
+//        }
+//        Log.d("test_setting", "after remove: "+ temp);
 
     }
 
-    public ArrayList<String> getModifiedResult(){
-        return mList;
-    }
 
     public class SettingViewHolder extends RecyclerView.ViewHolder {
         TextView textView;

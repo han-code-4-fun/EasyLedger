@@ -1,10 +1,7 @@
 package hanzhou.easyledger.ui.settings;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,35 +14,38 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.utility.FakeTestingData;
-import hanzhou.easyledger.utility.UnitUtil;
+import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.SettingAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 public class SettingEditCategory extends Fragment {
 
     private AdapterNActionBarViewModel adapterNActionBarViewModel;
-
+    private SettingsViewModel mSettingsViewModel;
     private AppCompatActivity mAppCompatActivity;
     private Toolbar toolbar;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private SettingAdapter mSettingAdapter;
 
-    private ArrayList<String> mTestList;
+    private ArrayList<String> mCategoryList;
+
+    private GsonHelper mGsonHelper;
+
+    private String mCategoryType;
 
 
     @Override
@@ -53,6 +53,10 @@ public class SettingEditCategory extends Fragment {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
+
+        mGsonHelper = new GsonHelper(mAppCompatActivity);
+
+
     }
 
     @Nullable
@@ -62,15 +66,15 @@ public class SettingEditCategory extends Fragment {
         mRecyclerView = root.findViewById(R.id.setting_edit_recyclerview);
 
 
-        mTestList = FakeTestingData.testgetString();
-        Log.d("test_setting", "onCreateView: mTestList  get 0 -> "+mTestList.get(0));
-        Log.d("test_setting", "onCreateView: mTestList size -> "+mTestList.size());
+//        mCategoryList = FakeTestingData.testgetString();
+//        Log.d("test_setting", "onCreateView: mCategoryList  get 0 -> " + mCategoryList.get(0));
+//        Log.d("test_setting", "onCreateView: mCategoryList size -> " + mCategoryList.size());
 
         mLinearLayoutManager = new LinearLayoutManager(mAppCompatActivity);
 
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        mSettingAdapter = new SettingAdapter(mTestList, mAppCompatActivity);
+        mSettingAdapter = new SettingAdapter(mCategoryList, mAppCompatActivity);
 
         mRecyclerView.setAdapter(mSettingAdapter);
 
@@ -89,7 +93,7 @@ public class SettingEditCategory extends Fragment {
                 int positionFrom = viewHolder.getAdapterPosition();
                 int positionTo = target.getAdapterPosition();
 
-//                Collections.swap(mTestList, positionFrom, positionTo);
+//                Collections.swap(mCategoryList, positionFrom, positionTo);
 
                 mSettingAdapter.swapPosition(positionFrom, positionTo);
 
@@ -129,7 +133,8 @@ public class SettingEditCategory extends Fragment {
                 mAppCompatActivity.getSupportFragmentManager().popBackStack();
                 break;
             case R.id.toolbar_edit_ledger_save:
-                //perform save action
+                saveNewCategory();
+                mAppCompatActivity.getSupportFragmentManager().popBackStack();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -146,16 +151,27 @@ public class SettingEditCategory extends Fragment {
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
         adapterNActionBarViewModel.setmIsInEditLedgerFragment(true);
+
+        mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
+
+        mSettingsViewModel.getmCategoryType().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                mCategoryType= s;
+                updateAdapterData(s);
+            }
+        });
     }
 
-    private void loadListToSystem(){
-        SharedPreferences sharedPreferences = mAppCompatActivity.getSharedPreferences();
+    private void updateAdapterData(String s){
+        mCategoryList = mGsonHelper.getCategories(s);
 
-        Type type = new TypeToken<ArrayList<String>>(){}.getType();
-
+        mSettingAdapter.setData(mCategoryList);
     }
 
-    private void saveListToSystem(){
-
+    private void saveNewCategory(){
+        mGsonHelper.saveCategories(mSettingAdapter.getData(),mCategoryType);
     }
+
+
 }

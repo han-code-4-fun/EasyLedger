@@ -43,9 +43,14 @@
         app:key="@string/setting_category_others_key"
         app:title="@string/setting_category_others_title">
         <Preference
-            app:key = "@string/setting_others_edit_category_key"
-            app:title = "@string/setting_others_edit_category_title"
-            app:fragment = "hanzhou.easyledger.ui.settings.SettingEditCategory"
+            app:key = "@string/setting_others_edit_category_revenue_key"
+            app:title = "@string/setting_others_edit_category_revenue_title"
+
+            />
+        <Preference
+            app:key = "@string/setting_others_edit_category_expense_key"
+            app:title = "@string/setting_others_edit_category_expense_title"
+
             />
         <CheckBoxPreference
             android:defaultValue="@bool/setting_others_msg_tracker_rbc_default_val"

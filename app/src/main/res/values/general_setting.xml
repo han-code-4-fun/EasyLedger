@@ -25,8 +25,13 @@
     <string name="setting_transaction_edit_ledger_key">setting_transaction_edit_ledger_key</string>
     <string name="setting_transaction_edit_ledger_title">Add/Edit your ledgers</string>
 
-    <string name="setting_others_edit_category_key">setting_others_edit_category_key</string>
-    <string name="setting_others_edit_category_title">Add/Edit categories</string>
+    <string name="setting_others_edit_category_revenue_key">setting_others_edit_category_revenue_key</string>
+    <string name="setting_others_edit_category_revenue_title">Add/edit revenue categories</string>
+
+    <string name="setting_others_edit_category_expense_key">setting_others_edit_category_expense_key</string>
+    <string name="setting_others_edit_category_expense_title">Add/edit expense categories</string>
+
+
 
     <string name="setting_others_msg_tracker_rbc_default_key">msg_tracker_rbc_default_key</string>
     <string name="setting_others_msg_tracker_rbc_default_title">Have RBC account</string>

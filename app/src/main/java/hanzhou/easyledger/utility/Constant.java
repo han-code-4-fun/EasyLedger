@@ -6,6 +6,8 @@ import hanzhou.easyledger.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class Constant {
 
     public static final String UNTAGGED = "n/a";
@@ -44,6 +46,18 @@ public class Constant {
 
     public static final String SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_KEY = "is_piechart_percentage_or_amount";
     public static final boolean SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_DEFAULT_VAL = true;
+
+
+    public static final String[] DEFAULT_REVENUE_CATEGORIES = {
+            "Salary", "Interest", "Commission", "Investment",
+            "Pension", "RRSP", "Rental Income", "Business Income", "Capital gains",
+            "Credit Card Pay In", "Debt Collection", "Lottery", "Others"
+    };
+
+    public static final String[] DEFAULT_EXPENSE_CATEGORIES = {
+            "Restaurant", "Shopping", "Commuting", "Supermarket", "Auto", "Travel", "Education",
+            "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", "Others"
+    };
 
 
 }

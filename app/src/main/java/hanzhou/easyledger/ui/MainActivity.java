@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
 import hanzhou.easyledger.ui.settings.SettingMain;
+import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chart_personalization.ChartDialogSetting;
@@ -47,6 +48,8 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
@@ -55,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String CHART_FRAGMENT= "in_chart_fragment";
-    private static final String NON_CHART_FRAGMENT= "not_in_chart_fragment";
+    private static final String CHART_FRAGMENT = "in_chart_fragment";
+    private static final String NON_CHART_FRAGMENT = "not_in_chart_fragment";
 
     private IntentFilter mSmsIntentFilter;
     private SmsBroadcastReceiver mSmsReceiver;
@@ -100,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
     private int mNumberOfSelection;
 
 
+    private SharedPreferences mSharedPreference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,13 +125,33 @@ public class MainActivity extends AppCompatActivity {
 
         testSharedPreference();
 
+        initializeSharedPreference();
+    }
+
+    private void initializeSharedPreference() {
+        mSharedPreference = getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
+        String resultRev = mSharedPreference.getString(Constant.CATEGORY_REVENUE, null);
+        String resultExp = mSharedPreference.getString(Constant.CATEGORY_EXPENSE, null);
+        GsonHelper gsonHelper = new GsonHelper(this);
+        if (resultRev == null) {
+
+            gsonHelper.saveCategories(
+                    new ArrayList<>(Arrays.asList(Constant.DEFAULT_REVENUE_CATEGORIES)),
+                    Constant.CATEGORY_REVENUE);
+        }else if(resultExp == null){
+
+            gsonHelper.saveCategories(
+                    new ArrayList<>(Arrays.asList(Constant.DEFAULT_REVENUE_CATEGORIES)),
+                    Constant.CATEGORY_EXPENSE);
+        }
+
     }
 
     private void testSharedPreference() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if(sp == null){
+        if (sp == null) {
             Log.d("test_flow3", "testSharedPreference: is empty");
-        }else{
+        } else {
             Log.d("test_flow3", "testSharedPreference: is NOT empty");
         }
     }
@@ -244,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 if (isInActionModel) {
                     setToolBarToOriginMode();
-                }else if (isInQuestionFragment||isInSettingsFragment ||isInAddNEditFragment ||isInEditLedgerFragment){
+                } else if (isInQuestionFragment || isInSettingsFragment || isInAddNEditFragment || isInEditLedgerFragment) {
 
                     //todo, jump back to previous fragment
                     getSupportFragmentManager().popBackStack();
@@ -281,7 +306,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
 
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -303,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionModel) {
             setToolBarToOriginMode();
-        } else if(isInQuestionFragment||isInSettingsFragment||isInAddNEditFragment || isInEditLedgerFragment){
+        } else if (isInQuestionFragment || isInSettingsFragment || isInAddNEditFragment || isInEditLedgerFragment) {
             getSupportFragmentManager().popBackStack();
 
             btnFA.show();
@@ -318,8 +342,7 @@ public class MainActivity extends AppCompatActivity {
             btnFA.show();
 
 
-        }*/
-        else{
+        }*/ else {
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
             }
@@ -342,10 +365,6 @@ public class MainActivity extends AppCompatActivity {
         mTransactionViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
 
         mAdapterActionViewModel = ViewModelProviders.of(this).get(AdapterNActionBarViewModel.class);
-
-
-        //todo, test SharePreference with VM and LiveData
-        SharedPreferences sp =getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
 
 
     }
@@ -383,7 +402,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         mAdapterActionViewModel.getActionModeState().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -405,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        mAdapterActionViewModel.getTransactionSelectedNumberLiveData().observe( this, new Observer<Integer>() {
+        mAdapterActionViewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 /*
@@ -431,15 +449,15 @@ public class MainActivity extends AppCompatActivity {
         mAdapterActionViewModel.getmIsInQuestionFragment().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                Log.d("test_flow5", "onChanged in Mainactivity the viewmodel is "+mAdapterActionViewModel.hashCode());
+                Log.d("test_flow5", "onChanged in Mainactivity the viewmodel is " + mAdapterActionViewModel.hashCode());
                 isInQuestionFragment = aBoolean;
-                Log.d("test_flow5", "same viewmodel value is "+aBoolean);
+                Log.d("test_flow5", "same viewmodel value is " + aBoolean);
 
-                if(aBoolean){
+                if (aBoolean) {
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
 //                    btnFA.hide();
-                }else{
+                } else {
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
                 }
@@ -450,11 +468,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isInSettingsFragment = aBoolean;
-                if(aBoolean){
+                if (aBoolean) {
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
 //                    btnFA.hide();
-                }else{
+                } else {
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
                 }
@@ -464,10 +482,10 @@ public class MainActivity extends AppCompatActivity {
         mAdapterActionViewModel.getmClickedEntryID().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                Log.d("test_flow11", "main activity getmClickedEntryID onChanged: "+integer);
+                Log.d("test_flow11", "main activity getmClickedEntryID onChanged: " + integer);
                 //start the fragment
-                if(integer != null){
-                   openAddNEditTransactionFragment();
+                if (integer != null) {
+                    openAddNEditTransactionFragment();
                 }
             }
         });
@@ -476,12 +494,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isInAddNEditFragment = aBoolean;
-                if(aBoolean){
+                if (aBoolean) {
                     Log.d("test_flow4", "this should triggered after enter new fragment");
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
 //                    btnFA.hide();
-                }else{
+                } else {
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
                 }
@@ -492,12 +510,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 isInEditLedgerFragment = aBoolean;
-                if(aBoolean){
+                if (aBoolean) {
                     Log.d("test_flow4", "this should triggered after enter new fragment");
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
 //                    btnFA.hide();
-                }else{
+                } else {
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
                 }
@@ -505,18 +523,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        SharedPreferences sp = getSharedPreferences(
-                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
-        );
-
-
-
         //todo, testing VM preference
 
 
         /*SPIntLiveData historyPeriodNumberLD =
                 new SPIntLiveData(
-                        sp,
+                        mSharedPreference,
                         getString(R.string.setting_chart_dialog_history_period_number_key),
                         getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));
 
@@ -532,17 +544,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });*/
 //        SPViewModelFactory factory = new SPViewModelFactory(
-//                sp,
+//                mSharedPreference,
 //                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_KEY,
 //                Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_DEFAULT
 //
 //        );
 
         //initialize sharedpreference VM
-        SPViewModelFactory factory = new SPViewModelFactory( sp);
+        SPViewModelFactory factory = new SPViewModelFactory(mSharedPreference);
 
 
-        SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(this,factory).get(SPViewModel.class
+        SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(this, factory).get(SPViewModel.class
         );
 
 //        sharedPreferenceViewModel.getChartHistoryPeriodNumber().observe(this, new Observer<Integer>() {
@@ -556,12 +568,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private void resetAdapterActionViewModelForEnteringAnotherFragment(){
+    private void resetAdapterActionViewModelForEnteringAnotherFragment() {
         mAdapterActionViewModel.emptySelectedItems();
         mAdapterActionViewModel.setActionModeState(false);
     }
-
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationListener =
@@ -719,7 +729,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void addCurrentFragmentToBack(Fragment input){
+    private void addCurrentFragmentToBack(Fragment input) {
 
         setFloatingActionBtn(input);
 
@@ -764,7 +774,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void assignMenuItemToVariableForDifferentCombinationNSetInitialState() {
 
         /*  the mIgnoreBtn btn is for auto-set selected item to 'Others' category
@@ -806,9 +815,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
 
             final List<TransactionEntry> entries;
-            if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)){
+            if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
                 entries = mOverviewViewModel.getUntaggedTransactions().getValue();
-            }else{
+            } else {
                 entries = mTransactionViewModel.getAllTransactions().getValue();
             }
 
@@ -868,22 +877,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setFloatingActionBtn(Fragment inputFragment){
-        if(inputFragment instanceof ChartFragment){
+    private void setFloatingActionBtn(Fragment inputFragment) {
+        if (inputFragment instanceof ChartFragment) {
             btnFA.setImageResource(R.drawable.ic_chart_setting);
             btnFA.show();
             btnFA.setOnClickListener(null);
             btnFA.setOnClickListener(fabOnClickListenerOpenDialog);
 
-        }else if (inputFragment instanceof OverviewFragment || inputFragment instanceof LedgerFragment){
+        } else if (inputFragment instanceof OverviewFragment || inputFragment instanceof LedgerFragment) {
             btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
             btnFA.show();
             btnFA.setOnClickListener(null);
 
             btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
-        }else{
+        } else {
             btnFA.hide();
         }
     }
+
 
 }

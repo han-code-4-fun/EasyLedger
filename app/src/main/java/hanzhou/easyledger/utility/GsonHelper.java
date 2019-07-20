@@ -2,7 +2,6 @@ package hanzhou.easyledger.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,7 +26,7 @@ public class GsonHelper {
 
     public ArrayList<String> getLedgers(){
 
-        return getArrayListStringFromSharedPreference(Constant.LEDGERS);
+        return getStringArrayFromSharedPreference(Constant.LEDGERS);
     }
 
     public void saveLedgers(ArrayList<String> inputList){
@@ -42,21 +41,21 @@ public class GsonHelper {
 
     public ArrayList<String> getCategories(String categoryType){
 
-        return getArrayListStringFromSharedPreference(categoryType);
+        return getStringArrayFromSharedPreference(categoryType);
 
     }
 
-    public void saveCategories(ArrayList<String> inputList, String categoryType){
+    public void saveCategories(ArrayList<String> categoriesArray, String categoryType){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
-        String json = mGson.toJson(inputList);
+        String json = mGson.toJson(categoriesArray);
 
         editor.putString(categoryType, json);
 
         editor.apply();
     }
 
-    private ArrayList<String> getArrayListStringFromSharedPreference(String input){
+    private ArrayList<String> getStringArrayFromSharedPreference(String input){
         String json = mSharedPreferences.getString(input,null);
 
         Type type = new TypeToken<ArrayList<String>>(){}.getType();

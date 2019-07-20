@@ -18,6 +18,7 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +49,10 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private PreferenceCategory mOverviewCategory;
     private String mCurrentOverviewDatesRange;
+
+    private PreferenceCategory mOthersCategory;
+
+    private SettingsViewModel mSettingsViewModel;
 
     public SettingMain() {
         // Required empty public constructor
@@ -67,6 +73,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
         seekBarPreference = findPreference(getString(R.string.setting_overview_custom_range_seekbar_key));
 
 
+        mOthersCategory = findPreference(getString(R.string.setting_category_others_key));
+
         mListOfDayRanges = findPreference(getString(R.string.setting_general_overview_date_range_list_key));
 
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -78,7 +86,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
         int count = prefScreen.getPreferenceCount();
 
-        Preference settingEditLedger = findPreference(getString(R.string.setting_transaction_edit_ledger_key));
+        Preference settingEditLedger =
+                findPreference(getString(R.string.setting_transaction_edit_ledger_key));
         if(settingEditLedger!= null){
 
             settingEditLedger.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -87,6 +96,44 @@ public class SettingMain extends PreferenceFragmentCompat implements
                     appCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.base_fragment, new SettingEditLedger())
+                            .addToBackStack(null)
+                            .commit();
+                    return true;
+                }
+            });
+        }
+
+        Preference editRevenueCategory =
+                findPreference(getString(R.string.setting_others_edit_category_revenue_key));
+        if(editRevenueCategory!= null){
+
+            editRevenueCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_REVENUE);
+                    appCompatActivity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.base_fragment, new SettingEditCategory())
+                            .addToBackStack(null)
+                            .commit();
+                    return true;
+                }
+            });
+        }
+
+        Preference editExpenseCategory =
+                findPreference(getString(R.string.setting_others_edit_category_expense_key));
+        if(editExpenseCategory!= null){
+
+            editExpenseCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_EXPENSE);
+                    appCompatActivity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.base_fragment, new SettingEditCategory())
                             .addToBackStack(null)
                             .commit();
                     return true;
@@ -110,6 +157,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
 //        Preference preference = findPreference(getString(R.string.pref_size_key));
 //        preference.setOnPreferenceChangeListener(this);
     }
+
+
 
 
     private void setPreferenceSummary(Preference preference, String value) {
@@ -226,5 +275,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
+
+        mSettingsViewModel = ViewModelProviders.of(appCompatActivity).get(SettingsViewModel.class);
     }
 }
