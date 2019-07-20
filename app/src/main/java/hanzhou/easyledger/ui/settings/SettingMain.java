@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -18,15 +17,10 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import hanzhou.easyledger.R;
@@ -111,7 +105,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_REVENUE);
+                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_TYPE_REVENUE);
                     appCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.base_fragment, new SettingEditCategory())
@@ -130,7 +124,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_EXPENSE);
+                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_TYPE_EXPENSE);
                     appCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.base_fragment, new SettingEditCategory())

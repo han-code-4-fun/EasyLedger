@@ -1,6 +1,7 @@
 package hanzhou.easyledger.ui.settings;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -22,10 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.SettingAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
@@ -93,7 +94,6 @@ public class SettingEditCategory extends Fragment {
                 int positionFrom = viewHolder.getAdapterPosition();
                 int positionTo = target.getAdapterPosition();
 
-//                Collections.swap(mCategoryList, positionFrom, positionTo);
 
                 mSettingAdapter.swapPosition(positionFrom, positionTo);
 
@@ -103,7 +103,16 @@ public class SettingEditCategory extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                mSettingAdapter.remove(position);
+
+                if(mSettingAdapter.isCurrentCategoryOthers(position)){
+                    /*user should not remove "Others" category*/
+                    launchWarningMSG(position);
+                }else{
+
+                    mSettingAdapter.remove(position);
+                }
+
+
             }
         }).attachToRecyclerView(mRecyclerView);
 
@@ -172,6 +181,24 @@ public class SettingEditCategory extends Fragment {
     private void saveNewCategory(){
         mGsonHelper.saveCategories(mSettingAdapter.getData(),mCategoryType);
     }
+
+    private void launchWarningMSG(final int position){
+
+        new AlertDialog.Builder(mAppCompatActivity)
+                .setTitle(getString(R.string.setting_warning_cannot_delete_others_in_category_title))
+                .setMessage(getString(R.string.setting_warning_cannot_delete_others_in_category_msg_body))
+                .setNeutralButton(getString(R.string.setting_warning_neutral_btn_title), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mSettingAdapter.notifyItemChanged(position);
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+
+
 
 
 }

@@ -50,4 +50,16 @@
     <string name="setting_msg_tracker_on">read and convert msg is working</string>
     <string name="setting_msg_tracker_off">off, you need to manually add your ledger</string>
 
+
+
+    <string name="setting_warning_cannot_delete_others_in_category_title">Cannot delete this!</string>
+    <string name="setting_warning_cannot_delete_others_in_category_msg_body">
+        The app has to keep \"Others\" category to place the data of history deleted categories,
+        and for user ignore-tag button in Overview screen (When you select any untagged transactions,
+         if you click the smile face button, all selected transactions will be categorized to \"Others\",
+        and be removed from untagged section)
+    </string>
+
+    <string name="setting_warning_neutral_btn_title">OK</string>
+
 </resources>

@@ -21,9 +21,9 @@ public class Constant {
 
     public static final String LEDGERS = "sharedPreference_ledgers";
 
-    public static final String CATEGORY_REVENUE = "revenue_categories";
+    public static final String CATEGORY_TYPE_REVENUE = "revenue_categories";
 
-    public static final String CATEGORY_EXPENSE = "expense_categories";
+    public static final String CATEGORY_TYPE_EXPENSE = "expense_categories";
 
     public static final String SHARED_PREF_INITIAL = "shared_preference_initialization";
 
@@ -48,13 +48,13 @@ public class Constant {
     public static final boolean SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_DEFAULT_VAL = true;
 
 
-    public static final String[] DEFAULT_REVENUE_CATEGORIES = {
+    public static final String[] DEFAULT_CATEGORIES_REVENUE = {
             "Salary", "Interest", "Commission", "Investment",
             "Pension", "RRSP", "Rental Income", "Business Income", "Capital gains",
             "Credit Card Pay In", "Debt Collection", "Lottery", "Others"
     };
 
-    public static final String[] DEFAULT_EXPENSE_CATEGORIES = {
+    public static final String[] DEFAULT_CATEGORIES_EXPENSE = {
             "Restaurant", "Shopping", "Commuting", "Supermarket", "Auto", "Travel", "Education",
             "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", "Others"
     };

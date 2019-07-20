@@ -129,20 +129,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeSharedPreference() {
+
         mSharedPreference = getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
-        String resultRev = mSharedPreference.getString(Constant.CATEGORY_REVENUE, null);
-        String resultExp = mSharedPreference.getString(Constant.CATEGORY_EXPENSE, null);
+
+        String resultRev = mSharedPreference.getString(Constant.CATEGORY_TYPE_REVENUE, null);
+        String resultExp = mSharedPreference.getString(Constant.CATEGORY_TYPE_EXPENSE, null);
         GsonHelper gsonHelper = new GsonHelper(this);
+
+        /*only populates the default category one when first-time run the app*/
+
         if (resultRev == null) {
+            Log.d("test_setting", "initialize default categories revenue");
+            gsonHelper.saveCategories(
+                    new ArrayList<>(Arrays.asList(Constant.DEFAULT_CATEGORIES_REVENUE)),
+                    Constant.CATEGORY_TYPE_REVENUE);
+        }
+        if(resultExp == null){
+            Log.d("test_setting", "initialize default categories expense");
 
             gsonHelper.saveCategories(
-                    new ArrayList<>(Arrays.asList(Constant.DEFAULT_REVENUE_CATEGORIES)),
-                    Constant.CATEGORY_REVENUE);
-        }else if(resultExp == null){
-
-            gsonHelper.saveCategories(
-                    new ArrayList<>(Arrays.asList(Constant.DEFAULT_REVENUE_CATEGORIES)),
-                    Constant.CATEGORY_EXPENSE);
+                    new ArrayList<>(Arrays.asList(Constant.DEFAULT_CATEGORIES_EXPENSE)),
+                    Constant.CATEGORY_TYPE_EXPENSE);
         }
 
     }
