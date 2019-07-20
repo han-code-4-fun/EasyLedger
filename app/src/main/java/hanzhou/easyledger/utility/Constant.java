@@ -21,6 +21,8 @@ public class Constant {
 
     public static final String LEDGERS = "sharedPreference_ledgers";
 
+    public static final String CATEGORY_ADD = "add_a_category";
+
     public static final String CATEGORY_TYPE_REVENUE = "revenue_categories";
 
     public static final String CATEGORY_TYPE_EXPENSE = "expense_categories";
@@ -58,6 +60,8 @@ public class Constant {
             "Restaurant", "Shopping", "Commuting", "Supermarket", "Auto", "Travel", "Education",
             "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", "Others"
     };
+
+    public static final String[] DEFAULT_LEDGER = {"OVERALL", "CASH"};
 
 
 }

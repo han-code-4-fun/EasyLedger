@@ -1,14 +1,18 @@
 package hanzhou.easyledger.ui.settings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,9 +28,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.SettingAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
@@ -37,7 +44,10 @@ public class SettingEditCategory extends Fragment {
     private AdapterNActionBarViewModel adapterNActionBarViewModel;
     private SettingsViewModel mSettingsViewModel;
     private AppCompatActivity mAppCompatActivity;
+
     private Toolbar toolbar;
+    private FloatingActionButton mFloatingActionButton;
+
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private SettingAdapter mSettingAdapter;
@@ -47,6 +57,8 @@ public class SettingEditCategory extends Fragment {
     private GsonHelper mGsonHelper;
 
     private String mCategoryType;
+
+    public static final int REQUEST_DIALOG_CODE = 12345;
 
 
     @Override
@@ -66,6 +78,8 @@ public class SettingEditCategory extends Fragment {
         View root = inflater.inflate(R.layout.fragment_setting_add_n_edit, container, false);
         mRecyclerView = root.findViewById(R.id.setting_edit_recyclerview);
 
+        mFloatingActionButton =root.findViewById(R.id.btn_setting_add_entry_btn);
+        mFloatingActionButton.setOnClickListener(onClickFAB);
 
 //        mCategoryList = FakeTestingData.testgetString();
 //        Log.d("test_setting", "onCreateView: mCategoryList  get 0 -> " + mCategoryList.get(0));
@@ -135,6 +149,20 @@ public class SettingEditCategory extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Log.d("test_setting", "getting reponse back");
+        if(requestCode == REQUEST_DIALOG_CODE){
+            if (resultCode == Activity.RESULT_OK){
+
+                String newCategory = data.getStringExtra(Constant.CATEGORY_ADD);
+                mCategoryList.add(newCategory);
+                mSettingAdapter.setData(mCategoryList);
+
+            }
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
@@ -193,12 +221,19 @@ public class SettingEditCategory extends Fragment {
                         mSettingAdapter.notifyItemChanged(position);
                     }
                 })
+
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
-
-
+    private FloatingActionButton.OnClickListener onClickFAB = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            AddEntryDialog dialog = new AddEntryDialog();
+            dialog.setTargetFragment(SettingEditCategory.this,REQUEST_DIALOG_CODE);
+            dialog.show(mAppCompatActivity.getSupportFragmentManager(), null);
+        }
+    };
 
 
 }

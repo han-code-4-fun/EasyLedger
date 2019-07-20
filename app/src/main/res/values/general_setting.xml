@@ -62,4 +62,7 @@
 
     <string name="setting_warning_neutral_btn_title">OK</string>
 
+
+    <string name="setting_add_entry_title">Add a new one</string>
+
 </resources>

@@ -23,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
+import hanzhou.easyledger.ui.settings.SettingEditCategory;
 import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     new ArrayList<>(Arrays.asList(Constant.DEFAULT_CATEGORIES_REVENUE)),
                     Constant.CATEGORY_TYPE_REVENUE);
         }
-        if(resultExp == null){
+        if (resultExp == null) {
             Log.d("test_setting", "initialize default categories expense");
 
             gsonHelper.saveCategories(
@@ -478,10 +479,11 @@ public class MainActivity extends AppCompatActivity {
                 if (aBoolean) {
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
-//                    btnFA.hide();
+                    btnFA.hide();
                 } else {
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
+                    btnFA.show();
                 }
             }
         });
@@ -519,12 +521,15 @@ public class MainActivity extends AppCompatActivity {
                 isInEditLedgerFragment = aBoolean;
                 if (aBoolean) {
                     Log.d("test_flow4", "this should triggered after enter new fragment");
+                    //todo, doesn't seem to need to resetadapter because it comes from SettingsFragment
                     resetAdapterActionViewModelForEnteringAnotherFragment();
                     bottomNavigation.setVisibility(View.GONE);
-//                    btnFA.hide();
+                    btnFA.hide();
+
                 } else {
                     setToolBarToOriginMode();
                     bottomNavigation.setVisibility(View.VISIBLE);
+                    btnFA.show();
                 }
             }
         });
@@ -623,7 +628,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-    private FloatingActionButton.OnClickListener fabOnClickListenerOpenDialog
+    private FloatingActionButton.OnClickListener fabOnClickListenerOpenSettingDialog
             = new FloatingActionButton.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -633,6 +638,14 @@ public class MainActivity extends AppCompatActivity {
 
             dialogSetting.show(getSupportFragmentManager(), null);
 
+
+
+        }
+    };
+
+    private FloatingActionButton.OnClickListener fabOnClickListenerAddEntry = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
 
         }
     };
@@ -889,7 +902,7 @@ public class MainActivity extends AppCompatActivity {
             btnFA.setImageResource(R.drawable.ic_chart_setting);
             btnFA.show();
             btnFA.setOnClickListener(null);
-            btnFA.setOnClickListener(fabOnClickListenerOpenDialog);
+            btnFA.setOnClickListener(fabOnClickListenerOpenSettingDialog);
 
         } else if (inputFragment instanceof OverviewFragment || inputFragment instanceof LedgerFragment) {
             btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
@@ -897,7 +910,12 @@ public class MainActivity extends AppCompatActivity {
             btnFA.setOnClickListener(null);
 
             btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
-        } else {
+        } else if(inputFragment instanceof SettingEditCategory){
+            btnFA.setOnClickListener(null);
+            btnFA.setOnClickListener(null);
+
+
+        }else{
             btnFA.hide();
         }
     }
