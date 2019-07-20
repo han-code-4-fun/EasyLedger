@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.PreferenceFragmentCompat;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
@@ -38,12 +37,14 @@ public class SettingEditLedger extends Fragment {
 //    }
 
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         toolbar = appCompatActivity.findViewById(R.id.toolbar_layout);
         toolbar.setTitle(getString(R.string.title_settings_fragment));
         toolbar.getMenu().clear();
-        inflater.inflate(R.menu.toolbar_edit_ledger, menu);
+        inflater.inflate(R.menu.toolbar_setting_edit, menu);
         appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

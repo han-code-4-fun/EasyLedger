@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <bool name="setting_others_msg_tracker_rbc_default_val">true</bool>
+    <bool name="setting_others_msg_tracker_bmo_default_val">false</bool>
+    <bool name="setting_others_msg_tracker_cibc_default_val">false</bool>
+    <bool name="setting_others_msg_tracker_hsbc_default_val">false</bool>
 
 </resources>

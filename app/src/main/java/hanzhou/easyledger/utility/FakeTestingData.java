@@ -28,6 +28,17 @@ public class FakeTestingData {
 
     }
 
+    public static ArrayList<String> testgetString(){
+        ArrayList<String> output = new ArrayList<>();
+
+        for (int i = 1  ; i < 11; i++) {
+            output.add(""+i);
+        }
+
+
+        return output;
+    }
+
     private static String[] categoryRevenue = {
             Constant.UNTAGGED, "Salary", "Commission", "Investment", "Interest",
             "Rental Income", "Pension", "RRSP", "Business Income",

@@ -37,7 +37,7 @@
     <string name="menu_insert_data_current_week">Insert Data within this week</string>
     <string name="menu_insert_untagged_data">Insert untagged data</string>
 
-    <string name="add_edit_transaction_save_btn_title">SAVE</string>
+    <string name="toolbar_save_btn_title">SAVE</string>
 
 
     <string name="explanation_friendly_why_this_app_is_safe">

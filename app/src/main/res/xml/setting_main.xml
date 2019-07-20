@@ -43,10 +43,34 @@
         app:key="@string/setting_category_others_key"
         app:title="@string/setting_category_others_title">
         <Preference
-            app:key = "@string/setting_others_key"
-            app:title = "@string/setting_others_title"
-            app:fragment = "hanzhou.easyledger.ui.settings.SettingOthers"
+            app:key = "@string/setting_others_edit_category_key"
+            app:title = "@string/setting_others_edit_category_title"
+            app:fragment = "hanzhou.easyledger.ui.settings.SettingEditCategory"
             />
+        <CheckBoxPreference
+            android:defaultValue="@bool/setting_others_msg_tracker_rbc_default_val"
+            android:key="@string/setting_others_msg_tracker_rbc_default_key"
+            android:summaryOff="@string/setting_msg_tracker_off"
+            android:summaryOn="@string/setting_msg_tracker_on"
+            android:title="@string/setting_others_msg_tracker_rbc_default_title" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/setting_others_msg_tracker_bmo_default_val"
+            android:key="@string/setting_others_msg_tracker_bmo_default_key"
+            android:summaryOff="@string/setting_msg_tracker_unavailable"
+            android:summaryOn="@string/setting_msg_tracker_unavailable"
+            android:title="@string/setting_others_msg_tracker_bmo_default_title" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/setting_others_msg_tracker_cibc_default_val"
+            android:key="@string/setting_others_msg_tracker_cibc_default_key"
+            android:summaryOff="@string/setting_msg_tracker_unavailable"
+            android:summaryOn="@string/setting_msg_tracker_unavailable"
+            android:title="@string/setting_others_msg_tracker_cibc_default_title" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/setting_others_msg_tracker_hsbc_default_val"
+            android:key="@string/setting_others_msg_tracker_hsbc_default_key"
+            android:summaryOff="@string/setting_msg_tracker_unavailable"
+            android:summaryOn="@string/setting_msg_tracker_unavailable"
+            android:title="@string/setting_others_msg_tracker_hsbc_default_title" />
 
 
     </PreferenceCategory>

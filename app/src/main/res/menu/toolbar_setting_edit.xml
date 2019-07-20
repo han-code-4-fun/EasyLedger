@@ -6,6 +6,6 @@
         android:id="@+id/toolbar_edit_ledger_save"
         android:icon="@drawable/ic_save_btn"
         android:orderInCategory="100"
-        android:title="@string/toolbar_edit"
+        android:title="@string/toolbar_save_btn_title"
         app:showAsAction="always" />
 </menu>

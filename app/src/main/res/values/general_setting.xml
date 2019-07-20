@@ -25,9 +25,24 @@
     <string name="setting_transaction_edit_ledger_key">setting_transaction_edit_ledger_key</string>
     <string name="setting_transaction_edit_ledger_title">Add/Edit your ledgers</string>
 
-    <string name="setting_others_key">setting_transaction_others_setting_key</string>
-    <string name="setting_others_title">Other Settings</string>
+    <string name="setting_others_edit_category_key">setting_others_edit_category_key</string>
+    <string name="setting_others_edit_category_title">Add/Edit categories</string>
+
+    <string name="setting_others_msg_tracker_rbc_default_key">msg_tracker_rbc_default_key</string>
+    <string name="setting_others_msg_tracker_rbc_default_title">Have RBC account</string>
+
+    <string name="setting_others_msg_tracker_hsbc_default_key">msg_tracker_hsbc_default_key</string>
+    <string name="setting_others_msg_tracker_hsbc_default_title">Have HSBC account</string>
+
+    <string name="setting_others_msg_tracker_bmo_default_key">msg_tracker_bmo_default_key</string>
+    <string name="setting_others_msg_tracker_bmo_default_title">Have BMO account</string>
 
 
+    <string name="setting_others_msg_tracker_cibc_default_key">msg_tracker_cibc_default_key</string>
+    <string name="setting_others_msg_tracker_cibc_default_title">Have CIBC account</string>
+
+    <string name="setting_msg_tracker_unavailable">Developer: I am working on it</string>
+    <string name="setting_msg_tracker_on">read and convert msg is working</string>
+    <string name="setting_msg_tracker_off">off, you need to manually add your ledger</string>
 
 </resources>
