@@ -3,6 +3,7 @@ package hanzhou.easyledger.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,16 +36,21 @@ import com.sackcentury.shinebuttonlib.ShineButton;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import java.util.ArrayList;
+
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
+import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.FakeTestingData;
+import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewadapter.CategoryAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.AddTransactionVMFactory;
 import hanzhou.easyledger.viewmodel.AddTransactionViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +67,7 @@ public class AddNEditTransactionFragment extends Fragment
     private TransactionDB mDB;
 
     private AdapterNActionBarViewModel mAdapterActionViewModel;
-
+    private SettingsViewModel mSettingsViewModel;
 //    private AddTransactionViewModel mAddTransactionViewModel;
 
     private AppCompatActivity mAppCompatActivity;
@@ -90,6 +97,9 @@ public class AddNEditTransactionFragment extends Fragment
     private CategoryAdapter mCategoryAdapter;
     private ArrayAdapter<String> mSpinnerLedgerAdapter;
 
+    private SharedPreferences mSharedPreference;
+    private GsonHelper mGsonHelper;
+
 //    private boolean mIsNewTransaction;
 
     private int mTransactionId = DEFAULT_TASK_ID;
@@ -114,6 +124,8 @@ public class AddNEditTransactionFragment extends Fragment
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
         mDB = TransactionDB.getInstance(getContext());
+        mGsonHelper = GsonHelper.getInstance(mAppCompatActivity);
+
     }
 
     @Override
@@ -192,6 +204,13 @@ public class AddNEditTransactionFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d("test_flow4", "on activity created");
+
+
+
+//        mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
+//        mSettingsViewModel.setmCategoryExpense(gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
+//
+//        mSettingsViewModel.setmCategoryRevenue(gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE));
 
 
         mAdapterActionViewModel.setmIsInAddNEditFragment(true);
@@ -278,7 +297,7 @@ public class AddNEditTransactionFragment extends Fragment
 
         mMoneyIn.setChecked(true);
         mTvMoneyIn.setTextColor(getResources().getColor(R.color.color_money_in));
-        mCategoryAdapter.setData(FakeTestingData.getRevenueCategory());
+        mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE));
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
         mAdapterActionViewModel.setmSelectedCategory("");
     }
@@ -293,7 +312,7 @@ public class AddNEditTransactionFragment extends Fragment
 
     private void setMoneyOutActive() {
         Log.d("test_flow7", "response money out is " + mMoneyOut.isChecked());
-        mCategoryAdapter.setData(FakeTestingData.getExpenseCategory());
+        mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
 
         mMoneyOut.setChecked(true);
         mTvMoneyOut.setTextColor(getResources().getColor(R.color.color_money_out));
@@ -441,7 +460,7 @@ public class AddNEditTransactionFragment extends Fragment
             setMoneyInActive();
             setMoneyOutDeActive();
         } else {
-            //this transaction is revenue, need to active the money out btn
+            //this transaction is expense, need to active the money out btn
             setMoneyInDeActive();
             setMoneyOutActive();
         }
@@ -457,7 +476,7 @@ public class AddNEditTransactionFragment extends Fragment
         //set category
         if (mMoneyNum >= 0) {
         } else {
-            mCategoryAdapter.setData(FakeTestingData.getExpenseCategory());
+            mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
         }
 
         mCurrentTransactionCategory = transactionEntry.getCategory();

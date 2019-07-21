@@ -68,7 +68,7 @@ public class SettingAddNEditFragment extends Fragment {
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
 
-        mGsonHelper = new GsonHelper(mAppCompatActivity);
+        mGsonHelper = GsonHelper.getInstance(mAppCompatActivity);
 
 
     }

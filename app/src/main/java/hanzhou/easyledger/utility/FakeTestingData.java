@@ -76,44 +76,44 @@ public class FakeTestingData {
 
 
     //todo, make "others" undeletable
-    public static List<String> getRevenueCategory() {
-        List<String> output = new ArrayList<>();
+//    public static List<String> getRevenueCategory() {
+//        List<String> output = new ArrayList<>();
+//
+//        output.add("Salary");
+//        output.add("Commission");
+//        output.add("Investment");
+//        output.add("Interest");
+//        output.add("Rental Income");
+//        output.add("Pension");
+//        output.add("RRSP");
+//        output.add("Business Income");
+//        output.add("Capital gains");
+//        output.add("Debt Collection");
+//        output.add("Lottery");
+//        output.add("Others");
+//
+//        return output;
+//    }
 
-        output.add("Salary");
-        output.add("Commission");
-        output.add("Investment");
-        output.add("Interest");
-        output.add("Rental Income");
-        output.add("Pension");
-        output.add("RRSP");
-        output.add("Business Income");
-        output.add("Capital gains");
-        output.add("Debt Collection");
-        output.add("Lottery");
-        output.add("Others");
-
-        return output;
-    }
-
-    public static List<String> getExpenseCategory() {
-        List<String> output = new ArrayList<>();
-
-        output.add("Travel");
-        output.add("Supermarket");
-        output.add("Restaurant");
-        output.add("Shopping");
-        output.add("Commuting");
-        output.add("Auto");
-        output.add("Education");
-        output.add("Children");
-        output.add("Medical");
-        output.add("Personal Care");
-        output.add("House");
-        output.add("Credit Card Payment");
-        output.add("Others");
-
-        return output;
-    }
+//    public static List<String> getExpenseCategory() {
+//        List<String> output = new ArrayList<>();
+//
+//        output.add("Travel");
+//        output.add("Supermarket");
+//        output.add("Restaurant");
+//        output.add("Shopping");
+//        output.add("Commuting");
+//        output.add("Auto");
+//        output.add("Education");
+//        output.add("Children");
+//        output.add("Medical");
+//        output.add("Personal Care");
+//        output.add("House");
+//        output.add("Credit Card Payment");
+//        output.add("Others");
+//
+//        return output;
+//    }
 
 
 

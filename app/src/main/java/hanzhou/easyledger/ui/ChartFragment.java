@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chart_personalization.LabelFormatterCurrentBarChart;
 import hanzhou.easyledger.chart_personalization.MonthValueFormatter;
@@ -131,9 +132,14 @@ public class ChartFragment extends Fragment implements
 
     private SharedPreferences mAppPreferences;
 
+    private GsonHelper mGsonHelper;
+
     private int testNumber = 0;
 
     private int mHistoryChartStartDate, mHistoryChartEndDate;
+
+    private int mRevenueCategorySize;
+    private int mExpenseCategorySize;
 
     @Override
     public void onAttach(Context context) {
@@ -142,7 +148,7 @@ public class ChartFragment extends Fragment implements
         mAppCompatActivity = (AppCompatActivity) context;
 
         mColors = new BackGroundColor();
-
+        mGsonHelper = GsonHelper.getInstance(mAppCompatActivity);
 //        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
         mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
 
@@ -315,7 +321,10 @@ public class ChartFragment extends Fragment implements
                 public void onChanged(List<TransactionEntry> transactionEntryList) {
 
                     mCategoryExpense = new HashMap<>();
-                    initializeHashMap(mCategoryExpense, FakeTestingData.getExpenseCategory());
+                    initializeHashMap(
+                            mCategoryExpense,
+                            mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE)
+                            );
                     for (int i = 0; i < transactionEntryList.size(); i++) {
                         TransactionEntry entry = transactionEntryList.get(i);
                         categorizeExpenseValues(entry, mCategoryExpense);
@@ -330,7 +339,10 @@ public class ChartFragment extends Fragment implements
 
                     mCategoryRevenue = new HashMap<>();
 
-                    initializeHashMap(mCategoryRevenue, FakeTestingData.getRevenueCategory());
+                    initializeHashMap(
+                            mCategoryRevenue,
+                            mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE)
+                    );
 
                     for (TransactionEntry entry : transactionEntryList) {
                         categorizeRevenueValues(entry, mCategoryRevenue);
@@ -688,13 +700,15 @@ public class ChartFragment extends Fragment implements
         List<Integer> colors;
 
         if (type.equals(CHART_REVENUE)) {
-            categoriesArray = new String[FakeTestingData.getRevenueCategory().size()];
+            mRevenueCategorySize = mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE).size();
+            categoriesArray = new String[mRevenueCategorySize];
             barDataSetString = getString(R.string.chart_name_text_revenue);
-            colors = mColors.getNonRepeatingLightColors(FakeTestingData.getRevenueCategory().size());
+            colors = mColors.getNonRepeatingLightColors(mRevenueCategorySize);
         } else {
-            categoriesArray = new String[FakeTestingData.getExpenseCategory().size()];
+            mExpenseCategorySize = mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE).size();
+            categoriesArray = new String[mExpenseCategorySize];
             barDataSetString = getString(R.string.chart_name_text_expense);
-            colors = mColors.getNonRepeatingDarkColors(FakeTestingData.getExpenseCategory().size());
+            colors = mColors.getNonRepeatingDarkColors(mExpenseCategorySize);
 
         }
         extractHashMapToArrayListOfBarEntryNCategories(hashMap, values, categoriesArray);
