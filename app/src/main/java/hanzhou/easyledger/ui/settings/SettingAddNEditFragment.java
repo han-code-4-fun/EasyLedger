@@ -12,13 +12,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -39,7 +37,7 @@ import hanzhou.easyledger.viewadapter.SettingAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
-public class SettingEditCategory extends Fragment {
+public class SettingAddNEditFragment extends Fragment {
 
     private AdapterNActionBarViewModel adapterNActionBarViewModel;
     private SettingsViewModel mSettingsViewModel;
@@ -54,9 +52,12 @@ public class SettingEditCategory extends Fragment {
 
     private ArrayList<String> mCategoryList;
 
+    private AlertDialog mAlertDialog;
+    private  AlertDialog.Builder mDialogBuilder;
+
     private GsonHelper mGsonHelper;
 
-    private String mCategoryType;
+    private String mSettingType;
 
     public static final int REQUEST_DIALOG_CODE = 12345;
 
@@ -78,7 +79,7 @@ public class SettingEditCategory extends Fragment {
         View root = inflater.inflate(R.layout.fragment_setting_add_n_edit, container, false);
         mRecyclerView = root.findViewById(R.id.setting_edit_recyclerview);
 
-        mFloatingActionButton =root.findViewById(R.id.btn_setting_add_entry_btn);
+        mFloatingActionButton = root.findViewById(R.id.btn_setting_add_entry_btn);
         mFloatingActionButton.setOnClickListener(onClickFAB);
 
 //        mCategoryList = FakeTestingData.testgetString();
@@ -103,13 +104,25 @@ public class SettingEditCategory extends Fragment {
                 ItemTouchHelper.START | ItemTouchHelper.END) {
 
 
+
+
+
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 int positionFrom = viewHolder.getAdapterPosition();
                 int positionTo = target.getAdapterPosition();
 
+                if(mSettingAdapter.isCurrentLedgerOVERALL(positionFrom) ||
+                        mSettingAdapter.isCurrentLedgerOVERALL(positionTo)){
 
-                mSettingAdapter.swapPosition(positionFrom, positionTo);
+                    launchWarningMSGNoSWAP(positionFrom,positionTo);
+
+                }else{
+
+                    mSettingAdapter.swapPosition(positionFrom, positionTo);
+                }
+
+
 
                 return false;
             }
@@ -118,10 +131,11 @@ public class SettingEditCategory extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
 
-                if(mSettingAdapter.isCurrentCategoryOthers(position)){
-                    /*user should not remove "Others" category*/
-                    launchWarningMSG(position);
-                }else{
+                if (mSettingAdapter.isCurrentCategoryOthers(position)
+                        || mSettingAdapter.isCurrentLedgerOVERALL(position)) {
+                    /*user should not remove "Others" in category list or "OVERALL" in ledger list*/
+                    launchWarningMSGNoDelete(position);
+                } else {
 
                     mSettingAdapter.remove(position);
                 }
@@ -151,8 +165,8 @@ public class SettingEditCategory extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Log.d("test_setting", "getting reponse back");
-        if(requestCode == REQUEST_DIALOG_CODE){
-            if (resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_DIALOG_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
 
                 String newCategory = data.getStringExtra(Constant.CATEGORY_ADD);
                 mCategoryList.add(newCategory);
@@ -194,23 +208,26 @@ public class SettingEditCategory extends Fragment {
         mSettingsViewModel.getmCategoryType().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                mCategoryType= s;
+                mSettingType = s;
+
+
                 updateAdapterData(s);
+
             }
         });
     }
 
-    private void updateAdapterData(String s){
-        mCategoryList = mGsonHelper.getCategories(s);
+    private void updateAdapterData(String s) {
+        mCategoryList = mGsonHelper.getDataFromSharedPreference(s);
 
         mSettingAdapter.setData(mCategoryList);
     }
 
-    private void saveNewCategory(){
-        mGsonHelper.saveCategories(mSettingAdapter.getData(),mCategoryType);
+    private void saveNewCategory() {
+        mGsonHelper.saveDataToSharedPreference(mSettingAdapter.getData(), mSettingType);
     }
 
-    private void launchWarningMSG(final int position){
+    private void launchWarningMSGNoDelete(final int position) {
 
         new AlertDialog.Builder(mAppCompatActivity)
                 .setTitle(getString(R.string.setting_warning_cannot_delete_others_in_category_title))
@@ -226,11 +243,35 @@ public class SettingEditCategory extends Fragment {
                 .show();
     }
 
+    private void launchWarningMSGNoSWAP(final int position1, final int position2) {
+        if(mAlertDialog!=null && mAlertDialog.isShowing()){
+        /*do nothing since it's already on screen*/
+        }else{
+            mDialogBuilder = new AlertDialog.Builder(mAppCompatActivity)
+                    .setTitle(getString(R.string.setting_warning_cannot_swap_overall_in_ledger_title))
+                    .setMessage(getString(R.string.setting_warning_cannot_swap_overall_in_ledger_msg_body))
+                    .setNeutralButton(getString(R.string.setting_warning_neutral_btn_title), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mSettingAdapter.notifyItemChanged(position1);
+                            mSettingAdapter.notifyItemChanged(position2);
+                        }
+                    })
+
+                    .setIcon(android.R.drawable.ic_dialog_alert);
+
+           mAlertDialog = mDialogBuilder.create();
+           mAlertDialog.show();
+        }
+
+
+    }
+
     private FloatingActionButton.OnClickListener onClickFAB = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             AddEntryDialog dialog = new AddEntryDialog();
-            dialog.setTargetFragment(SettingEditCategory.this,REQUEST_DIALOG_CODE);
+            dialog.setTargetFragment(SettingAddNEditFragment.this, REQUEST_DIALOG_CODE);
             dialog.show(mAppCompatActivity.getSupportFragmentManager(), null);
         }
     };

@@ -23,7 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.SmsBroadcastReceiver;
-import hanzhou.easyledger.ui.settings.SettingEditCategory;
+import hanzhou.easyledger.ui.settings.SettingAddNEditFragment;
 import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
@@ -135,22 +135,28 @@ public class MainActivity extends AppCompatActivity {
 
         String resultRev = mSharedPreference.getString(Constant.CATEGORY_TYPE_REVENUE, null);
         String resultExp = mSharedPreference.getString(Constant.CATEGORY_TYPE_EXPENSE, null);
+        String resultLedger = mSharedPreference.getString(Constant.LEDGERS, null);
+
         GsonHelper gsonHelper = new GsonHelper(this);
 
         /*only populates the default category one when first-time run the app*/
 
         if (resultRev == null) {
             Log.d("test_setting", "initialize default categories revenue");
-            gsonHelper.saveCategories(
+            gsonHelper.saveDataToSharedPreference(
                     new ArrayList<>(Arrays.asList(Constant.DEFAULT_CATEGORIES_REVENUE)),
                     Constant.CATEGORY_TYPE_REVENUE);
         }
         if (resultExp == null) {
             Log.d("test_setting", "initialize default categories expense");
 
-            gsonHelper.saveCategories(
+            gsonHelper.saveDataToSharedPreference(
                     new ArrayList<>(Arrays.asList(Constant.DEFAULT_CATEGORIES_EXPENSE)),
                     Constant.CATEGORY_TYPE_EXPENSE);
+        }
+
+        if(resultLedger == null){
+            gsonHelper.saveDataToSharedPreference(new ArrayList<>(Arrays.asList(Constant.DEFAULT_LEDGER)), Constant.LEDGERS);
         }
 
     }
@@ -910,7 +916,7 @@ public class MainActivity extends AppCompatActivity {
             btnFA.setOnClickListener(null);
 
             btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
-        } else if(inputFragment instanceof SettingEditCategory){
+        } else if(inputFragment instanceof SettingAddNEditFragment){
             btnFA.setOnClickListener(null);
             btnFA.setOnClickListener(null);
 

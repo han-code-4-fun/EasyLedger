@@ -24,28 +24,28 @@ public class GsonHelper {
 
     }
 
-    public ArrayList<String> getLedgers(){
+    public ArrayList<String> getLedgers(String categoryType){
 
-        return getStringArrayFromSharedPreference(Constant.LEDGERS);
+        return getStringArrayFromSharedPreference(categoryType);
     }
 
-    public void saveLedgers(ArrayList<String> inputList){
+    public void saveLedgers(ArrayList<String> inputList, String type){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
         String json = mGson.toJson(inputList);
 
-        editor.putString(Constant.LEDGERS, json);
+        editor.putString(type, json);
 
         editor.apply();
     }
 
-    public ArrayList<String> getCategories(String categoryType){
+    public ArrayList<String> getDataFromSharedPreference(String categoryType){
 
         return getStringArrayFromSharedPreference(categoryType);
 
     }
 
-    public void saveCategories(ArrayList<String> categoriesArray, String categoryType){
+    public void saveDataToSharedPreference(ArrayList<String> categoriesArray, String categoryType){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
         String json = mGson.toJson(categoriesArray);

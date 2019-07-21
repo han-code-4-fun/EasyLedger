@@ -60,9 +60,15 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         return mList.size();
     }
 
+    public boolean isCurrentLedgerOVERALL(int position){
+        return mList.get(position).equals("OVERALL");
+    }
+
     public boolean isCurrentCategoryOthers(int position){
         return mList.get(position).equals("Others");
     }
+
+
 
     public void swapPosition(int positionFrom, int positionTo){
         Collections.swap(mList, positionFrom, positionTo);

@@ -87,9 +87,13 @@ public class SettingMain extends PreferenceFragmentCompat implements
             settingEditLedger.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+
+                    mSettingsViewModel.setSettingEditType(Constant.LEDGERS);
+
+
                     appCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.base_fragment, new SettingEditLedger())
+                            .replace(R.id.base_fragment, new SettingAddNEditFragment())
                             .addToBackStack(null)
                             .commit();
                     return true;
@@ -105,10 +109,11 @@ public class SettingMain extends PreferenceFragmentCompat implements
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_TYPE_REVENUE);
+                    mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_REVENUE);
+
                     appCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.base_fragment, new SettingEditCategory())
+                            .replace(R.id.base_fragment, new SettingAddNEditFragment())
                             .addToBackStack(null)
                             .commit();
                     return true;
@@ -124,10 +129,10 @@ public class SettingMain extends PreferenceFragmentCompat implements
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
 
-                    mSettingsViewModel.setCategoryType(Constant.CATEGORY_TYPE_EXPENSE);
+                    mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_EXPENSE);
                     appCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.base_fragment, new SettingEditCategory())
+                            .replace(R.id.base_fragment, new SettingAddNEditFragment())
                             .addToBackStack(null)
                             .commit();
                     return true;

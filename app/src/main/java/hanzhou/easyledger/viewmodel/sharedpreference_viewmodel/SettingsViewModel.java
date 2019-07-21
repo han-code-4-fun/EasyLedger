@@ -17,7 +17,7 @@ public class SettingsViewModel extends AndroidViewModel {
 
     }
 
-    public void setCategoryType(String input){
+    public void setSettingEditType(String input){
         mCategoryToEdit.setValue(input);
     }
 
