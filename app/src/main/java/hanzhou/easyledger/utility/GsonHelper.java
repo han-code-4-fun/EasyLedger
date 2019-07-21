@@ -19,27 +19,14 @@ public class GsonHelper {
     private Gson mGson;
     private SharedPreferences mSharedPreferences;
 
-    private static GsonHelper mInstance;
 
-    private GsonHelper(Context context){
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+    public GsonHelper(Context context) {
+        mContext = context;
         mGson = new Gson();
-    }
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-    public static GsonHelper getInstance(Context context){
-        if(mInstance == null){
-            mInstance = new GsonHelper(context);
-        }
-        return mInstance;
     }
-
-//    public GsonHelper(Context context) {
-//        mContext = context;
-//        mGson = new Gson();
-////        mSharedPreferences =mContext.getSharedPreferences(Constant.APP_PREFERENCE,Context.MODE_PRIVATE);
-//        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-//
-//    }
 
     public ArrayList<String> getLedgers(String categoryType){
 

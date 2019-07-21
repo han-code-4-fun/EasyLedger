@@ -124,7 +124,8 @@ public class AddNEditTransactionFragment extends Fragment
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
         mDB = TransactionDB.getInstance(getContext());
-        mGsonHelper = GsonHelper.getInstance(mAppCompatActivity);
+//        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        mGsonHelper = new GsonHelper(mAppCompatActivity);
 
     }
 

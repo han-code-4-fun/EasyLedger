@@ -147,10 +147,11 @@ public class ChartFragment extends Fragment implements
         mDb = TransactionDB.getInstance(context);
         mAppCompatActivity = (AppCompatActivity) context;
 
-        mColors = new BackGroundColor();
-        mGsonHelper = GsonHelper.getInstance(mAppCompatActivity);
-//        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
         mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        mColors = new BackGroundColor();
+        mGsonHelper = new GsonHelper(mAppCompatActivity);
+
+//        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
 
         loadPreferenceSetting();
 
