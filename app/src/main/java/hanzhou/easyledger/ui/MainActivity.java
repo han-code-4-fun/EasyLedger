@@ -26,6 +26,7 @@ import hanzhou.easyledger.SmsBroadcastReceiver;
 import hanzhou.easyledger.ui.settings.SettingAddNEditFragment;
 import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.utility.GsonHelper;
+import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chart_personalization.ChartDialogSetting;
@@ -45,9 +46,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import net.danlew.android.joda.JodaTimeAndroid;
-
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
 
     private int mNumberOfSelection;
 
+    private int mOverviewDateRange;
+    private int mOverviewDateStartTime;
+    private boolean isOverviewCustomRange;
+
 
     private SharedPreferences mSharedPreference;
 
@@ -114,24 +116,26 @@ public class MainActivity extends AppCompatActivity {
         /*Initialize JodaTime library*/
         JodaTimeAndroid.init(this);
 
-        viewmodelInitialization();
+        initializeSharedPreference();
+
+//        viewmodelInitialization();
 
         broadcastReceiverInitialization();
 
         uiInitialization();
 
-        setViewModelOberver();
+        setViewModel();
 
         activityStartRunFragment();
 
         testSharedPreference();
 
-        initializeSharedPreference();
     }
 
     private void initializeSharedPreference() {
 
-        mSharedPreference = getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
+//        mSharedPreference = getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
+        mSharedPreference = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
 
         String resultRev = mSharedPreference.getString(Constant.CATEGORY_TYPE_REVENUE, null);
         String resultExp = mSharedPreference.getString(Constant.CATEGORY_TYPE_EXPENSE, null);
@@ -139,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         GsonHelper gsonHelper = new GsonHelper(this);
 
-        /*only populates the default category one when first-time run the app*/
+        /*only populates the default category one when first-mOverviewDateStartTime run the app*/
 
         if (resultRev == null) {
             Log.d("test_setting", "initialize default categories revenue");
@@ -158,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
         if(resultLedger == null){
             gsonHelper.saveDataToSharedPreference(new ArrayList<>(Arrays.asList(Constant.DEFAULT_LEDGER)), Constant.LEDGERS);
         }
+
+        isOverviewCustomRange =false;
 
     }
 
@@ -367,18 +373,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void viewmodelInitialization() {
 
-        mDb = TransactionDB.getInstance(this);
 
-        String halfyear = DateTimeFormat.forPattern("YYMMdd").print(LocalDate.now().minusDays(180));
-        int time = Integer.parseInt(halfyear);
-
-        OverviewFragmentVMFactory factory = new OverviewFragmentVMFactory(time, mDb);
-        mOverviewViewModel = ViewModelProviders.of(this, factory).
-                get(OverviewFragmentViewModel.class);
-
-        mTransactionViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
-
-        mAdapterActionViewModel = ViewModelProviders.of(this).get(AdapterNActionBarViewModel.class);
 
 
     }
@@ -405,15 +400,91 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setViewModelOberver() {
+    private void setViewModel() {
 
-        mOverviewViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {
+        SPViewModelFactory spFactory = new SPViewModelFactory(mSharedPreference);
+
+
+        SPViewModel mSharedPreferenceViewModel = ViewModelProviders.of(this, spFactory).get(SPViewModel.class
+        );
+
+        mSharedPreferenceViewModel.getmSettingOverviewCustomDateRange().observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(List<TransactionEntry> transactionEntryList) {
-                Log.d("test_flow3", "main_activity, should be called one time");
-                calculateSpendingNRevenueSum(transactionEntryList);
+            public void onChanged(Integer integer) {
+                mOverviewDateRange = integer;
+                Log.d("test_overview", " date range "+mOverviewDateRange);
+
+                if(isOverviewCustomRange){
+                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(mOverviewDateRange);
+
+                }
+                if(mOverviewViewModel == null){
+
+                    mOverviewViewModel = ViewModelProviders.of(MainActivity.this).
+                            get(OverviewFragmentViewModel.class);
+                }
+                mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
             }
         });
+
+
+        mSharedPreferenceViewModel.getmSettingOverviewDateRangeType().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH)){
+                    isOverviewCustomRange = false;
+                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentMonth();
+                    Log.d("test_overview", " by month "+mOverviewDateStartTime);
+
+                }else if(s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_WEEK)){
+                    isOverviewCustomRange = false;
+
+                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentWeek();
+                    Log.d("test_overview", " by week "+mOverviewDateStartTime);
+
+                }else{
+                    /*custom range*/
+                    isOverviewCustomRange = true;
+
+                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(mOverviewDateRange);
+                    Log.d("test_overview", " custom range "+mOverviewDateStartTime);
+
+                }
+
+//                OverviewFragmentVMFactory factory = new OverviewFragmentVMFactory(mOverviewDateStartTime, mDb);
+//                mOverviewViewModel = ViewModelProviders.of(MainActivity.this, factory).
+//                        get(OverviewFragmentViewModel.class);
+
+                if(mOverviewViewModel == null){
+
+                    mOverviewViewModel = ViewModelProviders.of(MainActivity.this).
+                            get(OverviewFragmentViewModel.class);
+                }
+                mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
+
+            }
+        });
+
+        mDb = TransactionDB.getInstance(this);
+
+//        String halfyear = DateTimeFormat.forPattern("YYMMdd").print(LocalDate.now().minusDays(180));
+//        int mOverviewDateStartTime = Integer.parseInt(halfyear);
+
+
+        mTransactionViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
+
+        mAdapterActionViewModel = ViewModelProviders.of(this).get(AdapterNActionBarViewModel.class);
+
+
+//        mOverviewViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {
+//            @Override
+//            public void onChanged(List<TransactionEntry> transactionEntryList) {
+//                Log.d("test_flow3", "main_activity, should be called one mOverviewDateStartTime");
+//                calculateSpendingNRevenueSum(transactionEntryList);
+//            }
+//        });
+
+
 
 
         mAdapterActionViewModel.getActionModeState().observe(this, new Observer<Boolean>() {
@@ -569,11 +640,7 @@ public class MainActivity extends AppCompatActivity {
 //        );
 
         //initialize sharedpreference VM
-        SPViewModelFactory factory = new SPViewModelFactory(mSharedPreference);
 
-
-        SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(this, factory).get(SPViewModel.class
-        );
 
 //        sharedPreferenceViewModel.getChartHistoryPeriodNumber().observe(this, new Observer<Integer>() {
 //            @Override
@@ -657,21 +724,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    private void calculateSpendingNRevenueSum(List<TransactionEntry> transactionEntryList) {
-        float revenue = 0;
-        float spending = 0;
-        for (TransactionEntry entry : transactionEntryList) {
-            if (entry.getAmount() >= 0) {
-                revenue = revenue + entry.getAmount();
-            } else {
-                spending = spending + entry.getAmount();
-            }
-        }
 
-        mOverviewViewModel.setRevenue(revenue);
-        mOverviewViewModel.setSpend(spending);
-
-    }
 
     private void displayToolbarIconsBasedOnNumberOfSelections(int integer) {
 

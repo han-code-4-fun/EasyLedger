@@ -11,6 +11,7 @@ import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDAO;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
+import hanzhou.easyledger.utility.Constant;
 
 public class Repository {
     private AppExecutors mAppexecutor;
@@ -34,6 +35,13 @@ public class Repository {
     }
     public LiveData<List<TransactionEntry>> getCurrentExpenseOfEntries(int startDate){
         return mTransactionDAO.loadTransactionExpensePeriod(startDate);
+    }
+
+    public LiveData<List<TransactionEntry>> getPeriodOfEntriesForOverview(int start){
+        return mTransactionDAO.loadTransactionByTimeUserDefined(start);
+    }
+    public LiveData<List<TransactionEntry>> getUntaggedTransaction(){
+        return mTransactionDAO.loadUntaggedTransactions(Constant.UNTAGGED);
     }
 
 }

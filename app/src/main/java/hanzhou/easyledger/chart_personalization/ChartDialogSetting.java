@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.preference.PreferenceManager;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
@@ -82,14 +83,16 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
-        mAppPreferences = mAppCompatActivity.getSharedPreferences(
-                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
-        );
-
-        //todo, test SP livedata
-        mTestSP = mAppCompatActivity.getSharedPreferences(
-                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
-        );
+        mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+//        mAppPreferences = mAppCompatActivity.getSharedPreferences(
+//                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
+//        );
+//
+//        //todo, test SP livedata
+//        mTestSP = mAppCompatActivity.getSharedPreferences(
+//                Constant.APP_PREFERENCE, Context.MODE_PRIVATE
+//        );
+        mTestSP = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
     }
 
     @NonNull

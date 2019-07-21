@@ -17,7 +17,7 @@ public class Constant {
 
     public static final String TESTFLOW = "test_";
 
-    public static final String APP_PREFERENCE = "sharedPreferences";
+//    public static final String APP_PREFERENCE = "sharedPreferences";
 
     public static final String LEDGERS = "sharedPreference_ledgers";
 
@@ -49,6 +49,12 @@ public class Constant {
     public static final String SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_KEY = "is_piechart_percentage_or_amount";
     public static final boolean SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_DEFAULT_VAL = true;
 
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_LIST_KEY = "setting_general_overview_date_range_list_key";
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH = "overview_by_month";
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_WEEK ="overview_by_week";
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_RANGE ="overview_by_custom_range";
+
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_KEY ="setting_general_overview_date_range_custom_seekbar_key";
 
     public static final String[] DEFAULT_CATEGORIES_REVENUE = {
             "Salary", "Interest", "Commission", "Investment",

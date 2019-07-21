@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,16 +27,20 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 
 public class OverviewFragment extends Fragment{
 
     private static final String TAG = OverviewFragment.class.getSimpleName();
 
     private OverviewFragmentViewModel mOverviewFragmentViewModel;
+    private SPViewModel mSharedPreferenceViewModel;
 
     HorizontalBarChart mBarChart;
     BarDataSet barDataSet;
@@ -48,9 +53,9 @@ public class OverviewFragment extends Fragment{
 
     private SharedPreferences mAppPreferences;
 
-    /*two variable are boolean triggers that only update UI when both data updated*/
-    private boolean mReceivedRevenueData;
-    private boolean mReceivedExpenseData;
+//    /*two variable are boolean triggers that only update UI when both data updated*/
+//    private boolean mReceivedRevenueData;
+//    private boolean mReceivedExpenseData;
 
     private float mRevenueFloatingPoint;
     private float mExpenseFloatingPoint;
@@ -65,15 +70,18 @@ public class OverviewFragment extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
-        mReceivedRevenueData =false;
-        mReceivedExpenseData = false;
+//        mReceivedRevenueData =false;
+//        mReceivedExpenseData = false;
+
+
+
         mExpenseFloatingPoint = 0f;
         mRevenueFloatingPoint = 0f;
 
         //todo, they should retrieve data from savedinstance
         mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
-        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
-
+//        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
+        mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
         loadPreference();
     }
 
@@ -255,17 +263,25 @@ public class OverviewFragment extends Fragment{
 
 
 
-
-
-
     private void setupViewModel() {
+
+
         mOverviewFragmentViewModel = ViewModelProviders.of(mAppCompatActivity).get(OverviewFragmentViewModel.class);
 
+        mOverviewFragmentViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+                Log.d("test_flow3", "main_activity, should be called one mOverviewDateStartTime");
+                calculateSpendingNRevenueSum(transactionEntryList);
+            }
+        });
+        mSharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
+        );
         mOverviewFragmentViewModel.getRevenue().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
             public void onChanged(Float aDouble) {
                 mRevenueFloatingPoint = aDouble;
-                mReceivedRevenueData = true;
+//                mReceivedRevenueData = true;
                 synchronizeBalanceData();
             }
         });
@@ -274,25 +290,43 @@ public class OverviewFragment extends Fragment{
             @Override
             public void onChanged(Float aDouble) {
                 mExpenseFloatingPoint = Math.abs(aDouble);
-                mReceivedExpenseData = true;
+//                mReceivedExpenseData = true;
                 synchronizeBalanceData();
 
             }
         });
 
+
+
+
     }
 
     private void synchronizeBalanceData(){
         //only update UI when two values are received
-        if(mReceivedRevenueData && mReceivedExpenseData){
+//        if(mReceivedRevenueData && mReceivedExpenseData){
             mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
             setYLeftAxis();
             setChartData();
 
-            //after update UI, set back to false to be prepared to next update
-            mReceivedRevenueData = false;
-            mReceivedExpenseData = false;
+//            //after update UI, set back to false to be prepared to next update
+//            mReceivedRevenueData = false;
+//            mReceivedExpenseData = false;
+//        }
+
+    }
+    private void calculateSpendingNRevenueSum(List<TransactionEntry> transactionEntryList) {
+        float revenue = 0;
+        float spending = 0;
+        for (TransactionEntry entry : transactionEntryList) {
+            if (entry.getAmount() >= 0) {
+                revenue = revenue + entry.getAmount();
+            } else {
+                spending = spending + entry.getAmount();
+            }
         }
+
+        mOverviewFragmentViewModel.setRevenue(revenue);
+        mOverviewFragmentViewModel.setSpend(spending);
 
     }
 }

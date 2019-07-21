@@ -7,15 +7,15 @@
 
 
         <!--<EditTextPreference-->
-            <!--android:defaultValue="@string/pref_size_default"-->
-            <!--android:key="@string/pref_size_key"-->
-            <!--android:title="@string/pref_size_label" />-->
+        <!--android:defaultValue="@string/pref_size_default"-->
+        <!--android:key="@string/pref_size_key"-->
+        <!--android:title="@string/pref_size_label" />-->
 
         <ListPreference
             android:defaultValue="@string/setting_overview_date_range_month_key"
             android:entries="@array/setting_general_overview_date_range_label"
             android:entryValues="@array/setting_general_overview_date_range_values"
-                android:key="@string/setting_general_overview_date_range_list_key"
+            android:key="@string/setting_general_overview_date_range_list_key"
             android:title="@string/setting_general_overview_date_range_list_label" />
 
         <SeekBarPreference
@@ -23,8 +23,7 @@
             android:key="@string/setting_overview_custom_range_seekbar_key"
             android:max="180"
             android:title="NO. days back"
-            app:showSeekBarValue="true"
-            />
+            app:showSeekBarValue="true" />
     </PreferenceCategory>
 
 
@@ -32,10 +31,9 @@
         app:key="@string/setting_category_transactions_key"
         app:title="@string/setting_category_transactions_title">
         <Preference
-            app:key ="@string/setting_transaction_edit_ledger_key"
-            app:title="@string/setting_transaction_edit_ledger_title"
-            app:fragment = "hanzhou.easyledger.ui.settings.SettingEditLedger"
-            />
+            app:fragment="hanzhou.easyledger.ui.settings.SettingEditLedger"
+            app:key="@string/setting_transaction_edit_ledger_key"
+            app:title="@string/setting_transaction_edit_ledger_title" />
 
     </PreferenceCategory>
 
@@ -43,13 +41,13 @@
         app:key="@string/setting_category_others_key"
         app:title="@string/setting_category_others_title">
         <Preference
-            app:key = "@string/setting_others_edit_category_revenue_key"
-            app:title = "@string/setting_others_edit_category_revenue_title"
+            app:key="@string/setting_others_edit_category_revenue_key"
+            app:title="@string/setting_others_edit_category_revenue_title"
 
             />
         <Preference
-            app:key = "@string/setting_others_edit_category_expense_key"
-            app:title = "@string/setting_others_edit_category_expense_title"
+            app:key="@string/setting_others_edit_category_expense_key"
+            app:title="@string/setting_others_edit_category_expense_title"
 
             />
         <CheckBoxPreference

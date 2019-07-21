@@ -5,37 +5,79 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import hanzhou.easyledger.data.Repository;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 
-public class OverviewFragmentViewModel extends ViewModel {
+public class OverviewFragmentViewModel extends AndroidViewModel {
 
 
     private LiveData<List<TransactionEntry>> untaggedTransactions;
-    private LiveData<List<TransactionEntry>> listOfTransactionsOfCertainDaysChooseByUser;
+//    private LiveData<List<TransactionEntry>> listOfTransactionsOfCertainDaysChooseByUser;
+
+//    private MediatorLiveData<List<TransactionEntry>> untaggedTransactions = new MediatorLiveData<>();
+    private MediatorLiveData<List<TransactionEntry>>
+            listOfTransactionsOfCertainDaysChooseByUser = new MediatorLiveData<>();
 
     private MutableLiveData<Float> revenue;
     private MutableLiveData<Float> spend;
 
+//    private TransactionDB mDB;
+
+    private Repository mRepository;
+
+    public OverviewFragmentViewModel(@NonNull Application application) {
+        super(application);
+//        mDB = TransactionDB.getInstance(application);
+
+        mRepository = new Repository(application);
+
+        untaggedTransactions = mRepository.getUntaggedTransaction();
+
+//        untaggedTransactions = mDB.transactionDAO().loadUntaggedTransactions(Constant.UNTAGGED);
+
+//        listOfTransactionsOfCertainDaysChooseByUser =
+//                mDB.transactionDAO().loadTransactionByTimeUserDefined(inputTime);
+        revenue =new MutableLiveData<>();
+        revenue.setValue(0.0f);
+
+        spend = new MutableLiveData<>();
+        spend.setValue(0.0f);
+    }
 
 
-  public OverviewFragmentViewModel(int inputTime, TransactionDB mDB){
-      untaggedTransactions = mDB.transactionDAO().loadUntaggedTransactions(Constant.UNTAGGED);
+//  public OverviewFragmentViewModel(int inputTime, TransactionDB mDB){
+//      untaggedTransactions = mDB.transactionDAO().loadUntaggedTransactions(Constant.UNTAGGED);
+//
+//      listOfTransactionsOfCertainDaysChooseByUser =
+//              mDB.transactionDAO().loadTransactionByTimeUserDefined(inputTime);
+//      revenue =new MutableLiveData<>();
+//      revenue.setValue(0.0f);
+//
+//      spend = new MutableLiveData<>();
+//      spend.setValue(0.0f);
+//  }
 
-      listOfTransactionsOfCertainDaysChooseByUser =
-              mDB.transactionDAO().loadTransactionByTimeUserDefined(inputTime);
-      revenue =new MutableLiveData<>();
-      revenue.setValue(0.0f);
 
-      spend = new MutableLiveData<>();
-      spend.setValue(0.0f);
-  }
+    public void updateTransactionOverviewPeriod(int time){
+        listOfTransactionsOfCertainDaysChooseByUser.
+                addSource(mRepository.getPeriodOfEntriesForOverview(time), new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+                listOfTransactionsOfCertainDaysChooseByUser.setValue(transactionEntryList);
+            }
+        });
+    }
+
+
 
     public LiveData<List<TransactionEntry>> getUntaggedTransactions() {
         return untaggedTransactions;

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="setting_category_overview_key">setting_category_overview_key</string>
-    <string name="setting_category_transactions_key">setting_category_transaction_key</string>
-    <string name="setting_category_others_key">setting_category_others_key</string>
+    <string name="setting_category_overview_key" translatable="false">setting_category_overview_key</string>
+    <string name="setting_category_transactions_key" translatable="false">setting_category_transaction_key</string>
+    <string name="setting_category_others_key" translatable="false">setting_category_others_key</string>
 
     <string name="setting_category_overview_title">Overview</string>
     <string name="setting_category_transactions_title">Transactions</string>
     <string name="setting_category_others_title">Others</string>
 
-    <string name="setting_general_overview_date_range_list_key">setting_general_overview_date_range_list_key</string>
+    <string name="setting_general_overview_date_range_list_key" translatable="false">setting_general_overview_date_range_list_key</string>
     <string name="setting_general_overview_date_range_list_label">Money Summary Time Range </string>
 
     <string name="setting_overview_date_range_week_key" translatable="false">overview_by_week</string>
@@ -20,30 +20,30 @@
     <string name="setting_overview_date_range_month_label" translatable="false">Start From Current Month</string>
     <string name="setting_overview_date_range_custom_range_label" translatable="false">Start From Custom Days Back</string>
 
-    <string name="setting_overview_custom_range_seekbar_key">setting_general_overview_date_range_custom_seekbar_key</string>
+    <string name="setting_overview_custom_range_seekbar_key" translatable="false">setting_general_overview_date_range_custom_seekbar_key</string>
 
-    <string name="setting_transaction_edit_ledger_key">setting_transaction_edit_ledger_key</string>
+    <string name="setting_transaction_edit_ledger_key" translatable="false">setting_transaction_edit_ledger_key</string>
     <string name="setting_transaction_edit_ledger_title">Add/Edit your ledgers</string>
 
-    <string name="setting_others_edit_category_revenue_key">setting_others_edit_category_revenue_key</string>
+    <string name="setting_others_edit_category_revenue_key" translatable="false">setting_others_edit_category_revenue_key</string>
     <string name="setting_others_edit_category_revenue_title">Add/edit revenue categories</string>
 
-    <string name="setting_others_edit_category_expense_key">setting_others_edit_category_expense_key</string>
+    <string name="setting_others_edit_category_expense_key" translatable="false">setting_others_edit_category_expense_key</string>
     <string name="setting_others_edit_category_expense_title">Add/edit expense categories</string>
 
 
 
-    <string name="setting_others_msg_tracker_rbc_default_key">msg_tracker_rbc_default_key</string>
+    <string name="setting_others_msg_tracker_rbc_default_key" translatable="false">msg_tracker_rbc_default_key</string>
     <string name="setting_others_msg_tracker_rbc_default_title">Have RBC account</string>
 
-    <string name="setting_others_msg_tracker_hsbc_default_key">msg_tracker_hsbc_default_key</string>
+    <string name="setting_others_msg_tracker_hsbc_default_key" translatable="false">msg_tracker_hsbc_default_key</string>
     <string name="setting_others_msg_tracker_hsbc_default_title">Have HSBC account</string>
 
-    <string name="setting_others_msg_tracker_bmo_default_key">msg_tracker_bmo_default_key</string>
+    <string name="setting_others_msg_tracker_bmo_default_key" translatable="false">msg_tracker_bmo_default_key</string>
     <string name="setting_others_msg_tracker_bmo_default_title">Have BMO account</string>
 
 
-    <string name="setting_others_msg_tracker_cibc_default_key">msg_tracker_cibc_default_key</string>
+    <string name="setting_others_msg_tracker_cibc_default_key" translatable="false">msg_tracker_cibc_default_key</string>
     <string name="setting_others_msg_tracker_cibc_default_title">Have CIBC account</string>
 
     <string name="setting_msg_tracker_unavailable">Developer: I am working on it</string>

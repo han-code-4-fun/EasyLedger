@@ -18,6 +18,9 @@ public class SPViewModel extends ViewModel {
     private SPIntLiveData mChartCurrentPeriodType;
     private SPIntLiveData mChartCurrentPeriodCustomNum;
 
+    private SPStringLiveData mSettingOverviewDateRangeType;
+    private SPIntLiveData mSettingOverviewCustomDateRange;
+
     private SPBoolLiveData mChartPercentageAmountBool;
 
 
@@ -77,6 +80,18 @@ public class SPViewModel extends ViewModel {
                 Constant.SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_DEFAULT_VAL
         );
 
+        mSettingOverviewDateRangeType = new SPStringLiveData(
+                inputSP,
+                Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_LIST_KEY,
+                Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH
+                );
+
+        mSettingOverviewCustomDateRange = new SPIntLiveData(
+                inputSP,
+                Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_KEY,
+                1
+        );
+
     }
 
 
@@ -104,6 +119,10 @@ public class SPViewModel extends ViewModel {
     public SPBoolLiveData getmChartPercentageAmountBool(){
         return mChartPercentageAmountBool;
     }
+
+    public SPStringLiveData getmSettingOverviewDateRangeType() {return mSettingOverviewDateRangeType;}
+
+    public SPIntLiveData getmSettingOverviewCustomDateRange(){return mSettingOverviewCustomDateRange;}
 
 
 }

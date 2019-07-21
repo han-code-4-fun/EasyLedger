@@ -3,6 +3,8 @@ package hanzhou.easyledger.utility;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,7 +22,8 @@ public class GsonHelper {
     public GsonHelper(Context context) {
         mContext = context;
         mGson = new Gson();
-        mSharedPreferences =mContext.getSharedPreferences(Constant.APP_PREFERENCE,Context.MODE_PRIVATE);
+//        mSharedPreferences =mContext.getSharedPreferences(Constant.APP_PREFERENCE,Context.MODE_PRIVATE);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
     }
 
