@@ -50,6 +50,9 @@ public interface TransactionDAO {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateTransaction(TransactionEntry transactionEntry);
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateListOfTransactions(List<TransactionEntry> transactionEntryList);
+
     @Delete
     void deleteTransaction(TransactionEntry transactionEntry);
 

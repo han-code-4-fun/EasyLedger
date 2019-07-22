@@ -13,7 +13,7 @@ import java.util.Random;
 
 import hanzhou.easyledger.data.TransactionEntry;
 
-public class FakeTestingData {
+public class TestingData {
     public static String[] month = {"Jan", "Feb", "Mar", "Apr", "May",
             "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",  "Dec"};
 //
@@ -274,10 +274,12 @@ public class FakeTestingData {
         if (amount >= 0) {
 //            return categoryRevenue[(int) (Math.random() * categoryRevenue.length)];
             ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE);
+            ledger.add(Constant.UNTAGGED);
             output = ledger.get((int) (Math.random() * ledger.size()));
         } else {
 //            return categorySpending[(int) (Math.random() * categorySpending.length)];
             ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE);
+            ledger.add(Constant.UNTAGGED);
             output = ledger.get((int) (Math.random() * ledger.size()));
         }
         return output;

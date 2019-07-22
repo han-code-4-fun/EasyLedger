@@ -84,7 +84,7 @@ public class SettingAddNEditFragment extends Fragment {
         mFloatingActionButton = root.findViewById(R.id.btn_setting_add_entry_btn);
         mFloatingActionButton.setOnClickListener(onClickFAB);
 
-//        mCategoryList = FakeTestingData.testgetString();
+//        mCategoryList = TestingData.testgetString();
 //        Log.d("test_setting", "onCreateView: mCategoryList  get 0 -> " + mCategoryList.get(0));
 //        Log.d("test_setting", "onCreateView: mCategoryList size -> " + mCategoryList.size());
 

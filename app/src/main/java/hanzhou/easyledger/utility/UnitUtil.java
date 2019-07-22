@@ -51,7 +51,7 @@ public class UnitUtil {
         String month = temp.charAt(2)+""+temp.charAt(3);
         int monthIndex = Integer.parseInt(month);
         monthIndex--;
-        month = FakeTestingData.month[monthIndex];
+        month = TestingData.month[monthIndex];
 
 
         output = "20"+temp.charAt(0)+temp.charAt(1)+"/"+month+"/"+temp.charAt(4)+temp.charAt(5);

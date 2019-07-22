@@ -49,12 +49,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public void updateSelectedItemsArray(int position){
 
+        /*if selected, unselect(delete) it*/
         if (mViewModel.getAValueFromSelectedItems(position)) {
             mViewModel.deleteAValueFromSelectedItems(position);
         } else {
+            /*else select it*/
             mViewModel.putAValueIntoSelectedItems(position, true);
         }
 
+        /*update selected number that will display in the toolbar*/
         mViewModel.setmTransactionSelectedNumber();
 
         if(mViewModel.getNumberOfSelectedItems() == getItemCount()){

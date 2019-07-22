@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,17 +33,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.utility.FakeTestingData;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewadapter.CategoryAdapter;
@@ -133,7 +129,6 @@ public class AddNEditTransactionFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("test_flow4", "onCreateView");
 
         toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
 
@@ -172,7 +167,6 @@ public class AddNEditTransactionFragment extends Fragment
         mSaveBtn = rootView.findViewById(R.id.add_edit_transaction_save_btn);
         mSaveBtn.setOnClickListener(saveBtnOnlickListener);
 
-        Log.d("test_flow4", "before create view model");
         mAdapterActionViewModel = ViewModelProviders.of(getActivity()).get(AdapterNActionBarViewModel.class);
 
         //setup recyclerview
@@ -206,7 +200,7 @@ public class AddNEditTransactionFragment extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("test_flow4", "on activity created");
+
 
 
 
@@ -229,7 +223,6 @@ public class AddNEditTransactionFragment extends Fragment
                 Log.d("test_flow11", "getmClickedEntryID observer onChanged: " + integer);
                 mAdapterActionViewModel.getmClickedEntryID().removeObservers(getViewLifecycleOwner());
                 if (integer != null) {
-                    Log.d("test_flow8", "getmClickedEntryID the id is " + integer);
                     /*  edit an existing transaction*/
                     toolbar.setTitle(R.string.title_edit_transaction);
                     mTransactionId = integer;
@@ -292,16 +285,15 @@ public class AddNEditTransactionFragment extends Fragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("test_flow4", "onDestroyView   add transaction fragment: ");
         //todo, change viewmodel
 
 //        mAdapterActionViewModel.setmIsInAddNEditFragment(false);
     }
 
     private void setMoneyInActive() {
-        Log.d("test_flow7", " response money in is " + mMoneyIn.isChecked());
 
         mMoneyIn.setChecked(true);
+        Log.d("test_flow7", " setMoneyInActive   mMoneyIn ->  " + mMoneyIn.isChecked());
         mTvMoneyIn.setTextColor(getResources().getColor(R.color.color_money_in));
         mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE));
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
@@ -309,18 +301,18 @@ public class AddNEditTransactionFragment extends Fragment
     }
 
     private void setMoneyInDeActive() {
-        Log.d("test_flow7", " response money in is " + mMoneyIn.isChecked());
 
         mMoneyIn.setChecked(false);
+        Log.d("test_flow7", "setMoneyInDeActive mMoneyIn -> " + mMoneyIn.isChecked());
         mTvMoneyIn.setTextColor(getResources().getColor(R.color.color_deactive));
 
     }
 
     private void setMoneyOutActive() {
-        Log.d("test_flow7", "response money out is " + mMoneyOut.isChecked());
         mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
 
         mMoneyOut.setChecked(true);
+        Log.d("test_flow7", "setMoneyOutActive  mMoneyOut  ->" + mMoneyOut.isChecked());
         mTvMoneyOut.setTextColor(getResources().getColor(R.color.color_money_out));
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
 
@@ -328,9 +320,9 @@ public class AddNEditTransactionFragment extends Fragment
     }
 
     private void setMoneyOutDeActive() {
-        Log.d("test_flow7", "response money out is " + mMoneyOut.isChecked());
 
         mMoneyOut.setChecked(false);
+        Log.d("test_flow7", "setMoneyOutDeActive   mMoneyOut  ->" + mMoneyOut.isChecked());
         mTvMoneyOut.setTextColor(getResources().getColor(R.color.color_deactive));
     }
 
@@ -497,7 +489,7 @@ public class AddNEditTransactionFragment extends Fragment
 
         //IDK what is this now
 //        //todo, change it to real category data source
-//        FakeTestingData.getLedgers().indexOf(transactionEntry.getCategory());
+//        TestingData.getLedgers().indexOf(transactionEntry.getCategory());
 
 
         //set date

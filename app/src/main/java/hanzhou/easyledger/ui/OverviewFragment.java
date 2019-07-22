@@ -272,7 +272,7 @@ public class OverviewFragment extends Fragment{
         mOverviewFragmentViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
-                Log.d("test_flow3", "main_activity, should be called one mOverviewDateStartTime");
+//                Log.d("test_flow3", "main_activity, should be called one mOverviewDateStartTime");
                 calculateSpendingNRevenueSum(transactionEntryList);
             }
         });

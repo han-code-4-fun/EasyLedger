@@ -34,18 +34,11 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private String currentLedger;
 
-//
-//    private MutableLiveData<Boolean> mIsInQuestionFragment;
-//
-//    private MutableLiveData<Boolean> mIsInSettingsFragment;
-//
-//    private MutableLiveData<Boolean> mIsInAddNEditFragment;
 
     private MutableLiveData<Integer> mClickedEntryID;
 
     private MutableLiveData<String> mSelectedCategory;
 
-//    private MutableLiveData<Boolean> mIsInEditLedgerFragment;
 
 
     private MutableLiveData<Boolean> mIsInBaseFragment;
@@ -87,17 +80,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         mClickedEntryID = new MutableLiveData<>();
         mClickedEntryID.setValue(null);
 
-//        mIsInSettingsFragment = new MutableLiveData<>();
-//        mIsInSettingsFragment.setValue(false);
-//
-//        mIsInAddNEditFragment = new MutableLiveData<>();
-//        mIsInAddNEditFragment.setValue(false);
 
         mSelectedCategory = new MutableLiveData<>();
         mSelectedCategory.setValue("");
-
-//        mIsInEditLedgerFragment = new MutableLiveData<>();
-//        mIsInEditLedgerFragment.setValue(false);
 
         mShowBottomNavigationBar = new MutableLiveData<>();
         mShowBottomNavigationBar.setValue(true);
@@ -153,24 +138,55 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     }
 
 
-    //todo, optimize later
+    public TransactionEntry getOneSelectedTransaction(List<TransactionEntry> inputList){
+        TransactionEntry output;
+        int selectPosition = selectedBooleanArrayViewMode.keyAt(0);
+        output = inputList.get(selectPosition);
+        return output;
+    }
+
+    /*
+        get selected items from inner variable SparseBooleanArray and
+        mapping them to inputEntries (all entries of current fragment)
+    */
     public List<TransactionEntry> getSelectedTransactions(List<TransactionEntry> inputList) {
-        List<TransactionEntry> entries;
 
-        entries= inputList;
+        int[] selectedNumbers = getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires();
 
+        List<TransactionEntry> output = new ArrayList<>(selectedNumbers.length);
+
+        for (Integer i : selectedNumbers) {
+            output.add(inputList.get(i));
+        }
+
+        return output;
+    }
+
+    private int[] getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires(){
 
         int[] selectedNumbers = new int[selectedBooleanArrayViewMode.size()];
         for (int i = 0; i < selectedBooleanArrayViewMode.size(); i++) {
             selectedNumbers[i] = selectedBooleanArrayViewMode.keyAt(i);
         }
+        return selectedNumbers;
+    }
+
+     /*
+        get selected items from inner variable SparseBooleanArray and
+        mapping them to all UntaggedTransactions
+    */
+
+    public List<TransactionEntry> categorizeSelectedItemsToOthers(List<TransactionEntry> inputList){
+
+        int[] selectedNumbers = getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires();
 
         List<TransactionEntry> output = new ArrayList<>(selectedNumbers.length);
 
         for (Integer i : selectedNumbers) {
-            output.add(entries.get(i));
+            TransactionEntry entry = inputList.get(i);
+            entry.setCategory(Constant.CATEGORY_OTHERS);
+            output.add(entry);
         }
-
         return output;
     }
 

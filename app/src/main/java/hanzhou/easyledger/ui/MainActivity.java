@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +32,7 @@ import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.utility.FakeTestingData;
+import hanzhou.easyledger.utility.TestingData;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
@@ -119,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
 
         initializeSharedPreference();
 
-//        viewmodelInitialization();
-
         broadcastReceiverInitialization();
 
         uiInitialization();
@@ -143,24 +140,24 @@ public class MainActivity extends AppCompatActivity {
         /*only populates the default category one when first-mOverviewDateStartTime run the app*/
 
         if (resultRev == null) {
-            Log.d("test_setting", "initialize default categories revenue");
+
             mGsonHelper.saveDataToSharedPreference(
                     new ArrayList<>(Arrays.asList(Constant.DEFAULT_CATEGORIES_REVENUE)),
                     Constant.CATEGORY_TYPE_REVENUE);
         }
+
         if (resultExp == null) {
-            Log.d("test_setting", "initialize default categories expense");
 
             mGsonHelper.saveDataToSharedPreference(
                     new ArrayList<>(Arrays.asList(Constant.DEFAULT_CATEGORIES_EXPENSE)),
                     Constant.CATEGORY_TYPE_EXPENSE);
         }
 
-        if(resultLedger == null){
+        if (resultLedger == null) {
             mGsonHelper.saveDataToSharedPreference(new ArrayList<>(Arrays.asList(Constant.DEFAULT_LEDGER)), Constant.LEDGERS);
         }
 
-        isOverviewCustomRange =false;
+        isOverviewCustomRange = false;
 
     }
 
@@ -184,8 +181,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.toolbar_normal_mode, menu);
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -214,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mDb.transactionDAO().insertListOfTransactions(
-                                FakeTestingData.create10DesignateTestingDataInCertaindays(7,mGsonHelper));
+                                TestingData.create10DesignateTestingDataInCertaindays(7, mGsonHelper));
                     }
                 });
                 break;
@@ -223,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mDb.transactionDAO().insertListOfTransactions(
-                                FakeTestingData.create10DesignateTestingDataInCertaindays(30,mGsonHelper));
+                                TestingData.create10DesignateTestingDataInCertaindays(30, mGsonHelper));
                     }
                 });
                 break;
@@ -232,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mDb.transactionDAO().insertListOfTransactions(
-                                FakeTestingData.create10DesignateTestingDataInCertaindays(180,mGsonHelper));
+                                TestingData.create10DesignateTestingDataInCertaindays(180, mGsonHelper));
                     }
                 });
 
@@ -242,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mDb.transactionDAO().insertListOfTransactions(
-                                FakeTestingData.create10DesignateTestingDataInCurrentWeek(mGsonHelper));
+                                TestingData.create10DesignateTestingDataInCurrentWeek(mGsonHelper));
                     }
                 });
 
@@ -252,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mDb.transactionDAO().insertListOfTransactions(
-                                FakeTestingData.create10DesignateTestingDataInCurrentMonth(mGsonHelper));
+                                TestingData.create10DesignateTestingDataInCurrentMonth(mGsonHelper));
                     }
                 });
                 break;
@@ -262,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mDb.transactionDAO().insertListOfTransactions(
-                                FakeTestingData.create5UntaggedTransactions(mGsonHelper));
+                                TestingData.create5UntaggedTransactions(mGsonHelper));
                     }
                 });
                 break;
@@ -270,16 +265,14 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 if (isInActionModel) {
                     setToolBarToOriginMode();
-                }else if(!mIsInBaseFragment){
+                } else if (!mIsInBaseFragment) {
                     getSupportFragmentManager().popBackStack();
                 }
 
                 break;
 
             case R.id.toolbar_edit:
-//                setToolBarToOriginMode();
-                //todo, implement editing fragment/activity
-//                startActivity(new Intent(MainActivity.this, TestTempActivity.class));
+                editSelectedTransaction();
                 break;
 
             case R.id.toolbar_select_all:
@@ -287,20 +280,19 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.toolbar_delete:
                 deleteSelectedRecords();
+                setToolBarToOriginMode();
                 break;
             case R.id.toolbar_ignore:
-                //todo set all selected into others category
-
+                categorizeSelectedItemsToOthers();
+                setToolBarToOriginMode();
                 break;
-            case R.id.add_edit_transaction_save_btn:
-                break;
-
 
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
     }
+
 
     private void deleteAll() {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -316,11 +308,10 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (isInActionModel) {
             setToolBarToOriginMode();
-        }
-        else if(!mIsInBaseFragment){
+        } else if (!mIsInBaseFragment) {
             getSupportFragmentManager().popBackStack();
 
-        }else{
+        } else {
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
             }
@@ -362,13 +353,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Integer integer) {
                 mOverviewDateRange = integer;
-                Log.d("test_overview", " date range "+mOverviewDateRange);
+                Log.d("test_overview", " date range " + mOverviewDateRange);
 
-                if(isOverviewCustomRange){
+                if (isOverviewCustomRange) {
                     mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(mOverviewDateRange);
 
                 }
-                if(mOverviewViewModel == null){
+                if (mOverviewViewModel == null) {
 
                     mOverviewViewModel = ViewModelProviders.of(MainActivity.this).
                             get(OverviewFragmentViewModel.class);
@@ -381,22 +372,22 @@ public class MainActivity extends AppCompatActivity {
         mSharedPreferenceViewModel.getmSettingOverviewDateRangeType().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                if(s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH)){
+                if (s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH)) {
                     isOverviewCustomRange = false;
                     mOverviewDateStartTime = UnitUtil.getStartingDateCurrentMonth();
 
-                }else if(s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_WEEK)){
+                } else if (s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_WEEK)) {
                     isOverviewCustomRange = false;
                     mOverviewDateStartTime = UnitUtil.getStartingDateCurrentWeek();
 
-                }else{
+                } else {
                     /*custom range*/
                     isOverviewCustomRange = true;
                     mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(mOverviewDateRange);
                 }
 
 
-                if(mOverviewViewModel == null){
+                if (mOverviewViewModel == null) {
 
                     mOverviewViewModel = ViewModelProviders.of(MainActivity.this).
                             get(OverviewFragmentViewModel.class);
@@ -412,9 +403,6 @@ public class MainActivity extends AppCompatActivity {
         mTransactionViewModel = ViewModelProviders.of(this).get(TransactionDBViewModel.class);
 
         mAdapterActionViewModel = ViewModelProviders.of(this).get(AdapterNActionBarViewModel.class);
-
-
-
 
 
         mAdapterActionViewModel.getActionModeState().observe(this, new Observer<Boolean>() {
@@ -465,18 +453,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 mIsInBaseFragment = aBoolean;
-                if(aBoolean){
+                if (aBoolean) {
                     btnFA.show();
                     bottomNavigation.setVisibility(View.VISIBLE);
                     setToolBarToOriginMode();
-                }else{
+                } else {
                     btnFA.hide();
                     bottomNavigation.setVisibility(View.GONE);
                     setToolBarToOriginMode();
                 }
             }
         });
-
 
 
         mAdapterActionViewModel.getmClickedEntryID().observe(this, new Observer<Integer>() {
@@ -491,10 +478,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
-
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener bottomNavigationListener =
@@ -550,7 +534,6 @@ public class MainActivity extends AppCompatActivity {
             dialogSetting.show(getSupportFragmentManager(), null);
 
 
-
         }
     };
 
@@ -560,8 +543,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-
-
 
 
     private void displayToolbarIconsBasedOnNumberOfSelections(int integer) {
@@ -703,7 +684,7 @@ public class MainActivity extends AppCompatActivity {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create1000Transactions(mGsonHelper));
+                mDb.transactionDAO().insertListOfTransactions(TestingData.create1000Transactions(mGsonHelper));
             }
         });
     }
@@ -713,9 +694,28 @@ public class MainActivity extends AppCompatActivity {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mDb.transactionDAO().insertListOfTransactions(FakeTestingData.create10kTransactions());
+                mDb.transactionDAO().insertListOfTransactions(TestingData.create10kTransactions());
             }
         });
+    }
+
+
+    private void editSelectedTransaction() {
+        if (mNumberOfSelection == 1) {
+            final List<TransactionEntry> entries;
+            if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
+                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
+            } else {
+                entries = mTransactionViewModel.getAllTransactions().getValue();
+            }
+
+            TransactionEntry entry = mAdapterActionViewModel.getOneSelectedTransaction(entries);
+            mAdapterActionViewModel.setmClickedEntryID(entry.getId());
+
+
+        } else {
+            Log.d(TAG, "editSelectedTransaction: unknow error causing mNumberOfSelect != 1 while edit btn shows");
+        }
     }
 
     private void deleteSelectedRecords() {
@@ -744,7 +744,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,
                     getResources().getString(R.string.msg_deleting_complete),
                     Toast.LENGTH_LONG).show();
-            setToolBarToOriginMode();
+
         }
     }
 
@@ -762,6 +762,21 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    private void categorizeSelectedItemsToOthers() {
+        final List<TransactionEntry> entries = mOverviewViewModel.getUntaggedTransactions().getValue();
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.transactionDAO().updateListOfTransactions(
+                        mAdapterActionViewModel.categorizeSelectedItemsToOthers(entries)
+                );
+            }
+        });
+
+    }
+
 
     private void showNumberOfSelectedTransactionOnToolbar(int integer) {
         String display = integer + " " +

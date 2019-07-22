@@ -23,6 +23,8 @@ public class Constant {
 
     public static final String CATEGORY_ADD = "add_a_category";
 
+    public static final String CATEGORY_OTHERS = "Others";
+
     public static final String CATEGORY_TYPE_REVENUE = "revenue_categories";
 
     public static final String CATEGORY_TYPE_EXPENSE = "expense_categories";
