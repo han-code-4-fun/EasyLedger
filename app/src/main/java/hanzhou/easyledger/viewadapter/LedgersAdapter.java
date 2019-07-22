@@ -31,6 +31,11 @@ public class LedgersAdapter extends FragmentPagerAdapter {
         mLedgers=ledgers;
     }
 
+    public void setmLedgers(ArrayList<String> input){
+        mLedgers = input;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public Fragment getItem(int position) {
@@ -41,11 +46,14 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
+
         return mLedgers.get(position);
     }
 
     @Override
     public int getCount() {
+        if(mLedgers == null)
+            return 0;
         return mLedgers.size();
     }
 }

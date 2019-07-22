@@ -205,7 +205,7 @@ public class ChartFragment extends Fragment implements
         sharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
         );
 
-        sharedPreferenceViewModel.getChartHistoryPeriodNumber().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+        sharedPreferenceViewModel.getNumberOfHistoryPeriodSelectedByUserOnChartFrag().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
 

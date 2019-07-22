@@ -22,7 +22,6 @@ import java.util.List;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
-import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewadapter.TransactionAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
@@ -46,6 +45,7 @@ public class DetailTransactionFragment extends Fragment {
     private AppCompatActivity appCompatActivity;
 
     private int hash;
+    private String mLedgerName;
 
     public static DetailTransactionFragment newInstance(String ledgerTypeName) {
         DetailTransactionFragment fragment = new DetailTransactionFragment();
@@ -67,25 +67,20 @@ public class DetailTransactionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
+        if (getArguments() != null) {
+            mLedgerName = getArguments().getString(LEDGER);
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        Log.d(TAG, "onCreateView: ");
         mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
-
-
-
-//        setActionModeToFalse();
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
 
-//        mAdapter = new TransactionAdapter(this, mAdapterActionViewModel);
         mAdapter = new TransactionAdapter(mAdapterActionViewModel);
-
 
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
 
@@ -108,20 +103,6 @@ public class DetailTransactionFragment extends Fragment {
     }
 
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mAdapterActionViewModel.setmIsInBaseFragment(true);
-//    }
-//
-//
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        mAdapterActionViewModel.setmIsInBaseFragment(false);
-//    }
-
-
     @Override
     public void onDetach() {
         super.onDetach();
@@ -138,13 +119,10 @@ public class DetailTransactionFragment extends Fragment {
 
     private void setupViewModelObserver() {
 
-        String ledgerName = "";
-        ledgerName = getArguments().getString(LEDGER);
-
-        mAdapterActionViewModel.setCurrentLedger(ledgerName);
+        mAdapterActionViewModel.setCurrentLedger(mLedgerName);
 
         mTransactionViewModel = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
-        mTransactionViewModel.updateTransactionOnUserInput(ledgerName);
+        mTransactionViewModel.updateTransactionOnUserInput(mLedgerName);
 
 
         mTransactionViewModel.getTransactionsByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {

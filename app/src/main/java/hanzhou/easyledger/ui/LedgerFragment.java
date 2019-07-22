@@ -3,18 +3,16 @@ package hanzhou.easyledger.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
@@ -24,12 +22,12 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.data.TransactionDB;
-import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.LedgersAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
 
 /*
  *   Fragment that shows detailed transactions based on number of 'ledger'
@@ -47,7 +45,7 @@ public class LedgerFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
 
 
-    private LedgersAdapter ledgersAdapter;
+    private LedgersAdapter mLedgersAdapter;
     private GsonHelper mGsonHelper;
 
     private ArrayList<String> mLedgersList;
@@ -73,8 +71,8 @@ public class LedgerFragment extends Fragment {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(appCompatActivity);
         mGsonHelper = new GsonHelper(appCompatActivity);
 
-        //todo, user viewmodel to hold this list
-        mLedgersList =mGsonHelper.getLedgers(Constant.LEDGERS);
+//        //todo, user viewmodel to hold this list
+//        mLedgersList =mGsonHelper.getLedgers(Constant.LEDGERS);
     }
 
 
@@ -95,11 +93,9 @@ public class LedgerFragment extends Fragment {
         ViewPager viewPager = rootView.findViewById(R.id.transaction_viewpager);
 
 
-        //todo, watch out, if add to back stack, will not populate this if
-        ledgersAdapter = new LedgersAdapter(getChildFragmentManager(), mLedgersList);
-        //todo,  track if there is change while user fragment is not in forground and user add/remove ledgers
+        mLedgersAdapter = new LedgersAdapter(getChildFragmentManager(), mLedgersList);
 
-        viewPager.setAdapter(ledgersAdapter);
+        viewPager.setAdapter(mLedgersAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -124,6 +120,16 @@ public class LedgerFragment extends Fragment {
 
     private void setupViewModel() {
         mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
+        SPViewModelFactory factory = new SPViewModelFactory(mSharedPreferences);
+        SPViewModel spViewModel = ViewModelProviders.of(appCompatActivity,factory).get(SPViewModel.class);
+
+        spViewModel.getmLedgersList().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                mLedgersList = mGsonHelper.convertJsonToArrayListString(s);
+                mLedgersAdapter.setmLedgers(mLedgersList);
+            }
+        });
     }
 
 

@@ -59,6 +59,11 @@ public class GsonHelper {
         editor.apply();
     }
 
+    public ArrayList<String> convertJsonToArrayListString(String json){
+        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+        return mGson.fromJson(json,type);
+    }
+
     private ArrayList<String> getStringArrayFromSharedPreference(String input){
 
         String json = mSharedPreferences.getString(input,null);
@@ -67,4 +72,6 @@ public class GsonHelper {
 
         return mGson.fromJson(json,type);
     }
+
+
 }

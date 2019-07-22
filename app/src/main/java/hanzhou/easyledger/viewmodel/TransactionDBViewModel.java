@@ -1,6 +1,7 @@
 package hanzhou.easyledger.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -55,6 +56,7 @@ public class TransactionDBViewModel extends AndroidViewModel {
             if(input.equals("OVERALL")){
                 transactionsByLedger = mRepository.getAllTransactions();
             }else{
+                Log.d("test_test", "updateTransactionOnUserInput:   ledger name -> "+input);
                 transactionsByLedger = mRepository.getTransactionByLedger(input);
             }
 

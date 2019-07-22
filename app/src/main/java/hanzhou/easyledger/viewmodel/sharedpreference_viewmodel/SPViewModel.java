@@ -10,9 +10,9 @@ import hanzhou.easyledger.utility.Constant;
 public class SPViewModel extends ViewModel {
 
     private MutableLiveData<SharedPreferences> sharedPreferences;
-//    private MutableLiveData<Integer> mChartHistoryPeriodNumber;
+//    private MutableLiveData<Integer> mChartNumberOfHistoryPeriodSelectedByUser;
 
-    private SPIntLiveData mChartHistoryPeriodNumber;
+    private SPIntLiveData mChartNumberOfHistoryPeriodSelectedByUser;
     private SPIntLiveData mChartHistoryPeriodType;
     private SPIntLiveData mChartCurrentChartType;
     private SPIntLiveData mChartCurrentPeriodType;
@@ -24,28 +24,31 @@ public class SPViewModel extends ViewModel {
     private SPBoolLiveData mChartPercentageAmountBool;
 
 
+    private SPStringLiveData mLedgersList;
+
+
 //    public SPViewModel(SharedPreferences inputSP , String inputKey, int inputVal) {
 //       /* sharedPreferences = new MutableLiveData<>();
 //        sharedPreferences.setValue(inputSP);
-//        mChartHistoryPeriodNumber = new MutableLiveData<>();*/
+//        mChartNumberOfHistoryPeriodSelectedByUser = new MutableLiveData<>();*/
 //
 //       testInteger = new SPIntLiveData(inputSP,inputKey,inputVal);
 //
 //    }
 
     /* public MutableLiveData<Integer> getHistoryPeriod(){
-         return mChartHistoryPeriodNumber;
+         return mChartNumberOfHistoryPeriodSelectedByUser;
      }
 
      private void updateHistoryPeriod(int input){
-         mChartHistoryPeriodNumber.setValue(input);
+         mChartNumberOfHistoryPeriodSelectedByUser.setValue(input);
      }*/
     public SPViewModel(SharedPreferences inputSP) {
        /* sharedPreferences = new MutableLiveData<>();
         sharedPreferences.setValue(inputSP);
-        mChartHistoryPeriodNumber = new MutableLiveData<>();*/
+        mChartNumberOfHistoryPeriodSelectedByUser = new MutableLiveData<>();*/
 
-        mChartHistoryPeriodNumber = new SPIntLiveData(
+        mChartNumberOfHistoryPeriodSelectedByUser = new SPIntLiveData(
                 inputSP,
                 Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_KEY,
                 Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_DEFAULT);
@@ -92,11 +95,17 @@ public class SPViewModel extends ViewModel {
                 1
         );
 
+        mLedgersList = new SPStringLiveData(
+                inputSP,
+                Constant.LEDGERS,
+                ""
+        );
+
     }
 
 
-    public SPIntLiveData getChartHistoryPeriodNumber() {
-        return mChartHistoryPeriodNumber;
+    public SPIntLiveData getNumberOfHistoryPeriodSelectedByUserOnChartFrag() {
+        return mChartNumberOfHistoryPeriodSelectedByUser;
 
     }
 
@@ -124,5 +133,7 @@ public class SPViewModel extends ViewModel {
 
     public SPIntLiveData getmSettingOverviewCustomDateRange(){return mSettingOverviewCustomDateRange;}
 
-
+    public SPStringLiveData getmLedgersList() {
+        return mLedgersList;
+    }
 }
