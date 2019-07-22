@@ -16,16 +16,15 @@ import hanzhou.easyledger.data.TransactionEntry;
 public class FakeTestingData {
     public static String[] month = {"Jan", "Feb", "Mar", "Apr", "May",
             "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",  "Dec"};
-
-    public static String[] ledger = {
-            "RBC", "Cash"
-    };
+//
+//    public static String[] ledger = {
+//            "RBC", "Cash"
+//    };
 
     private static int mCurrentMonth = 1;
 
     private static void synchronizeCurrentMonth(){
         mCurrentMonth = UnitUtil.getTodayInAppTimeFormat()/100 - 1900;
-
     }
 
     public static ArrayList<String> testgetString(){
@@ -39,16 +38,16 @@ public class FakeTestingData {
         return output;
     }
 
-    private static String[] categoryRevenue = {
-            Constant.UNTAGGED, "Salary", "Commission", "Investment", "Interest",
-            "Rental Income", "Pension", "RRSP", "Business Income",
-            "Capital gains", "Debt Collection", "Lottery", "Others"};
-
-    private static String[] categorySpending = {
-            Constant.UNTAGGED, "Travel", "Supermarket", "Restaurant", "Shopping",
-            "Commuting", "Auto", "Education", "Children",
-            "Medical", "Personal Care", "House",
-            "Credit Card Payment", "Others"};
+//    private static String[] categoryRevenue = {
+//            Constant.UNTAGGED, "Salary", "Commission", "Investment", "Interest",
+//            "Rental Income", "Pension", "RRSP", "Business Income",
+//            "Capital gains", "Debt Collection", "Lottery", "Others"};
+//
+//    private static String[] categorySpending = {
+//            Constant.UNTAGGED, "Travel", "Supermarket", "Restaurant", "Shopping",
+//            "Commuting", "Auto", "Education", "Children",
+//            "Medical", "Personal Care", "House",
+//            "Credit Card Payment", "Others"};
 
 
     private static String[] remarks = {
@@ -66,13 +65,13 @@ public class FakeTestingData {
             "BC Hydro"
     };
 
-    public static List<String> getLedgers() {
-        List<String> output = new ArrayList<>();
-        output.add("RBC");
-        output.add("Cash");
-
-        return output;
-    }
+//    public static List<String> getLedgers() {
+//        List<String> output = new ArrayList<>();
+//        output.add("RBC");
+//        output.add("Cash");
+//
+//        return output;
+//    }
 
 
     //todo, make "others" undeletable
@@ -124,23 +123,23 @@ public class FakeTestingData {
     }
 
 
-    public static List<TransactionEntry> create10DesignateTestingDataInCurrentWeek() {
+    public static List<TransactionEntry> create10DesignateTestingDataInCurrentWeek(GsonHelper gsonHelper) {
         synchronizeCurrentMonth();
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            transactionEntryList.add(getAnEntryRevenueWithinThisWeek());
+            transactionEntryList.add(getAnEntryRevenueWithinThisWeek(gsonHelper));
         }
 
         return transactionEntryList;
     }
 
-    private static TransactionEntry getAnEntryRevenueWithinThisWeek() {
+    private static TransactionEntry getAnEntryRevenueWithinThisWeek(GsonHelper gsonHelper) {
         float amountTemp = getRandomAmountBetween3000PositiveNNegative();
         return new TransactionEntry(
-                getRandomLedger(),
+                getRandomLedger(gsonHelper),
                 getRandomMonthNDateWithThisWeek(),
                 amountTemp,
-                getRandomCategory(amountTemp),
+                getRandomCategory(amountTemp,gsonHelper),
                 getRandomRemark()
         );
     }
@@ -150,24 +149,24 @@ public class FakeTestingData {
         return getRandomMonthNDateWithinXdays(dayOfWeek);
     }
 
-    public static List<TransactionEntry> create10DesignateTestingDataInCurrentMonth() {
+    public static List<TransactionEntry> create10DesignateTestingDataInCurrentMonth(GsonHelper gsonHelper) {
         synchronizeCurrentMonth();
 
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            transactionEntryList.add(getAnEntryRevenueWithinThisMonth());
+            transactionEntryList.add(getAnEntryRevenueWithinThisMonth(gsonHelper));
         }
 
         return transactionEntryList;
     }
 
-    private static TransactionEntry getAnEntryRevenueWithinThisMonth() {
+    private static TransactionEntry getAnEntryRevenueWithinThisMonth(GsonHelper gsonHelper) {
         float amountTemp = getRandomAmountBetween3000PositiveNNegative();
         return new TransactionEntry(
-                getRandomLedger(),
+                getRandomLedger(gsonHelper),
                 getRandomMonthNDateWithThisMonth(),
                 amountTemp,
-                getRandomCategory(amountTemp),
+                getRandomCategory(amountTemp,gsonHelper),
                 getRandomRemark()
         );
     }
@@ -178,26 +177,26 @@ public class FakeTestingData {
     }
 
 
-    public static List<TransactionEntry> create10DesignateTestingDataInCertaindays(int daysBackFromToday) {
+    public static List<TransactionEntry> create10DesignateTestingDataInCertaindays(int daysBackFromToday,GsonHelper gsonHelper) {
         synchronizeCurrentMonth();
 
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            transactionEntryList.add(getAnEntryRevenueWithinXdays(daysBackFromToday));
+            transactionEntryList.add(getAnEntryRevenueWithinXdays(daysBackFromToday,gsonHelper));
         }
 
         return transactionEntryList;
     }
 
 
-    private static TransactionEntry getAnEntryRevenueWithinXdays(int daysBackFromToday) {
+    private static TransactionEntry getAnEntryRevenueWithinXdays(int daysBackFromToday, GsonHelper gsonHelper) {
         float amountTemp = getRandomAmountBetween3000PositiveNNegative();
         return new TransactionEntry(
-                getRandomLedger(),
+                getRandomLedger(gsonHelper),
                 getRandomMonthNDateWithinXdays(daysBackFromToday),
                 amountTemp,
-                getRandomCategory(amountTemp),
+                getRandomCategory(amountTemp, gsonHelper),
                 getRandomRemark()
         );
     }
@@ -213,37 +212,37 @@ public class FakeTestingData {
     }
 
 
-    public static List<TransactionEntry> create1000Transactions() {
+    public static List<TransactionEntry> create1000Transactions(GsonHelper gsonHelper) {
         synchronizeCurrentMonth();
 
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
 
         for (int i = 0; i < 1000; i++) {
-            transactionEntryList.add(getARandomTransaction());
+            transactionEntryList.add(getARandomTransaction(gsonHelper));
         }
 
 
         return transactionEntryList;
     }
 
-    public static List<TransactionEntry> create5UntaggedTransactions() {
+    public static List<TransactionEntry> create5UntaggedTransactions(GsonHelper gsonHelper) {
         synchronizeCurrentMonth();
 
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
 
         for (int i = 0; i < 5; i++) {
-            transactionEntryList.add(getARandomUntaggedTransaction());
+            transactionEntryList.add(getARandomUntaggedTransaction(gsonHelper));
         }
 
 
         return transactionEntryList;
     }
 
-    private static TransactionEntry getARandomUntaggedTransaction() {
+    private static TransactionEntry getARandomUntaggedTransaction(GsonHelper gsonHelper) {
         return new TransactionEntry(
-                getRandomLedger(),
+                getRandomLedger(gsonHelper),
                 getRandomMonthNDate(),
                 getRandomAmountBetween3000PositiveNNegative(),
                 Constant.UNTAGGED,
@@ -251,28 +250,37 @@ public class FakeTestingData {
     }
 
 
-    private static TransactionEntry getARandomTransaction() {
+    private static TransactionEntry getARandomTransaction(GsonHelper gsonHelper) {
         float amountTemp = getRandomAmountBetween3000PositiveNNegative();
         return new TransactionEntry(
-                getRandomLedger(),
+                getRandomLedger(gsonHelper),
                 getRandomMonthNDate(),
                 amountTemp,
-                getRandomCategory(amountTemp),
+                getRandomCategory(amountTemp, gsonHelper),
                 getRandomRemark());
     }
 
-    private static String getRandomLedger() {
-        String output =ledger[(int) (Math.random() * ledger.length)];
+    private static String getRandomLedger(GsonHelper gsonHelper) {
+        ArrayList<String>ledger= gsonHelper.getLedgers(Constant.LEDGERS);
+        ledger.remove("OVERALL");
+        String output = ledger.get((int) (Math.random() * ledger.size()));
         Log.d("test_flow9", "getRandomLedger: "+ output);
         return output;
     }
 
-    private static String getRandomCategory(float amount) {
+    private static String getRandomCategory(float amount, GsonHelper gsonHelper) {
+        ArrayList<String>ledger;
+        String output;
         if (amount >= 0) {
-            return categoryRevenue[(int) (Math.random() * categoryRevenue.length)];
+//            return categoryRevenue[(int) (Math.random() * categoryRevenue.length)];
+            ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE);
+            output = ledger.get((int) (Math.random() * ledger.size()));
         } else {
-            return categorySpending[(int) (Math.random() * categorySpending.length)];
+//            return categorySpending[(int) (Math.random() * categorySpending.length)];
+            ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE);
+            output = ledger.get((int) (Math.random() * ledger.size()));
         }
+        return output;
     }
 
 

@@ -126,7 +126,18 @@ public class DetailTransactionFragment extends Fragment{
         setupViewModelObserver();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapterActionViewModel.setmIsInBaseFragment(true);
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mAdapterActionViewModel.setmIsInBaseFragment(false);
+
+    }
 //    @Override
 //    public void customOnListItemClick(int position) {
 //        //todo, open a transaction editing activity/fragment

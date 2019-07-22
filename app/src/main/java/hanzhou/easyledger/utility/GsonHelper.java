@@ -28,9 +28,9 @@ public class GsonHelper {
 
     }
 
-    public ArrayList<String> getLedgers(String categoryType){
+    public ArrayList<String> getLedgers(String name){
 
-        return getStringArrayFromSharedPreference(categoryType);
+        return getStringArrayFromSharedPreference(name);
     }
 
     public void saveLedgers(ArrayList<String> inputList, String type){
@@ -60,6 +60,7 @@ public class GsonHelper {
     }
 
     private ArrayList<String> getStringArrayFromSharedPreference(String input){
+
         String json = mSharedPreferences.getString(input,null);
 
         Type type = new TypeToken<ArrayList<String>>(){}.getType();

@@ -34,17 +34,24 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private String currentLedger;
 
-    private MutableLiveData<Boolean> mIsInQuestionFragment;
-
-    private MutableLiveData<Boolean> mIsInSettingsFragment;
-
-    private MutableLiveData<Boolean> mIsInAddNEditFragment;
+//
+//    private MutableLiveData<Boolean> mIsInQuestionFragment;
+//
+//    private MutableLiveData<Boolean> mIsInSettingsFragment;
+//
+//    private MutableLiveData<Boolean> mIsInAddNEditFragment;
 
     private MutableLiveData<Integer> mClickedEntryID;
 
     private MutableLiveData<String> mSelectedCategory;
 
-    private MutableLiveData<Boolean> mIsInEditLedgerFragment;
+//    private MutableLiveData<Boolean> mIsInEditLedgerFragment;
+
+
+    private MutableLiveData<Boolean> mIsInBaseFragment;
+
+    private MutableLiveData<Boolean> mShowBottomNavigationBar;
+    private MutableLiveData<Boolean> mShowFloatingActionBtn;
 
 
 
@@ -74,23 +81,32 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         currentLedger = Constant.FRAG_CALL_FROM_OVERVIEW;
 
-        mIsInQuestionFragment = new MutableLiveData<>();
+//        mIsInQuestionFragment = new MutableLiveData<>();
 //        mIsInQuestionFragment.setValue(false);
 
         mClickedEntryID = new MutableLiveData<>();
         mClickedEntryID.setValue(null);
 
-        mIsInSettingsFragment = new MutableLiveData<>();
-        mIsInSettingsFragment.setValue(false);
-
-        mIsInAddNEditFragment = new MutableLiveData<>();
-        mIsInAddNEditFragment.setValue(false);
+//        mIsInSettingsFragment = new MutableLiveData<>();
+//        mIsInSettingsFragment.setValue(false);
+//
+//        mIsInAddNEditFragment = new MutableLiveData<>();
+//        mIsInAddNEditFragment.setValue(false);
 
         mSelectedCategory = new MutableLiveData<>();
         mSelectedCategory.setValue("");
 
-        mIsInEditLedgerFragment = new MutableLiveData<>();
-        mIsInEditLedgerFragment.setValue(false);
+//        mIsInEditLedgerFragment = new MutableLiveData<>();
+//        mIsInEditLedgerFragment.setValue(false);
+
+        mShowBottomNavigationBar = new MutableLiveData<>();
+        mShowBottomNavigationBar.setValue(true);
+
+        mShowFloatingActionBtn = new MutableLiveData<>();
+        mShowFloatingActionBtn.setValue(true);
+
+        mIsInBaseFragment = new MutableLiveData<>();
+        mIsInBaseFragment.setValue(true);
     }
 
 
@@ -187,14 +203,14 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.currentLedger = currentLedger;
     }
 
-    public MutableLiveData<Boolean> getmIsInQuestionFragment() {
-        return mIsInQuestionFragment;
-    }
-
-    public void setmIsInQuestionFragment(Boolean input) {
-        Log.d("test_flow5", "setmIsInQuestionFragment: the viewmodel is "+this.hashCode());
-        this.mIsInQuestionFragment.setValue(input);
-    }
+//    public MutableLiveData<Boolean> getmIsInQuestionFragment() {
+//        return mIsInQuestionFragment;
+//    }
+//
+//    public void setmIsInQuestionFragment(Boolean input) {
+//        Log.d("test_flow5", "setmIsInQuestionFragment: the viewmodel is "+this.hashCode());
+//        this.mIsInQuestionFragment.setValue(input);
+//    }
 
     public MutableLiveData<Integer> getmClickedEntryID() {
         return mClickedEntryID;
@@ -208,31 +224,31 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         mClickedEntryID.setValue(null);
     }
 
-    public MutableLiveData<Boolean> getmIsInSettingsFragment() {
-        return mIsInSettingsFragment;
-    }
+//    public MutableLiveData<Boolean> getmIsInSettingsFragment() {
+//        return mIsInSettingsFragment;
+//    }
+//
+//    public void setmIsInSettingsFragment(Boolean input) {
+//        this.mIsInSettingsFragment.setValue(input);
+//    }
 
-    public void setmIsInSettingsFragment(Boolean input) {
-        this.mIsInSettingsFragment.setValue(input);
-    }
 
 
-
-    public LiveData<Boolean> getmIsInAddNEditFragment() {
-        return mIsInAddNEditFragment;
-    }
-
-    public void setmIsInAddNEditFragment(Boolean input) {
-        this.mIsInAddNEditFragment.setValue(input);
-    }
-
-    public MutableLiveData<Boolean> getmIsInEditLedgerFragment() {
-        return mIsInEditLedgerFragment;
-    }
-
-    public void setmIsInEditLedgerFragment(boolean input) {
-        this.mIsInEditLedgerFragment.setValue(input);
-    }
+//    public LiveData<Boolean> getmIsInAddNEditFragment() {
+//        return mIsInAddNEditFragment;
+//    }
+//
+//    public void setmIsInAddNEditFragment(Boolean input) {
+//        this.mIsInAddNEditFragment.setValue(input);
+//    }
+//
+//    public MutableLiveData<Boolean> getmIsInEditLedgerFragment() {
+//        return mIsInEditLedgerFragment;
+//    }
+//
+//    public void setmIsInEditLedgerFragment(boolean input) {
+//        this.mIsInEditLedgerFragment.setValue(input);
+//    }
 
     public MutableLiveData<String> getmSelectedCategory() {
         return mSelectedCategory;
@@ -243,6 +259,27 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     }
 
 
+    public MutableLiveData<Boolean> getmShowBottomNavigationBar() {
+        return mShowBottomNavigationBar;
+    }
 
+    public void setmShowBottomNavigationBar(boolean input) {
+        this.mShowBottomNavigationBar.setValue(input);
+    }
 
+    public MutableLiveData<Boolean> getmShowFloatingActionBtn() {
+        return mShowFloatingActionBtn;
+    }
+
+    public void setmShowFloatingActionBtn(boolean input) {
+        this.mShowFloatingActionBtn.setValue(input);
+    }
+
+    public MutableLiveData<Boolean> getmIsInBaseFragment() {
+        return mIsInBaseFragment;
+    }
+
+    public void setmIsInBaseFragment(boolean input) {
+        this.mIsInBaseFragment.setValue(input);
+    }
 }

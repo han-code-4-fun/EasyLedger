@@ -91,7 +91,9 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        adapterNActionBarViewModel.setmIsInQuestionFragment(false);
+        //todo, change viewmodel
+
+//        adapterNActionBarViewModel.setmIsInQuestionFragment(false);
     }
 
 
@@ -149,7 +151,9 @@ public class QuestionFragment extends Fragment {
 
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
-        adapterNActionBarViewModel.setmIsInQuestionFragment(true);
+        //todo, change viewmodel
+
+//        adapterNActionBarViewModel.setmIsInQuestionFragment(true);
 
     }
 }

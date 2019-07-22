@@ -31,9 +31,9 @@
         app:key="@string/setting_category_transactions_key"
         app:title="@string/setting_category_transactions_title">
         <Preference
-            app:fragment="hanzhou.easyledger.ui.settings.SettingEditLedger"
             app:key="@string/setting_transaction_edit_ledger_key"
             app:title="@string/setting_transaction_edit_ledger_title" />
+        <!--app:fragment="hanzhou.easyledger.ui.settings.SettingEditLedger"-->
 
     </PreferenceCategory>
 

@@ -198,12 +198,16 @@ public class SettingAddNEditFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        adapterNActionBarViewModel.setmIsInEditLedgerFragment(false);
+        //todo, change viewmodel
+
+//        adapterNActionBarViewModel.setmIsInEditLedgerFragment(false);
     }
 
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
-        adapterNActionBarViewModel.setmIsInEditLedgerFragment(true);
+        //todo, change viewmodel
+
+//        adapterNActionBarViewModel.setmIsInEditLedgerFragment(true);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
 

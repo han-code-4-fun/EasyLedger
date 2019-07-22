@@ -188,7 +188,9 @@ public class SettingMain extends PreferenceFragmentCompat implements
     @Override
     public void onResume() {
         super.onResume();
-        mAdapterNActionBarViewModel.setmIsInSettingsFragment(true);
+        //todo, change viewmodel
+
+//        mAdapterNActionBarViewModel.setmIsInSettingsFragment(true);
 
     }
 
@@ -223,7 +225,9 @@ public class SettingMain extends PreferenceFragmentCompat implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mAdapterNActionBarViewModel.setmIsInSettingsFragment(false);
+        //todo, change viewmodel
+
+//        mAdapterNActionBarViewModel.setmIsInSettingsFragment(false);
     }
 
     @Override

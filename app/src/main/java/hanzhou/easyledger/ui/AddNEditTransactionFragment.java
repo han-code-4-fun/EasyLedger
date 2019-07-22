@@ -37,6 +37,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
@@ -189,7 +190,8 @@ public class AddNEditTransactionFragment extends Fragment
         mSpinnerLedgerAdapter = new ArrayAdapter<String>(
                 mAppCompatActivity,
                 android.R.layout.simple_spinner_item,
-                FakeTestingData.getLedgers());
+                removeLedgerOVERALL(mGsonHelper.getLedgers(Constant.LEDGERS))
+                );
         mSpinnerLedgerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mSpinner = rootView.findViewById(R.id.add_edit_transaction_spinner_choose_ledger);
@@ -213,8 +215,9 @@ public class AddNEditTransactionFragment extends Fragment
 //
 //        mSettingsViewModel.setmCategoryRevenue(gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE));
 
+//todo, change viewmodel
 
-        mAdapterActionViewModel.setmIsInAddNEditFragment(true);
+//        mAdapterActionViewModel.setmIsInAddNEditFragment(true);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_TASK_ID)) {
             mTransactionId = savedInstanceState.getInt(INSTANCE_TASK_ID, DEFAULT_TASK_ID);
@@ -290,7 +293,9 @@ public class AddNEditTransactionFragment extends Fragment
     public void onDestroyView() {
         super.onDestroyView();
         Log.d("test_flow4", "onDestroyView   add transaction fragment: ");
-        mAdapterActionViewModel.setmIsInAddNEditFragment(false);
+        //todo, change viewmodel
+
+//        mAdapterActionViewModel.setmIsInAddNEditFragment(false);
     }
 
     private void setMoneyInActive() {
@@ -534,6 +539,15 @@ public class AddNEditTransactionFragment extends Fragment
         }
 
         return process;
+    }
+
+
+    /*the "OVERALL" ledger is a 'virtual ledger' for displaying all the other ledgers
+    * when adding/editing transaction, there is no need to that*/
+    private ArrayList<String> removeLedgerOVERALL(ArrayList<String> input){
+
+        input.remove("OVERALL");
+        return input;
     }
 
 }

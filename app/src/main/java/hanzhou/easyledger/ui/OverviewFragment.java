@@ -102,6 +102,7 @@ public class OverviewFragment extends Fragment{
     public void onResume() {
         super.onResume();
 //        mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
+
     }
 
     @Nullable

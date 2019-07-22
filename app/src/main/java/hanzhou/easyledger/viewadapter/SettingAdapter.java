@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.ui.settings.SettingEditLedger;
 
 public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder> {
 
