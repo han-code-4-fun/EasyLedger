@@ -5,12 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
-import java.util.prefs.AbstractPreferences;
 
-import hanzhou.easyledger.data.AppExecutors;
-import hanzhou.easyledger.data.TransactionDAO;
-import hanzhou.easyledger.data.TransactionDB;
-import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 
 public class Repository {
@@ -19,6 +14,8 @@ public class Repository {
     private TransactionDB mTransactionDB;
 
     private final TransactionDAO mTransactionDAO;
+
+    private List<TransactionEntry> mTransactionListByLedger;
 
     public Repository(Application application){
         mTransactionDB = TransactionDB.getInstance(application);
@@ -43,5 +40,14 @@ public class Repository {
     public LiveData<List<TransactionEntry>> getUntaggedTransaction(){
         return mTransactionDAO.loadUntaggedTransactions(Constant.UNTAGGED);
     }
+
+   public LiveData<List<TransactionEntry>> getTransactionByLedger(String ledgerName){
+        return mTransactionDAO.loadTransactionByLedger(ledgerName);
+   }
+
+    public LiveData<List<TransactionEntry>> getAllTransactions(){
+        return mTransactionDAO.loadAllTransactions();
+    }
+
 
 }

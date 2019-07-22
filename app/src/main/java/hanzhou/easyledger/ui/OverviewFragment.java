@@ -32,6 +32,7 @@ import java.util.List;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 
@@ -40,6 +41,7 @@ public class OverviewFragment extends Fragment{
     private static final String TAG = OverviewFragment.class.getSimpleName();
 
     private OverviewFragmentViewModel mOverviewFragmentViewModel;
+    private AdapterNActionBarViewModel mAdapterActionViewModel;
     private SPViewModel mSharedPreferenceViewModel;
 
     HorizontalBarChart mBarChart;
@@ -93,15 +95,13 @@ public class OverviewFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
+        mAdapterActionViewModel.setmIsInBaseFragment(true);
 
     }
 
@@ -117,10 +117,11 @@ public class OverviewFragment extends Fragment{
 
         initiazlizeBarChart();
 
+
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.overview_recyclerview_for_untagged_transactions,
-                        new DetailTransactionFragment(Constant.FRAG_CALL_FROM_OVERVIEW))
+                       DetailTransactionFragment.newInstance(Constant.UNTAGGED))
                 .commit();
 
         return root;
@@ -266,7 +267,7 @@ public class OverviewFragment extends Fragment{
 
     private void setupViewModel() {
 
-
+        mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
         mOverviewFragmentViewModel = ViewModelProviders.of(mAppCompatActivity).get(OverviewFragmentViewModel.class);
 
         mOverviewFragmentViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {

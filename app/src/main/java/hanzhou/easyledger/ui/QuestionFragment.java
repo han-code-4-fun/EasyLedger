@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -38,7 +36,7 @@ public class QuestionFragment extends Fragment {
     private Button btnLessFriendly;
     private Button btnGithub;
     private TextView explanationTxt;
-    private AdapterNActionBarViewModel adapterNActionBarViewModel;
+    private AdapterNActionBarViewModel mAdapterActionViewModel;
     private AppCompatActivity appCompatActivity;
     private Toolbar toolbar;
 
@@ -89,11 +87,17 @@ public class QuestionFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mAdapterActionViewModel.setmIsInBaseFragment(false);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         //todo, change viewmodel
 
-//        adapterNActionBarViewModel.setmIsInQuestionFragment(false);
+//        mAdapterActionViewModel.setmIsInQuestionFragment(false);
     }
 
 
@@ -150,10 +154,11 @@ public class QuestionFragment extends Fragment {
 
 
     private void setupViewModel() {
-        adapterNActionBarViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
+        mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
         //todo, change viewmodel
 
-//        adapterNActionBarViewModel.setmIsInQuestionFragment(true);
+//        mAdapterActionViewModel.setmIsInQuestionFragment(true);
+
 
     }
 }

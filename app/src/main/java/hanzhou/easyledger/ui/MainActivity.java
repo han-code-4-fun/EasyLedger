@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isInActionModel) {
                     setToolBarToOriginMode();
                 } else if (!mIsInBaseFragment) {
+                    Log.d("test_test", "home : ");
                     getSupportFragmentManager().popBackStack();
                 }
 
@@ -309,8 +310,8 @@ public class MainActivity extends AppCompatActivity {
         if (isInActionModel) {
             setToolBarToOriginMode();
         } else if (!mIsInBaseFragment) {
+            Log.d("test_test", "onBackPressed: ");
             getSupportFragmentManager().popBackStack();
-
         } else {
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
@@ -512,7 +513,6 @@ public class MainActivity extends AppCompatActivity {
             };
 
 
-    //todo, FAB should create a new fragment
     private FloatingActionButton.OnClickListener fabOnClickListenerOpenFragment
             = new FloatingActionButton.OnClickListener() {
         @Override
@@ -630,7 +630,6 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.base_fragment, input)
                 .addToBackStack(null)
                 .commit();
-        mAdapterActionViewModel.setmIsInBaseFragment(false);
     }
 
     private void setToolBarToOriginMode() {

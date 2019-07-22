@@ -22,7 +22,6 @@ public class SPViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     }
 
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        Log.d("test_test_", "start to  create: from TransactionDBVMFactory");
 //        return (T) new SPViewModel(sharedPreferences, key,defaultVal);
         return (T) new SPViewModel(sharedPreferences);
 

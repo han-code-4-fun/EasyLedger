@@ -70,18 +70,7 @@ public class SettingEditLedger extends Fragment {
         return true;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //todo, change viewmodel
-
-//        adapterNActionBarViewModel.setmIsInEditLedgerFragment(false);
-    }
-
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
-        //todo, change viewmodel
-
-//        adapterNActionBarViewModel.setmIsInEditLedgerFragment(true);
     }
 }

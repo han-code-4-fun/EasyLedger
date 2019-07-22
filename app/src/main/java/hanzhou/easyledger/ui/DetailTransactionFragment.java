@@ -25,7 +25,6 @@ import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewadapter.TransactionAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
-import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 
@@ -33,76 +32,59 @@ import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
  *  Recyclerview Fragment that can be used by other classes to show a standard list
  *
  */
-public class DetailTransactionFragment extends Fragment{
+public class DetailTransactionFragment extends Fragment {
 
     private static final String TAG = DetailTransactionFragment.class.getSimpleName();
+
+    private static final String LEDGER = "ledger_to_show";
 
     private TransactionDBViewModel mTransactionViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
 
     private TransactionAdapter mAdapter;
 
-    private String whoCalledMe;
-
     private AppCompatActivity appCompatActivity;
 
     private int hash;
 
-    public DetailTransactionFragment(String parentString) {
-
-        whoCalledMe = parentString;
-        hash = hashCode();
-        Log.d("test_flow2", " constructor: hash "+whoCalledMe+" "+ hash);
+    public static DetailTransactionFragment newInstance(String ledgerTypeName) {
+        DetailTransactionFragment fragment = new DetailTransactionFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LEDGER, ledgerTypeName);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        appCompatActivity=  (AppCompatActivity) context;
+        appCompatActivity = (AppCompatActivity) context;
+
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        appCompatActivity=null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("test_flow2", "onDestroy: " +whoCalledMe + " "+hash);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
 
-    //todo, implement data PERSISTANCE
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-
+        Log.d(TAG, "onCreateView: ");
         mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
-        mAdapterActionViewModel.setCurrentLedger(whoCalledMe);
 
 
 
-
-
-        setActionModeToFalse();
+//        setActionModeToFalse();
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
 
 //        mAdapter = new TransactionAdapter(this, mAdapterActionViewModel);
-        mAdapter = new TransactionAdapter( mAdapterActionViewModel);
+        mAdapter = new TransactionAdapter(mAdapterActionViewModel);
 
 
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
@@ -114,7 +96,6 @@ public class DetailTransactionFragment extends Fragment{
         mRecyclerView.setAdapter(mAdapter);
 
 
-
         return rootView;
     }
 
@@ -122,28 +103,30 @@ public class DetailTransactionFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setupViewModelObserver();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mAdapterActionViewModel.setmIsInBaseFragment(true);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mAdapterActionViewModel.setmIsInBaseFragment(false);
 
     }
+
+
 //    @Override
-//    public void customOnListItemClick(int position) {
-//        //todo, open a transaction editing activity/fragment
-//        int transactionEntryID = position;
-//        Log.d("test_flow3", "Entry id is -> " + transactionEntryID);
+//    public void onResume() {
+//        super.onResume();
+//        mAdapterActionViewModel.setmIsInBaseFragment(true);
 //    }
+//
+//
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//        mAdapterActionViewModel.setmIsInBaseFragment(false);
+//    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        appCompatActivity = null;
+    }
 
 
     private void setActionModeToFalse() {
@@ -155,25 +138,22 @@ public class DetailTransactionFragment extends Fragment{
 
     private void setupViewModelObserver() {
 
-        //todo, 2nd stage, handle different data for different ledgers
+        String ledgerName = "";
+        ledgerName = getArguments().getString(LEDGER);
 
-        if(mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)){
-            OverviewFragmentViewModel mOverviewVM = ViewModelProviders.of(appCompatActivity).get(OverviewFragmentViewModel.class);
-            mOverviewVM.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-                @Override
-                public void onChanged(List<TransactionEntry> transactionEntryList) {
-                    mAdapter.setAdapterData(transactionEntryList);
-                }
-            });
-        }else{
-            TransactionDBViewModel mTransVM = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
-            mTransVM.getAllTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-                @Override
-                public void onChanged(List<TransactionEntry> transactionEntryList) {
-                    mAdapter.setAdapterData(transactionEntryList);
-                }
-            });
-        }
+        mAdapterActionViewModel.setCurrentLedger(ledgerName);
+
+        mTransactionViewModel = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
+        mTransactionViewModel.updateTransactionOnUserInput(ledgerName);
+
+
+        mTransactionViewModel.getTransactionsByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+                mAdapter.setAdapterData(transactionEntryList);
+            }
+        });
+
 
         mAdapterActionViewModel.getActionModeState().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override

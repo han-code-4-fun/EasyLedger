@@ -216,7 +216,6 @@ public class SettingAddNEditFragment extends Fragment {
             public void onChanged(String s) {
                 mSettingType = s;
 
-
                 updateAdapterData(s);
 
             }

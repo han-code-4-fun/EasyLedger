@@ -78,13 +78,13 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
     }
 
 
+    public LiveData<List<TransactionEntry>> getlistOfTransactionsInTimeRange(){
+        return listOfTransactionsOfCertainDaysChooseByUser;
+    }
+
 
     public LiveData<List<TransactionEntry>> getUntaggedTransactions() {
         return untaggedTransactions;
-    }
-
-    public LiveData<List<TransactionEntry>> getlistOfTransactionsInTimeRange(){
-        return listOfTransactionsOfCertainDaysChooseByUser;
     }
 
 

@@ -25,9 +25,6 @@ public interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE category = :untag ORDER BY time DESC, id DESC")
     LiveData<List<TransactionEntry>> loadUntaggedTransactions(String untag);
 
-    @Query("SELECT * FROM transactions WHERE time >= :time7DaysBackwards ORDER BY time DESC, id DESC")
-    LiveData<List<TransactionEntry>> loadTransactionByTime7days(int time7DaysBackwards);
-
 
     @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount>=0 ORDER BY time ASC, id DESC")
     LiveData<List<TransactionEntry>> loadTransactionRevenuePeriod(int startingDate);
@@ -62,11 +59,4 @@ public interface TransactionDAO {
     @Query("DELETE FROM transactions")
     void deleteAll();
 
-
-    /*
-        select account_id, total,  standard_qty from orders
-
-        order by account_id desc, total desc limit 100
-
-     */
 }

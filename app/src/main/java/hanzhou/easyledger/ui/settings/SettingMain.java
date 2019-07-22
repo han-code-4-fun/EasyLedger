@@ -3,7 +3,6 @@ package hanzhou.easyledger.ui.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -36,7 +35,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private AppCompatActivity mAppCompatActivity;
 
-    private AdapterNActionBarViewModel mAdapterNActionBarViewModel;
+    private AdapterNActionBarViewModel mAdapterActionViewModel;
 
     private SharedPreferences mSharedPreferences;
 
@@ -188,10 +187,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
     @Override
     public void onResume() {
         super.onResume();
-        //todo, change viewmodel
-
-//        mAdapterNActionBarViewModel.setmIsInSettingsFragment(true);
-
+        mAdapterActionViewModel.setmIsInBaseFragment(false);
     }
 
 
@@ -227,7 +223,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
         super.onDestroyView();
         //todo, change viewmodel
 
-//        mAdapterNActionBarViewModel.setmIsInSettingsFragment(false);
+//        mAdapterActionViewModel.setmIsInSettingsFragment(false);
     }
 
     @Override
@@ -251,7 +247,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
 
     private void setupViewModel() {
-        mAdapterNActionBarViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
+        mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
     }

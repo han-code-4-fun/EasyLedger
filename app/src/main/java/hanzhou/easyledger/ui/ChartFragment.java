@@ -194,12 +194,6 @@ public class ChartFragment extends Fragment implements
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mAdapterActionViewModel.setmIsInBaseFragment(false);
-
-    }
 
     private void setupViewModel() {
 

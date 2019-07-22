@@ -167,7 +167,7 @@ public class AddNEditTransactionFragment extends Fragment
         mSaveBtn = rootView.findViewById(R.id.add_edit_transaction_save_btn);
         mSaveBtn.setOnClickListener(saveBtnOnlickListener);
 
-        mAdapterActionViewModel = ViewModelProviders.of(getActivity()).get(AdapterNActionBarViewModel.class);
+        mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         //setup recyclerview
         RecyclerView.LayoutManager layoutManager =
@@ -280,6 +280,13 @@ public class AddNEditTransactionFragment extends Fragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(INSTANCE_TASK_ID, mTransactionId);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapterActionViewModel.setmIsInBaseFragment(false);
+
     }
 
     @Override
