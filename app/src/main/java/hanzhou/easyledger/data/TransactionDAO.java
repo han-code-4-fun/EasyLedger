@@ -37,6 +37,11 @@ public interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE time >= :startDate and time<= :endDate ORDER BY time ASC, id ASC")
     LiveData<List<TransactionEntry>> loadTransactionInPeriodForChart(int startDate, int endDate);
 
+    @Query("UPDATE transactions SET remark = :remarkInFront || remark, category = 'Others' WHERE category = :category")
+    void markHistoryCategory(String remarkInFront,String category);
+
+    @Query("UPDATE transactions SET remark = :remarkInFront || remark WHERE ledger = :ledger")
+    void markHistoryLedger(String remarkInFront,String ledger);
 
     @Insert
     void insertTransaction(TransactionEntry transactionEntry);

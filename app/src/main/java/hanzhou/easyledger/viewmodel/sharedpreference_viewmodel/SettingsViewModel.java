@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 
+import hanzhou.easyledger.data.RepositoryUpdate;
 import hanzhou.easyledger.data.TransactionEntry;
 
 public class SettingsViewModel extends AndroidViewModel {
@@ -17,9 +18,11 @@ public class SettingsViewModel extends AndroidViewModel {
 //    private MutableLiveData<ArrayList<String>> mCategoryExpense;
 //    private MutableLiveData<ArrayList<String>> mCategoryRevenue;
 
+    private RepositoryUpdate mRepositoryUpdate;
     public SettingsViewModel(@NonNull Application application) {
         super(application);
 
+        mRepositoryUpdate = new RepositoryUpdate(application);
         mCategoryToEdit = new MutableLiveData<>();
 //        mCategoryExpense= new MutableLiveData<>();
 //        mCategoryRevenue = new MutableLiveData<>();
@@ -31,6 +34,14 @@ public class SettingsViewModel extends AndroidViewModel {
 
     public MutableLiveData<String> getmCategoryType(){
         return mCategoryToEdit;
+    }
+
+    public void renameHistoryLedger(String inputString, String deletedLedgerName){
+        mRepositoryUpdate.renameHistoryLedger(inputString,deletedLedgerName);
+    }
+
+    public void renameHistoryCategory(String inputString, String deletedCategory){
+        mRepositoryUpdate.renameHistoryCategory(inputString, deletedCategory);
     }
 
 //    public MutableLiveData<ArrayList<String>> getmCategoryExpense() {

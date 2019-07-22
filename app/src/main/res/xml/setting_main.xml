@@ -33,7 +33,6 @@
         <Preference
             app:key="@string/setting_transaction_edit_ledger_key"
             app:title="@string/setting_transaction_edit_ledger_title" />
-        <!--app:fragment="hanzhou.easyledger.ui.settings.SettingEditLedger"-->
 
     </PreferenceCategory>
 

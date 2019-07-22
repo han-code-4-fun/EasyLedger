@@ -9,18 +9,13 @@ import java.util.List;
 import hanzhou.easyledger.utility.Constant;
 
 public class Repository {
-    private AppExecutors mAppexecutor;
-
-    private TransactionDB mTransactionDB;
 
     private final TransactionDAO mTransactionDAO;
 
-    private List<TransactionEntry> mTransactionListByLedger;
 
     public Repository(Application application){
-        mTransactionDB = TransactionDB.getInstance(application);
+        TransactionDB mTransactionDB = TransactionDB.getInstance(application);
         mTransactionDAO = mTransactionDB.transactionDAO();
-        mAppexecutor = AppExecutors.getInstance();
     }
 
     public LiveData<List<TransactionEntry>> getPeriodOfEntries(int start, int end){

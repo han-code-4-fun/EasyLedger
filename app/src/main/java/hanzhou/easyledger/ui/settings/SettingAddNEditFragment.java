@@ -52,14 +52,16 @@ public class SettingAddNEditFragment extends Fragment {
     private LinearLayoutManager mLinearLayoutManager;
     private SettingAdapter mSettingAdapter;
 
-    private ArrayList<String> mCategoryList;
+    private ArrayList<String> mListData;
 
     private AlertDialog mAlertDialog;
-    private  AlertDialog.Builder mDialogBuilder;
+    private AlertDialog.Builder mDialogBuilder;
 
     private GsonHelper mGsonHelper;
 
     private String mSettingType;
+
+    private ArrayList<String> mListDeletedData;
 
     public static final int REQUEST_DIALOG_CODE = 12345;
 
@@ -70,7 +72,7 @@ public class SettingAddNEditFragment extends Fragment {
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
-        mGsonHelper =new GsonHelper(mAppCompatActivity);
+        mGsonHelper = new GsonHelper(mAppCompatActivity);
 
 
     }
@@ -84,15 +86,11 @@ public class SettingAddNEditFragment extends Fragment {
         mFloatingActionButton = root.findViewById(R.id.btn_setting_add_entry_btn);
         mFloatingActionButton.setOnClickListener(onClickFAB);
 
-//        mCategoryList = TestingData.testgetString();
-//        Log.d("test_setting", "onCreateView: mCategoryList  get 0 -> " + mCategoryList.get(0));
-//        Log.d("test_setting", "onCreateView: mCategoryList size -> " + mCategoryList.size());
-
         mLinearLayoutManager = new LinearLayoutManager(mAppCompatActivity);
 
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        mSettingAdapter = new SettingAdapter(mCategoryList, mAppCompatActivity);
+        mSettingAdapter = new SettingAdapter(mListData, mAppCompatActivity);
 
         mRecyclerView.setAdapter(mSettingAdapter);
 
@@ -106,24 +104,20 @@ public class SettingAddNEditFragment extends Fragment {
                 ItemTouchHelper.START | ItemTouchHelper.END) {
 
 
-
-
-
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 int positionFrom = viewHolder.getAdapterPosition();
                 int positionTo = target.getAdapterPosition();
 
-                if(mSettingAdapter.isCurrentLedgerOVERALL(positionFrom) ||
-                        mSettingAdapter.isCurrentLedgerOVERALL(positionTo)){
+                if (mSettingAdapter.isCurrentLedgerOVERALL(positionFrom) ||
+                        mSettingAdapter.isCurrentLedgerOVERALL(positionTo)) {
 
-                    launchWarningMSGNoSWAP(positionFrom,positionTo);
+                    launchWarningMSGNoSWAP(positionFrom, positionTo);
 
-                }else{
+                } else {
 
                     mSettingAdapter.swapPosition(positionFrom, positionTo);
                 }
-
 
 
                 return false;
@@ -139,7 +133,8 @@ public class SettingAddNEditFragment extends Fragment {
                     launchWarningMSGNoDelete(position);
                 } else {
 
-                    mSettingAdapter.remove(position);
+                    String removedItem = mSettingAdapter.remove(position);
+                    mListDeletedData.add(removedItem);
                 }
 
 
@@ -162,6 +157,7 @@ public class SettingAddNEditFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViewModel();
+        mListDeletedData = new ArrayList<>();
     }
 
     @Override
@@ -171,8 +167,8 @@ public class SettingAddNEditFragment extends Fragment {
             if (resultCode == Activity.RESULT_OK) {
 
                 String newCategory = data.getStringExtra(Constant.CATEGORY_ADD);
-                mCategoryList.add(newCategory);
-                mSettingAdapter.setData(mCategoryList);
+                mListData.add(newCategory);
+                mSettingAdapter.setData(mListData);
 
             }
         }
@@ -187,6 +183,7 @@ public class SettingAddNEditFragment extends Fragment {
                 break;
             case R.id.toolbar_edit_ledger_save:
                 saveNewCategory();
+                markDeletedDataIntoTransactionEntryRemark();
                 mAppCompatActivity.getSupportFragmentManager().popBackStack();
                 break;
             default:
@@ -195,19 +192,14 @@ public class SettingAddNEditFragment extends Fragment {
         return true;
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        //todo, change viewmodel
-
-//        adapterNActionBarViewModel.setmIsInEditLedgerFragment(false);
     }
 
     private void setupViewModel() {
         adapterNActionBarViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
-        //todo, change viewmodel
-
-//        adapterNActionBarViewModel.setmIsInEditLedgerFragment(true);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
 
@@ -215,7 +207,6 @@ public class SettingAddNEditFragment extends Fragment {
             @Override
             public void onChanged(String s) {
                 mSettingType = s;
-
                 updateAdapterData(s);
 
             }
@@ -223,13 +214,37 @@ public class SettingAddNEditFragment extends Fragment {
     }
 
     private void updateAdapterData(String s) {
-        mCategoryList = mGsonHelper.getDataFromSharedPreference(s);
+        mListData = mGsonHelper.getDataFromSharedPreference(s);
 
-        mSettingAdapter.setData(mCategoryList);
+        mSettingAdapter.setData(mListData);
     }
 
     private void saveNewCategory() {
         mGsonHelper.saveDataToSharedPreference(mSettingAdapter.getData(), mSettingType);
+    }
+
+    /*if user delete any category/ledger, add a remark to these entry in DB*/
+    private void markDeletedDataIntoTransactionEntryRemark() {
+
+        if (mListDeletedData.size() >= 1) {
+            if (mSettingType.equals(Constant.LEDGERS)) {
+                /*add remark, (history Ledger -> $LedgerName)*/
+                for (int i = 0; i < mListDeletedData.size(); i++) {
+                    String ledgerName = mListDeletedData.get(i);
+                    String addedRemark = "(history ledger -> " + ledgerName + ") ";
+                    mSettingsViewModel.renameHistoryLedger(addedRemark, ledgerName);
+
+                }
+            } else {
+                /*add remark, (hisotory category -> $categoryName)*/
+                for (int i = 0; i < mListDeletedData.size(); i++) {
+                    String categoryName = mListDeletedData.get(i);
+                    String addedRemark = "(history category -> " + categoryName + ") ";
+                    mSettingsViewModel.renameHistoryCategory(addedRemark, categoryName);
+
+                }
+            }
+        }
     }
 
     private void launchWarningMSGNoDelete(final int position) {
@@ -249,9 +264,9 @@ public class SettingAddNEditFragment extends Fragment {
     }
 
     private void launchWarningMSGNoSWAP(final int position1, final int position2) {
-        if(mAlertDialog!=null && mAlertDialog.isShowing()){
-        /*do nothing since it's already on screen*/
-        }else{
+        if (mAlertDialog != null && mAlertDialog.isShowing()) {
+            /*do nothing since it's already on screen*/
+        } else {
             mDialogBuilder = new AlertDialog.Builder(mAppCompatActivity)
                     .setTitle(getString(R.string.setting_warning_cannot_swap_overall_in_ledger_title))
                     .setMessage(getString(R.string.setting_warning_cannot_swap_overall_in_ledger_msg_body))
@@ -265,8 +280,8 @@ public class SettingAddNEditFragment extends Fragment {
 
                     .setIcon(android.R.drawable.ic_dialog_alert);
 
-           mAlertDialog = mDialogBuilder.create();
-           mAlertDialog.show();
+            mAlertDialog = mDialogBuilder.create();
+            mAlertDialog.show();
         }
 
 
