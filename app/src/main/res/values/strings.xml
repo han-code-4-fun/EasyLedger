@@ -195,4 +195,9 @@
 
     <string name="category_others">Others</string>
 
+
+    <string name="notification_title_msg_from_firebase">Message from developer</string>
+    <string name="main_notification_channel_name">Primary</string>
+
+
 </resources>
