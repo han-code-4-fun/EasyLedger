@@ -76,7 +76,7 @@ import hanzhou.easyledger.viewmodel.ChartDataViewModel;
  *   OR  expense barchart  +  revenue barchart + history comparison barchart
  *
  *   For each chart combination, user can select to display expense/revenue chart
- *   for current weeks or current months
+ *   for current weeks or current MONTHS_CAP
  *
  *   for the history comparison barchart, user can select number of periods (week or month) to compare
  *

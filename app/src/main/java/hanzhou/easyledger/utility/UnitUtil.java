@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
@@ -51,7 +52,7 @@ public class UnitUtil {
         String month = temp.charAt(2)+""+temp.charAt(3);
         int monthIndex = Integer.parseInt(month);
         monthIndex--;
-        month = TestingData.month[monthIndex];
+        month = Constant.MONTHS_NON_CAP[monthIndex];
 
 
         output = "20"+temp.charAt(0)+temp.charAt(1)+"/"+month+"/"+temp.charAt(4)+temp.charAt(5);
@@ -161,6 +162,22 @@ public class UnitUtil {
     public static String fromJodaTimeLocalDateToMonthLabel(LocalDate inputDate){
 
         return  DateTimeFormat.forPattern("YYYY/MMM").print(inputDate);
+    }
+
+    public static int fromMMMDDFormatToAppDateFormat(String input){
+        String month = input.substring(0,3);
+        int monthInt = -1;
+        for (int i = 0; i< Constant.MONTHS_CAP.length; i++) {
+            if(month.equals(Constant.MONTHS_CAP[i])){
+                monthInt = i+1;
+                break;
+            }
+        }
+        int day = Integer.parseInt(input.substring(3));
+        int year =  Integer.parseInt(DateTimeFormat.forPattern("YY").print(now));
+
+        return year*10000+monthInt*100+day;
+
     }
 
 

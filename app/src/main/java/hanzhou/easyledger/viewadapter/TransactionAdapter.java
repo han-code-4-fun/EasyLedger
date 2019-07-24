@@ -69,6 +69,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
 
+    public int getOneSelectedEntryID(){
+        int position = mViewModel.getFirstSelectedItems();
+        return mTransactionEntryList.get(position).getId();
+    }
+
 
     public void selectAll() {
         for(int i =0;i<mTransactionEntryList.size(); i++){
@@ -82,6 +87,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         mViewModel.setmIsAllSelected(true);
     }
 
+    public List<TransactionEntry> getmTransactionEntryList() {
+        return mTransactionEntryList;
+    }
 
     public void deselectAll() {
         mViewModel.emptySelectedItems();
@@ -180,7 +188,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             /*ensure the deleting animation is on-going while customer clicked this position*/
             if ( position != RecyclerView.NO_POSITION) {
 
-                if(isInActionMode){updateSelectedItemsArray(position);}
+                if(isInActionMode){
+                    Log.d("test_flow11", "clickedItem id -> "+ mTransactionEntryList.get(position).getId());
+
+                    updateSelectedItemsArray(position);
+                }
                 else{
                     int id = mTransactionEntryList.get(position).getId();
                     Log.d("test_flow11", "transactionadapter onClick: id -> "+ id);

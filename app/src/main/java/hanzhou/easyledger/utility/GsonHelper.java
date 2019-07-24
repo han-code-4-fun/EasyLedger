@@ -10,19 +10,19 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GsonHelper {
 
     private static final String TAG =GsonHelper.class.getSimpleName();
 
-    private Context mContext;
     private Gson mGson;
     private SharedPreferences mSharedPreferences;
 
 
 
     public GsonHelper(Context context) {
-        mContext = context;
+        Context mContext = context;
         mGson = new Gson();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
@@ -33,15 +33,6 @@ public class GsonHelper {
         return getStringArrayFromSharedPreference(name);
     }
 
-    public void saveLedgers(ArrayList<String> inputList, String type){
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-
-        String json = mGson.toJson(inputList);
-
-        editor.putString(type, json);
-
-        editor.apply();
-    }
 
     public ArrayList<String> getDataFromSharedPreference(String categoryType){
 
@@ -68,10 +59,18 @@ public class GsonHelper {
 
         String json = mSharedPreferences.getString(input,null);
 
-        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+        return convertJsonToArrayListString(json);
 
-        return mGson.fromJson(json,type);
+//        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+//
+//        return mGson.fromJson(json,type);
     }
+
+    private void saveAutoTagger(HashMap<String, Boolean> inputHashmap){
+
+    }
+
+
 
 
 }

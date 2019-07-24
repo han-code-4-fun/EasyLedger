@@ -99,7 +99,7 @@ public class LedgerFragment extends Fragment {
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        tabLayout.setMinimumWidth(250);
+
 
         return rootView;
     }

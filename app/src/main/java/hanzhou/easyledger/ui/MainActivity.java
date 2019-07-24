@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,7 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.SmsBroadcastReceiver;
+import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
 import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.utility.UnitUtil;
@@ -51,13 +52,15 @@ import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String SMS_RECEIVED_ACTION_OLD = "android.provider.Telephony.SMS_RECEIVED";
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String CHART_FRAGMENT = "in_chart_fragment";
     private static final String NON_CHART_FRAGMENT = "not_in_chart_fragment";
 
     private IntentFilter mSmsIntentFilter;
-    private SmsBroadcastReceiver mSmsReceiver;
+    private SMSBroadcastReceiver mSmsReceiver;
 
     /* Database instance */
     private TransactionDB mDb;
@@ -323,8 +326,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void broadcastReceiverInitialization() {
         mSmsIntentFilter = new IntentFilter();
-        mSmsIntentFilter.addAction(SMS_RECEIVED_ACTION);
-        mSmsReceiver = new SmsBroadcastReceiver();
+
+        //todo , handle this
+        //todo, may crush
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+        && Build.VERSION.SDK_INT< Build.VERSION_CODES.KITKAT){
+            mSmsIntentFilter.addAction(SMS_RECEIVED_ACTION_OLD);
+        }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+
+            mSmsIntentFilter.addAction(SMS_RECEIVED_ACTION);
+        }
+
+        mSmsReceiver = new SMSBroadcastReceiver();
     }
 
     private void uiInitialization() {
@@ -700,17 +713,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void editSelectedTransaction() {
+
         if (mNumberOfSelection == 1) {
-            final List<TransactionEntry> entries;
-            if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
-                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
-            } else {
-                entries = mTransactionViewModel.getAllTransactions().getValue();
-            }
-
-            TransactionEntry entry = mAdapterActionViewModel.getOneSelectedTransaction(entries);
-            mAdapterActionViewModel.setmClickedEntryID(entry.getId());
-
+            mAdapterActionViewModel.setmEditAnEntryTrigger(true);
 
         } else {
             Log.d(TAG, "editSelectedTransaction: unknow error causing mNumberOfSelect != 1 while edit btn shows");
@@ -724,22 +729,28 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
 
-            final List<TransactionEntry> entries;
-            if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
-                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
-            } else {
-                entries = mTransactionViewModel.getAllTransactions().getValue();
-            }
+//            final List<TransactionEntry> entries;
+////            if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
+////                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
+////                Log.d("test_delete", "deleteSelectedRecords:   from untagged transactions");
+////            } else {
+////                entries = mTransactionViewModel.getAllTransactions().getValue();
+////                Log.d("test_delete", "deleteSelectedRecords:   from all transactions ");
+////
+////            }
+//            entries = mTransactionViewModel.getTransactionsByLedger().getValue();
+//
+//            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    mDb.transactionDAO().deleteListOfTransactions(
+//                            mAdapterActionViewModel.getSelectedTransactions(entries)
+//                    );
+//                }
+//            });
 
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-
-                    mDb.transactionDAO().deleteListOfTransactions(
-                            mAdapterActionViewModel.getSelectedTransactions(entries)
-                    );
-                }
-            });
+            mAdapterActionViewModel.setmDeleteItemTrigger(true);
             Toast.makeText(this,
                     getResources().getString(R.string.msg_deleting_complete),
                     Toast.LENGTH_LONG).show();

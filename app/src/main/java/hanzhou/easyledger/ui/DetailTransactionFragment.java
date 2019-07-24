@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.data.AppExecutors;
+import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.viewadapter.TransactionAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
@@ -166,6 +168,38 @@ public class DetailTransactionFragment extends Fragment {
                 if (aBoolean) {
                     mAdapter.selectAll();
                     mAdapterActionViewModel.setSelectAllTrigger(false);
+                }
+            }
+        });
+
+        mAdapterActionViewModel.getmDeleteItemTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            TransactionDB.getInstance(getContext()).transactionDAO().deleteListOfTransactions(
+                                    mAdapterActionViewModel.getSelectedTransactions(mAdapter.getmTransactionEntryList())
+                            );
+                        }
+                    });
+
+                    mAdapterActionViewModel.setmDeleteItemTrigger(false);
+                }
+            }
+        });
+
+        mAdapterActionViewModel.getmEditAnEntryTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+
+                    mAdapterActionViewModel.setmClickedEntryID(mAdapter.getOneSelectedEntryID());
+
+                    mAdapterActionViewModel.setmEditAnEntryTrigger(false);
                 }
             }
         });

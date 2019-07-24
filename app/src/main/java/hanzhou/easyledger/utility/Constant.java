@@ -23,7 +23,7 @@ public class Constant {
 
     public static final String CATEGORY_ADD = "add_a_category";
 
-    public static final String CATEGORY_OTHERS = "Others";
+    public static final String  CATEGORY_OTHERS = "Others";
 
     public static final String CATEGORY_TYPE_REVENUE = "revenue_categories";
 
@@ -61,15 +61,48 @@ public class Constant {
     public static final String[] DEFAULT_CATEGORIES_REVENUE = {
             "Salary", "Interest", "Commission", "Investment",
             "Pension", "RRSP", "Rental Income", "Business Income", "Capital gains",
-            "Credit Card Pay In", "Debt Collection", "Lottery", "Others"
+            "Credit Card Pay In", "Debt Collection", "Lottery", CATEGORY_OTHERS
     };
 
     public static final String[] DEFAULT_CATEGORIES_EXPENSE = {
             "Restaurant", "Shopping", "Commuting", "Supermarket", "Auto", "Travel", "Education",
-            "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", "Others"
+            "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", CATEGORY_OTHERS
     };
 
     public static final String[] DEFAULT_LEDGER = {"OVERALL", "CASH"};
+
+
+    public static final String RBC_NUMBER = "722258";
+
+
+
+    public static final String BMO_NUMBER = "-1";
+
+    public static final String CIBC_NUMBER = "-2";
+
+    public static final String HSBC_NUMBER = "-3";
+
+    /*For developer use to check the present RBC msg format*/
+    private static final String RBC_TEMPLATE_CREDIT_CARD =
+            "Purchase of $3.94 from RBC credit card 1121 made JUL21 at STARBUCKS #04274#. Stop-txt STOP/Help-txt HELP";
+
+    private static final String RBC_TEMPLATE_DEBIT_CARD_WITHDRAWAL =
+            "RBC: Withdrawal of $1.37 from RBC acct 4784 made JUL22. Stop-txt STOP/Help-txt HELP";
+
+    private static final String RBC_TEMPLATE_DEBIT_CARD_DEPOSIT =
+            "RBC: Deposit of $2.00 to RBC acct 4784 made JUL22. Stop-txt STOP/Help-txt HELP";
+
+    public static final String[] MONTHS_CAP = {
+      "JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"
+    };
+    public static String[] MONTHS_NON_CAP = {"Jan", "Feb", "Mar", "Apr", "May",
+            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",  "Dec"};
+
+    public static final String RBC_DEPOSIT= "Deposit";
+    public static final String RBC_WITHDRAWAL = "Withdrawal";
+
+    public static final String CREDIT_CARD = "credit card";
+
 
 
 }

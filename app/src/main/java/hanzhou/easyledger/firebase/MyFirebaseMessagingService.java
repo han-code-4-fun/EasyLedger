@@ -1,4 +1,4 @@
-package hanzhou.easyledger.service;
+package hanzhou.easyledger.firebase;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -33,8 +33,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-//        super.onMessageReceived(remoteMessage);
-
 
         sendUpdateNotification(remoteMessage.getNotification().getBody());
     }

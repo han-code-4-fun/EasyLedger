@@ -29,6 +29,12 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> mSelectAllTrigger;
     private MutableLiveData<Boolean> mDeselectAllTrigger;
 
+
+
+    private MutableLiveData<Boolean> mDeleteItemTrigger;
+    private MutableLiveData<Boolean> mEditAnEntryTrigger;
+
+
     //keep track of user selection
     private SparseBooleanArray selectedBooleanArrayViewMode;
 
@@ -45,6 +51,8 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> mShowBottomNavigationBar;
     private MutableLiveData<Boolean> mShowFloatingActionBtn;
+
+
 
 
 
@@ -92,6 +100,16 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         mIsInBaseFragment = new MutableLiveData<>();
         mIsInBaseFragment.setValue(true);
+
+        mDeleteItemTrigger = new MutableLiveData<>();
+        mDeleteItemTrigger.setValue(false);
+
+        mEditAnEntryTrigger = new MutableLiveData<>();
+        mEditAnEntryTrigger.setValue(false);
+    }
+
+    public SparseBooleanArray getTesttt(){
+        return selectedBooleanArrayViewMode;
     }
 
 
@@ -151,6 +169,8 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     */
     public List<TransactionEntry> getSelectedTransactions(List<TransactionEntry> inputList) {
 
+        Log.d("test_delete", "getSelectedTransactions: inputlist size "+ inputList.size() );
+
         int[] selectedNumbers = getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires();
 
         List<TransactionEntry> output = new ArrayList<>(selectedNumbers.length);
@@ -208,6 +228,10 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     public int getNumberOfSelectedItems() {
         return selectedBooleanArrayViewMode.size();
+    }
+
+    public int getFirstSelectedItems(){
+        return selectedBooleanArrayViewMode.keyAt(0);
     }
 
 
@@ -297,5 +321,22 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     public void setmIsInBaseFragment(boolean input) {
         this.mIsInBaseFragment.setValue(input);
+    }
+
+    /*a one way trigger called from MainActivity (actionbar) to inform DetailTransacitonFragment to delete selected items*/
+    public void setmDeleteItemTrigger(boolean input){
+        mDeleteItemTrigger.setValue(input);
+    }
+
+    public MutableLiveData<Boolean> getmDeleteItemTrigger() {
+        return mDeleteItemTrigger;
+    }
+
+    public MutableLiveData<Boolean> getmEditAnEntryTrigger() {
+        return mEditAnEntryTrigger;
+    }
+
+    public void setmEditAnEntryTrigger(Boolean input) {
+        this.mEditAnEntryTrigger.setValue(input);
     }
 }

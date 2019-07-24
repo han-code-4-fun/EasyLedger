@@ -1,4 +1,4 @@
-package hanzhou.easyledger.service;
+package hanzhou.easyledger.firebase;
 
 public class MyFirebaseInstanceIdService {
 }
