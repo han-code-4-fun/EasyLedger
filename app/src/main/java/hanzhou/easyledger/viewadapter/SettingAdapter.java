@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.utility.Constant;
 
 public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder> {
 
@@ -60,11 +61,15 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
     }
 
     public boolean isCurrentLedgerOVERALL(int position){
-        return mList.get(position).equals("OVERALL");
+        return mList.get(position).equals(Constant.LEDGER_OVERALL);
     }
 
     public boolean isCurrentCategoryOthers(int position){
-        return mList.get(position).equals("Others");
+        return mList.get(position).equals(Constant.CATEGORY_OTHERS);
+    }
+
+    public boolean isCurrentLedgerOnSMSExtraction(int position, String ledgerName){
+        return mList.get(position).equals(ledgerName);
     }
 
 

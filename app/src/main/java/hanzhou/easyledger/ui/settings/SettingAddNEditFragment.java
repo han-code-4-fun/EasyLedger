@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,6 +62,10 @@ public class SettingAddNEditFragment extends Fragment {
 
     private ArrayList<String> mListDeletedData;
 
+    private SharedPreferences mSharedPreference;
+
+    private boolean isRBCMsgExtractionOn;
+
     public static final int REQUEST_DIALOG_CODE = 12345;
 
 
@@ -71,7 +74,8 @@ public class SettingAddNEditFragment extends Fragment {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        isRBCMsgExtractionOn = mSharedPreference.getBoolean(getString(R.string.setting_others_msg_tracker_rbc_default_key),true);
         mGsonHelper = new GsonHelper(mAppCompatActivity);
 
 
@@ -125,14 +129,29 @@ public class SettingAddNEditFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                boolean isValidAction = true;
                 int position = viewHolder.getAdapterPosition();
 
-                if (mSettingAdapter.isCurrentCategoryOthers(position)
-                        || mSettingAdapter.isCurrentLedgerOVERALL(position)) {
+                if (mSettingAdapter.isCurrentCategoryOthers(position)) {
                     /*user should not remove "Others" in category list or "OVERALL" in ledger list*/
-                    launchWarningMSGNoDelete(position);
-                } else {
+                    isValidAction=false;
+                    launchWarningMSGNoDelete(position, getString(R.string.setting_warning_cannot_delete_others_in_category_msg_body));
+                }
 
+                if (mSettingAdapter.isCurrentLedgerOVERALL(position)) {
+                    isValidAction=false;
+                    launchWarningMSGNoDelete(position, getString(R.string.setting_warning_cannot_delete_overall_in_ledger_msg_body));
+
+                }
+
+                if (isRBCMsgExtractionOn) {
+                    if (mSettingAdapter.isCurrentLedgerOnSMSExtraction(position, Constant.RBC_LEDGER_NAME)){
+                        isValidAction=false;
+                        launchWarningMSGNoDelete(position, getString(R.string.setting_warning_cannot_delete_sms_extraction_ledger_msg_body));
+                    }
+                }
+
+                if(isValidAction){
                     String removedItem = mSettingAdapter.remove(position);
                     mListDeletedData.add(removedItem);
                 }
@@ -210,6 +229,7 @@ public class SettingAddNEditFragment extends Fragment {
 
             }
         });
+
     }
 
     private void updateAdapterData(String s) {
@@ -246,11 +266,11 @@ public class SettingAddNEditFragment extends Fragment {
         }
     }
 
-    private void launchWarningMSGNoDelete(final int position) {
+    private void launchWarningMSGNoDelete(final int position, String warningString) {
 
         new AlertDialog.Builder(mAppCompatActivity)
                 .setTitle(getString(R.string.setting_warning_cannot_delete_others_in_category_title))
-                .setMessage(getString(R.string.setting_warning_cannot_delete_others_in_category_msg_body))
+                .setMessage(warningString)
                 .setNeutralButton(getString(R.string.setting_warning_neutral_btn_title), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

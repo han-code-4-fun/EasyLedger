@@ -73,10 +73,15 @@ public class Constant {
             "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", CATEGORY_OTHERS
     };
 
-    public static final String[] DEFAULT_LEDGER = {"OVERALL", "CASH"};
+    public static final String LEDGER_OVERALL = "OVERALL";
+
+    public static final String[] DEFAULT_LEDGER = {Constant.LEDGER_OVERALL, "CASH", Constant.RBC_LEDGER_NAME};
 
 
     public static final String RBC_NUMBER = "722258";
+
+    public static final String RBC_LEDGER_NAME = "RBC";
+
 
 
 

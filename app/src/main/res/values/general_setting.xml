@@ -57,6 +57,15 @@
          if you click the smile face button, all selected transactions will be categorized to \"Others\",
         and be removed from untagged section)
     </string>
+    <string name="setting_warning_cannot_delete_overall_in_ledger_msg_body">
+
+        The app has to keep \"Overall\" category as a base ledger for all data,
+        you can find history data with deleted categories\/ledgers here.
+    </string>
+    <string name="setting_warning_cannot_delete_sms_extraction_ledger_msg_body">
+
+       You cannot delete a ledger while its sms-extraction is on!
+    </string>
 
     <string name="setting_warning_cannot_swap_overall_in_ledger_title">Cannot change this</string>
     <string name="setting_warning_cannot_swap_overall_in_ledger_msg_body">
@@ -81,6 +90,10 @@
     <string name="auto_tagger_text_off">
           You need to manually tag/categorize all incoming transactions that is extracted from your text message.
         </string>
+
+    <string name="create_rbc_ledger_toast_msg">
+        "There is no ledger \"RBC\", I create one for you."
+    </string>
 
 
 

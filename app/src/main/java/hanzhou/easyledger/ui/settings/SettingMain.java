@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -20,10 +21,16 @@ import androidx.preference.SeekBarPreference;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
@@ -49,6 +56,9 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private SettingsViewModel mSettingsViewModel;
 
+    private GsonHelper mGsonHelper;
+
+
     public SettingMain() {
         // Required empty public constructor
     }
@@ -58,6 +68,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
+
+        mGsonHelper = new GsonHelper(mAppCompatActivity);
 
     }
 
@@ -150,6 +162,10 @@ public class SettingMain extends PreferenceFragmentCompat implements
             });
         }
 
+//        Preference checkboxRBC = (CheckBoxPreference)findPreference(getString(R.string.setting_others_msg_tracker_rbc_default_key));
+//        ((CheckBoxPreference) checkboxRBC).isChecked()
+//
+
     }
 
 
@@ -213,9 +229,42 @@ public class SettingMain extends PreferenceFragmentCompat implements
                     seekBarPreference.setUpdatesContinuously(false);
                     mOverviewCategory.removePreference(seekBarPreference);
                 }
+            }else if(preference instanceof CheckBoxPreference){
+                String key = preference.getKey();
+
+                if(key.equals(getString(R.string.setting_others_msg_tracker_rbc_default_key))){
+                    /*
+                        when checkbox for extracting RBC is turning on,
+                        there must be an ledger called RBC, if not, app will create one
+                    */
+                    if(((CheckBoxPreference) preference).isChecked()){
+                        ArrayList<String> ledgers =mGsonHelper.getLedgers(Constant.LEDGERS);
+
+                        if(!ledgers.contains(Constant.RBC_LEDGER_NAME)){
+                            if(ledgers.size()>1){
+                                ledgers.add(1, Constant.RBC_LEDGER_NAME);
+                            }else{
+                                ledgers.add(Constant.RBC_LEDGER_NAME);
+                            }
+                            mGsonHelper.saveDataToSharedPreference(ledgers,Constant.LEDGERS);
+
+                            Toast.makeText(
+                                    mAppCompatActivity,
+                                    getString(R.string.create_rbc_ledger_toast_msg),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+//                    else{
+//                        Toast.makeText(mAppCompatActivity, "NOT checked!", Toast.LENGTH_LONG).show();
+//
+//                    }
+
+                }
             }
+
         }
     }
+
 
 
     @Override
@@ -266,4 +315,6 @@ public class SettingMain extends PreferenceFragmentCompat implements
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
+
+
 }

@@ -184,7 +184,7 @@ public class AddNEditTransactionFragment extends Fragment
         mSpinnerLedgerAdapter = new ArrayAdapter<String>(
                 mAppCompatActivity,
                 android.R.layout.simple_spinner_item,
-                removeLedgerOVERALL(mGsonHelper.getLedgers(Constant.LEDGERS))
+                notDisplayLedgerOVERALL(mGsonHelper.getLedgers(Constant.LEDGERS))
                 );
         mSpinnerLedgerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -543,7 +543,7 @@ public class AddNEditTransactionFragment extends Fragment
 
     /*the "OVERALL" ledger is a 'virtual ledger' for displaying all the other ledgers
     * when adding/editing transaction, there is no need to that*/
-    private ArrayList<String> removeLedgerOVERALL(ArrayList<String> input){
+    private ArrayList<String> notDisplayLedgerOVERALL(ArrayList<String> input){
 
         input.remove("OVERALL");
         return input;
