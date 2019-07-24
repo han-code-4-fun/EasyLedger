@@ -6,10 +6,7 @@
         app:title="@string/setting_category_overview_title">
 
 
-        <!--<EditTextPreference-->
-        <!--android:defaultValue="@string/pref_size_default"-->
-        <!--android:key="@string/pref_size_key"-->
-        <!--android:title="@string/pref_size_label" />-->
+
 
         <ListPreference
             android:defaultValue="@string/setting_overview_date_range_month_key"
@@ -48,6 +45,13 @@
             app:key="@string/setting_others_edit_category_expense_key"
             app:title="@string/setting_others_edit_category_expense_title"
 
+            />
+        <SwitchPreference
+            app:key = "@string/setting_auto_tagger_key"
+            app:title = "@string/setting_auto_tagger_title"
+            app:summaryOn="@string/auto_tagger_text_on"
+            app:summaryOff="@string/auto_tagger_text_off"
+            app:defaultValue="true"
             />
         <CheckBoxPreference
             android:defaultValue="@bool/setting_others_msg_tracker_rbc_default_val"

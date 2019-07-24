@@ -162,7 +162,6 @@ public class SettingAddNEditFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Log.d("test_setting", "getting reponse back");
         if (requestCode == REQUEST_DIALOG_CODE) {
             if (resultCode == Activity.RESULT_OK) {
 

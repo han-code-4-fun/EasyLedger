@@ -358,8 +358,6 @@ public class MainActivity extends AppCompatActivity {
     private void setViewModel() {
 
         SPViewModelFactory spFactory = new SPViewModelFactory(mSharedPreference);
-
-
         SPViewModel mSharedPreferenceViewModel = ViewModelProviders.of(this, spFactory).get(SPViewModel.class
         );
 
@@ -408,6 +406,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
 
+            }
+        });
+        mSharedPreferenceViewModel.getmIsAutoTaggerOn().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                Constant.setIsAutoTaggerOn(aBoolean);
             }
         });
 

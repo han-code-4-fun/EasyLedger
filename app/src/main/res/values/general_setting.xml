@@ -32,7 +32,6 @@
     <string name="setting_others_edit_category_expense_title">Add/edit expense categories</string>
 
 
-
     <string name="setting_others_msg_tracker_rbc_default_key" translatable="false">msg_tracker_rbc_default_key</string>
     <string name="setting_others_msg_tracker_rbc_default_title">Have RBC account</string>
 
@@ -49,7 +48,6 @@
     <string name="setting_msg_tracker_unavailable">Developer: I am working on it</string>
     <string name="setting_msg_tracker_on">read and convert msg is working</string>
     <string name="setting_msg_tracker_off">off, you need to manually add transaction</string>
-
 
 
     <string name="setting_warning_cannot_delete_others_in_category_title">Cannot delete this</string>
@@ -69,5 +67,21 @@
 
 
     <string name="setting_add_entry_title">Add a new one</string>
+
+    <string name="setting_auto_tagger_key" translatable="false">setting_auto_tagger_key</string>
+    <string name="setting_auto_tagger_title">Auto Tagger</string>
+    <string name="auto_tagger_text_on">
+       Auto tag/categorize your transactions based on your tagging behaviour.
+        e.g. if you tag an untagged transactions in overview screen\'s untagged seciton that has a remark "Safeway",
+        then later on all the auto-extracted transactions which has a remark "Safeway" will be
+        auto-categorize as "Grocery" to save your time. Ideally after use it for a while
+        you don\'t need to do anything but watch the chart because the app categorize everything for you already.
+
+    </string>
+    <string name="auto_tagger_text_off">
+          You need to manually tag/categorize all incoming transactions that is extracted from your text message.
+        </string>
+
+
 
 </resources>

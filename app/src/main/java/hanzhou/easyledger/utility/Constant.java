@@ -1,6 +1,7 @@
 package hanzhou.easyledger.utility;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import hanzhou.easyledger.R;
 
@@ -58,6 +59,9 @@ public class Constant {
 
     public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_KEY ="setting_general_overview_date_range_custom_seekbar_key";
 
+    public static final String SETTING_AUTO_TAGGER_KEY = "setting_auto_tagger_key";
+
+
     public static final String[] DEFAULT_CATEGORIES_REVENUE = {
             "Salary", "Interest", "Commission", "Investment",
             "Pension", "RRSP", "Rental Income", "Business Income", "Capital gains",
@@ -102,6 +106,16 @@ public class Constant {
     public static final String RBC_WITHDRAWAL = "Withdrawal";
 
     public static final String CREDIT_CARD = "credit card";
+
+
+    private static boolean isAutoTaggerOn = true;
+    public static boolean getIsAutoTaggerOn(){
+        return isAutoTaggerOn;
+    }
+    public static void setIsAutoTaggerOn(boolean input){
+        isAutoTaggerOn = input;
+        Log.d("test_setting", "setIsAutoTaggerOn: current state -> "+ isAutoTaggerOn);
+    }
 
 
 

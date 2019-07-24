@@ -62,8 +62,6 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
         public void onClick(DialogInterface dialogInterface, int i) {
             Intent intent = new Intent();
             intent.putExtra(Constant.CATEGORY_ADD, mEditText.getText().toString());
-            Log.d("test_setting", "saveBtnClickListener  onClick: mEditText -> "+
-                    mEditText.getText().toString());
 
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
 

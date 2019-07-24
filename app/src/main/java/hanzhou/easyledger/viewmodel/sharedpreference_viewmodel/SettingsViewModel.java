@@ -18,14 +18,13 @@ public class SettingsViewModel extends AndroidViewModel {
 //    private MutableLiveData<ArrayList<String>> mCategoryExpense;
 //    private MutableLiveData<ArrayList<String>> mCategoryRevenue;
 
+
     private RepositoryUpdate mRepositoryUpdate;
     public SettingsViewModel(@NonNull Application application) {
         super(application);
 
         mRepositoryUpdate = new RepositoryUpdate(application);
         mCategoryToEdit = new MutableLiveData<>();
-//        mCategoryExpense= new MutableLiveData<>();
-//        mCategoryRevenue = new MutableLiveData<>();
     }
 
     public void setSettingEditType(String input){
@@ -44,19 +43,4 @@ public class SettingsViewModel extends AndroidViewModel {
         mRepositoryUpdate.renameHistoryCategory(inputString, deletedCategory);
     }
 
-//    public MutableLiveData<ArrayList<String>> getmCategoryExpense() {
-//        return mCategoryExpense;
-//    }
-//
-//    public MutableLiveData<ArrayList<String>> getmCategoryRevenue() {
-//        return mCategoryRevenue;
-//    }
-//
-//    public void setmCategoryExpense(ArrayList<String> input) {
-//        this.mCategoryExpense.setValue(input);
-//    }
-//
-//    public void setmCategoryRevenue(ArrayList<String> input) {
-//        this.mCategoryRevenue.setValue(input);
-//    }
 }

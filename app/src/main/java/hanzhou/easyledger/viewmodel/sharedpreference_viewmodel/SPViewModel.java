@@ -26,6 +26,8 @@ public class SPViewModel extends ViewModel {
 
     private SPStringLiveData mLedgersList;
 
+    private SPBoolLiveData mIsAutoTaggerOn;
+
 
 //    public SPViewModel(SharedPreferences inputSP , String inputKey, int inputVal) {
 //       /* sharedPreferences = new MutableLiveData<>();
@@ -87,7 +89,7 @@ public class SPViewModel extends ViewModel {
                 inputSP,
                 Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_LIST_KEY,
                 Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH
-                );
+        );
 
         mSettingOverviewCustomDateRange = new SPIntLiveData(
                 inputSP,
@@ -100,6 +102,11 @@ public class SPViewModel extends ViewModel {
                 Constant.LEDGERS,
                 ""
         );
+        mIsAutoTaggerOn = new SPBoolLiveData(
+                inputSP,
+                Constant.SETTING_AUTO_TAGGER_KEY,
+                true
+        );
 
     }
 
@@ -109,31 +116,39 @@ public class SPViewModel extends ViewModel {
 
     }
 
-    public SPIntLiveData getmChartHistoryPeriodType(){
+    public SPIntLiveData getmChartHistoryPeriodType() {
         return mChartHistoryPeriodType;
     }
 
-    public SPIntLiveData getmChartCurrentChartType(){
+    public SPIntLiveData getmChartCurrentChartType() {
         return mChartCurrentChartType;
     }
 
-    public SPIntLiveData getmChartCurrentPeriodType(){
+    public SPIntLiveData getmChartCurrentPeriodType() {
         return mChartCurrentPeriodType;
     }
 
-    public SPIntLiveData getmChartCurrentPeriodCustomNum(){
+    public SPIntLiveData getmChartCurrentPeriodCustomNum() {
         return mChartCurrentPeriodCustomNum;
     }
 
-    public SPBoolLiveData getmChartPercentageAmountBool(){
+    public SPBoolLiveData getmChartPercentageAmountBool() {
         return mChartPercentageAmountBool;
     }
 
-    public SPStringLiveData getmSettingOverviewDateRangeType() {return mSettingOverviewDateRangeType;}
+    public SPStringLiveData getmSettingOverviewDateRangeType() {
+        return mSettingOverviewDateRangeType;
+    }
 
-    public SPIntLiveData getmSettingOverviewCustomDateRange(){return mSettingOverviewCustomDateRange;}
+    public SPIntLiveData getmSettingOverviewCustomDateRange() {
+        return mSettingOverviewCustomDateRange;
+    }
 
     public SPStringLiveData getmLedgersList() {
         return mLedgersList;
+    }
+
+    public SPBoolLiveData getmIsAutoTaggerOn(){
+        return mIsAutoTaggerOn;
     }
 }
