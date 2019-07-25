@@ -40,6 +40,7 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
+import hanzhou.easyledger.smsprocessor.HistoryRemark;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.utility.UnitUtil;
@@ -110,6 +111,8 @@ public class AddNEditTransactionFragment extends Fragment
     private String mCurrentTransactionCategory;
     private int mPositionInSpinner;
 
+    private HistoryRemark mHistoryRemark;
+
 
     public AddNEditTransactionFragment() {
         // Required empty public constructor
@@ -129,6 +132,9 @@ public class AddNEditTransactionFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mHistoryRemark = HistoryRemark.getInstance();
+        mHistoryRemark.loadFromFile(mGsonHelper);
 
         toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
 
@@ -434,11 +440,10 @@ public class AddNEditTransactionFragment extends Fragment
                     public void run() {
                         if (mTransactionId == DEFAULT_TASK_ID) {
 
-                            Log.d("test_flow13", "save new data ");
                             mDB.transactionDAO().insertTransaction(entry);
                         } else {
+
                             /*update existing records*/
-                            Log.d("test_flow13", "update existing data ");
                             entry.setId(mTransactionId);
                             mDB.transactionDAO().updateTransaction(entry);
 

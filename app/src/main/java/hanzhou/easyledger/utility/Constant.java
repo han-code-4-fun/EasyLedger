@@ -8,6 +8,7 @@ import hanzhou.easyledger.R;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Constant {
 
@@ -119,7 +120,16 @@ public class Constant {
     }
     public static void setIsAutoTaggerOn(boolean input){
         isAutoTaggerOn = input;
-        Log.d("test_setting", "setIsAutoTaggerOn: current state -> "+ isAutoTaggerOn);
+    }
+
+
+    public static final String PREFERENCE_KEY_REMARK = "pref_key_remark";
+
+    private static HashMap<String,String> default_remarks =  new HashMap<>();
+    public static HashMap<String,String> getDefaultRemarks(){
+        default_remarks.put(Constant.RBC_DEPOSIT, Constant.UNTAGGED);
+        default_remarks.put(Constant.RBC_WITHDRAWAL, Constant.UNTAGGED);
+        return default_remarks;
     }
 
 

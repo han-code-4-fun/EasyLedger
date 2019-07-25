@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.smsprocessor.HistoryRemark;
 import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
 import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.utility.GsonHelper;
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private TransactionDBViewModel mTransactionViewModel;
     private OverviewFragmentViewModel mOverviewViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
+
+    private HistoryRemark mHistoryRemark;
 
 
     private Fragment selectedFragment;
@@ -326,6 +329,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void broadcastReceiverInitialization() {
+
+        mHistoryRemark = HistoryRemark.getInstance();
+        mHistoryRemark.loadFromFile(mGsonHelper);
+
         mSmsIntentFilter = new IntentFilter();
 
         //todo , handle this
@@ -339,6 +346,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mSmsReceiver = new SMSBroadcastReceiver();
+        mSmsReceiver.setmSharedPreferences(mSharedPreference);
     }
 
     private void uiInitialization() {

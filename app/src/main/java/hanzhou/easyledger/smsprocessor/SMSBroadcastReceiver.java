@@ -3,10 +3,13 @@ package hanzhou.easyledger.smsprocessor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
+
+import hanzhou.easyledger.R;
 
 /*
  *
@@ -25,38 +28,32 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = SMSBroadcastReceiver.class.getSimpleName();
 
+    private static SharedPreferences mSharedPreferences;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-//        if(intent.getAction().equals(RECEIVED_MSG)){
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            Object[] pdusObj = (Object[]) bundle.get("pdus");
-            if (pdusObj != null) {
+        if(isAtLeastOneSmsExtractorFromSettingIsOn(context)){
 
-                String[] msgContent = getMSGContent(pdusObj, intent);
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                Object[] pdusObj = (Object[]) bundle.get("pdus");
+                if (pdusObj != null) {
 
-                SMSBankSelector.smsFromWhichBank(context, msgContent[0],msgContent[1]);
+                    String[] msgContent = getMSGContent(pdusObj, intent);
 
-            } else {
-                Log.e(TAG, "onReceive: error getting 'pdus'");
+                    SMSBankSelector.smsFromWhichBank(context, msgContent[0],msgContent[1]);
+
+                } else {
+                    Log.e(TAG, "onReceive: error getting 'pdus'");
+                }
             }
-
         }
-
-
     }
 
     private String[] getMSGContent(Object[] pdusObj, Intent intent) {
 
         String[] output = new String[2];
-//
-//        StringBuilder outputFormat = new StringBuilder();
-//
-//        String messageSender ="";
-//        String messageBody = "";
 
         SmsMessage currentMessage;
         for (int i = 0; i < pdusObj.length; i++) {
@@ -68,28 +65,32 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                 currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
             }
 
-//            if(!messageSender.toString().equals(currentMessage.getOriginatingAddress()))
-
-
-
             output[0] = currentMessage.getOriginatingAddress();
 
             output[1] = currentMessage.getDisplayMessageBody();
 
-//            messageSender = currentMessage.getOriginatingAddress();
-
-//            messageBody = currentMessage.getMessageBody();
         }
-        //todo handle international number e.g. +1s
-//        outputFormat.append("Sender: ");
-//        outputFormat.append(messageSender);
-//        outputFormat.append(" MSG body: ");
-//        outputFormat.append(messageBody);
-
-//        Log.d(TAG, "getMSGContent: "+outputFormat);
 
 
         return output;
+    }
+
+    private boolean isAtLeastOneSmsExtractorFromSettingIsOn(Context context){
+
+
+
+        boolean isRBCOn = mSharedPreferences.getBoolean(
+                context.getResources().getString(R.string.setting_others_msg_tracker_rbc_default_key),true);
+
+        if(isRBCOn){
+            return true;
+        }
+
+        return false;
+    }
+
+    public void setmSharedPreferences(SharedPreferences input){
+        mSharedPreferences = input;
     }
 
 }

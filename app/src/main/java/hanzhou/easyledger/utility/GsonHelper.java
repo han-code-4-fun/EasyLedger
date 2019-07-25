@@ -22,9 +22,8 @@ public class GsonHelper {
 
 
     public GsonHelper(Context context) {
-        Context mContext = context;
         mGson = new Gson();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
     }
 
@@ -60,17 +59,31 @@ public class GsonHelper {
         String json = mSharedPreferences.getString(input,null);
 
         return convertJsonToArrayListString(json);
-
-//        Type type = new TypeToken<ArrayList<String>>(){}.getType();
-//
-//        return mGson.fromJson(json,type);
     }
 
-    private void saveAutoTagger(HashMap<String, Boolean> inputHashmap){
+    public void saveHashMapToSharedPreference(HashMap<String, String> hashMap, String nameInSharedPref){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
 
+        String json = mGson.toJson(hashMap);
+
+        editor.putString(nameInSharedPref, json);
+
+        editor.apply();
     }
 
 
+    public HashMap<String, String> getHashMapFromSharedPreference(String preferenceKeyRemark) {
 
+        String json = mSharedPreferences.getString(preferenceKeyRemark,null);
 
+        return convertJsonToHashMapStringString(json);
+    }
+
+    private HashMap<String, String> convertJsonToHashMapStringString(String json){
+        if(json==null){
+            return Constant.getDefaultRemarks();
+        }
+        Type type = new TypeToken<HashMap<String,String>>(){}.getType();
+        return mGson.fromJson(json,type);
+    }
 }
