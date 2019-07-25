@@ -292,7 +292,8 @@ public class MainActivity extends AppCompatActivity {
                 setToolBarToOriginMode();
                 break;
             case R.id.toolbar_ignore:
-                categorizeSelectedItemsToOthers();
+                mAdapterActionViewModel.setmCategorizeItemsToOthersTrigger(true);
+//                categorizeSelectedItemsToOthers();
                 setToolBarToOriginMode();
                 break;
 
@@ -588,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (isInActionModel) {
             if (mEditBtn != null && mIgnoreBtn != null) {
-                if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
+                if (mAdapterActionViewModel.getParentFragment().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
 
                     toolbarActionsIfCalledFromOverViewFragment(integer);
                 } else {
@@ -692,7 +693,7 @@ public class MainActivity extends AppCompatActivity {
         textViewOnToolBar.setVisibility(View.VISIBLE);
 
         assignMenuItemToVariableForDifferentCombinationNSetInitialState();
-        if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_LEDGER)) {
+        if (mAdapterActionViewModel.getParentFragment().equals(Constant.FRAG_CALL_FROM_LEDGER)) {
 
             mSelectAllBtn.setVisible(false);
         } else {
@@ -756,7 +757,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
 
 //            final List<TransactionEntry> entries;
-////            if (mAdapterActionViewModel.getCurrentLedger().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
+////            if (mAdapterActionViewModel.getParentFragment().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
 ////                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
 ////                Log.d("test_delete", "deleteSelectedRecords:   from untagged transactions");
 ////            } else {
@@ -799,19 +800,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void categorizeSelectedItemsToOthers() {
-        final List<TransactionEntry> entries = mOverviewViewModel.getUntaggedTransactions().getValue();
-
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDb.transactionDAO().updateListOfTransactions(
-                        mAdapterActionViewModel.categorizeSelectedItemsToOthers(entries)
-                );
-            }
-        });
-
-    }
+//    private void categorizeSelectedItemsToOthers() {
+//        final List<TransactionEntry> entries = mOverviewViewModel.getUntaggedTransactions().getValue();
+//
+//        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                mDb.transactionDAO().updateListOfTransactions(
+//                        mAdapterActionViewModel.categorizeSelectedItemsToOthers(entries)
+//                );
+//            }
+//        });
+//
+//    }
 
 
     private void showNumberOfSelectedTransactionOnToolbar(int integer) {

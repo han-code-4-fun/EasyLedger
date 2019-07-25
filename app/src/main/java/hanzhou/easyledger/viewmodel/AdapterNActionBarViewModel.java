@@ -33,12 +33,13 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> mDeleteItemTrigger;
     private MutableLiveData<Boolean> mEditAnEntryTrigger;
+    private MutableLiveData<Boolean> mCategorizeItemsToOthersTrigger;
 
 
     //keep track of user selection
     private SparseBooleanArray selectedBooleanArrayViewMode;
 
-    private String currentLedger;
+    private String mCurrentParent;
 
 
     private MutableLiveData<Integer> mClickedEntryID;
@@ -80,7 +81,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         selectedBooleanArrayViewMode = new SparseBooleanArray();
 
-        currentLedger = Constant.FRAG_CALL_FROM_OVERVIEW;
+        mCurrentParent = Constant.FRAG_CALL_FROM_OVERVIEW;
 
 //        mIsInQuestionFragment = new MutableLiveData<>();
 //        mIsInQuestionFragment.setValue(false);
@@ -106,6 +107,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         mEditAnEntryTrigger = new MutableLiveData<>();
         mEditAnEntryTrigger.setValue(false);
+
+        mCategorizeItemsToOthersTrigger = new MutableLiveData<>();
+        mCategorizeItemsToOthersTrigger.setValue(false);
     }
 
     public SparseBooleanArray getTesttt(){
@@ -235,12 +239,12 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     }
 
 
-    public String getCurrentLedger() {
-        return currentLedger;
+    public String getParentFragment() {
+        return mCurrentParent;
     }
 
-    public void setCurrentLedger(String currentLedger) {
-        this.currentLedger = currentLedger;
+    public void setParentFragment(String fragName) {
+        this.mCurrentParent = fragName;
     }
 
 //    public MutableLiveData<Boolean> getmIsInQuestionFragment() {
@@ -338,5 +342,13 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     public void setmEditAnEntryTrigger(Boolean input) {
         this.mEditAnEntryTrigger.setValue(input);
+    }
+
+    public MutableLiveData<Boolean> getmCategorizeItemsToOthersTrigger() {
+        return mCategorizeItemsToOthersTrigger;
+    }
+
+    public void setmCategorizeItemsToOthersTrigger(boolean input) {
+        this.mCategorizeItemsToOthersTrigger.setValue(input);
     }
 }

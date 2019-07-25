@@ -48,7 +48,7 @@ public class LedgersAdapter extends FragmentPagerAdapter {
         }
         Log.d("test_life", "ledgers in ledger adapter" + temp);
 
-        return DetailTransactionFragment.newInstance(mLedgers.get(position));
+        return DetailTransactionFragment.newInstance(mLedgers.get(position),Constant.FRAG_CALL_FROM_LEDGER);
     }
 
     @Nullable

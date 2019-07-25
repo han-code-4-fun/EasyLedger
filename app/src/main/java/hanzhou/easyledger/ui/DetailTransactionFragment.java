@@ -39,6 +39,8 @@ public class DetailTransactionFragment extends Fragment {
 
     private static final String LEDGER = "ledger_to_show";
 
+    private static final String PARENT_NAME = "who_called_current_frag";
+
     private AdapterNActionBarViewModel mAdapterActionViewModel;
 
     private TransactionAdapter mAdapter;
@@ -48,12 +50,17 @@ public class DetailTransactionFragment extends Fragment {
     private int hash;
     private String mLedgerName;
 
-    public static DetailTransactionFragment newInstance(String ledgerTypeName) {
+    private String mParentFragment;
+
+
+
+    public static DetailTransactionFragment newInstance(String ledgerTypeName, String parentName) {
         Log.d("test_life", "detail frag  new instance   "+ledgerTypeName);
 
         DetailTransactionFragment fragment = new DetailTransactionFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LEDGER, ledgerTypeName);
+        bundle.putString(PARENT_NAME, parentName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -80,6 +87,7 @@ public class DetailTransactionFragment extends Fragment {
 
         if (getArguments() != null) {
             mLedgerName = getArguments().getString(LEDGER);
+            mParentFragment = getArguments().getString(PARENT_NAME);
         }
         Log.d("test_life", "onCreateView: detail frag   -> "+mLedgerName);
         mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
@@ -132,7 +140,7 @@ public class DetailTransactionFragment extends Fragment {
 
     private void setupViewModelObserver() {
 
-        mAdapterActionViewModel.setCurrentLedger(mLedgerName);
+        mAdapterActionViewModel.setParentFragment(mParentFragment);
 
         TransactionDBViewModel mTransactionViewModel = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
         mTransactionViewModel.updateTransactionOnUserInput(mLedgerName);
@@ -211,6 +219,27 @@ public class DetailTransactionFragment extends Fragment {
                     mAdapterActionViewModel.setmClickedEntryID(mAdapter.getOneSelectedEntryID());
 
                     mAdapterActionViewModel.setmEditAnEntryTrigger(false);
+                }
+            }
+        });
+
+        mAdapterActionViewModel.getmCategorizeItemsToOthersTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            TransactionDB.getInstance(appCompatActivity).transactionDAO().updateListOfTransactions(
+                                    mAdapterActionViewModel.categorizeSelectedItemsToOthers(
+                                            mAdapter.getAdateperData()
+                                    )
+                            );
+                        }
+                    });
+
+                    mAdapterActionViewModel.setmCategorizeItemsToOthersTrigger(false);
                 }
             }
         });

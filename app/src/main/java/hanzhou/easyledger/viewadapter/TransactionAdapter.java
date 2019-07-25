@@ -47,6 +47,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     }
 
+    public List<TransactionEntry> getAdateperData(){
+        return  mTransactionEntryList;
+    }
+
     public void updateSelectedItemsArray(int position){
 
         /*if selected, unselect(delete) it*/
@@ -189,15 +193,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             if ( position != RecyclerView.NO_POSITION) {
 
                 if(isInActionMode){
-                    Log.d("test_flow11", "clickedItem id -> "+ mTransactionEntryList.get(position).getId());
-
                     updateSelectedItemsArray(position);
                 }
                 else{
+
                     int id = mTransactionEntryList.get(position).getId();
-                    Log.d("test_flow11", "transactionadapter onClick: id -> "+ id);
-                    //open new activity/fragment from ui activity/fragment which implement this listener
-//                    mOnClickListener.customOnListItemClick(id);
+
                     mViewModel.setmClickedEntryID(id);
                 }
             }

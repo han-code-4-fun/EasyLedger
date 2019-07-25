@@ -70,7 +70,7 @@ public class Constant {
     };
 
     public static final String[] DEFAULT_CATEGORIES_EXPENSE = {
-            "Restaurant", "Shopping", "Commuting", "Supermarket", "Auto", "Travel", "Education",
+            "Restaurant", "Shopping", "Commuting", "Grocery", "Auto", "Travel", "Education",
             "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", CATEGORY_OTHERS
     };
 
@@ -127,8 +127,8 @@ public class Constant {
 
     private static HashMap<String,String> default_remarks =  new HashMap<>();
     public static HashMap<String,String> getDefaultRemarks(){
-        default_remarks.put(Constant.RBC_DEPOSIT, Constant.UNTAGGED);
-        default_remarks.put(Constant.RBC_WITHDRAWAL, Constant.UNTAGGED);
+        default_remarks.put(Constant.RBC_DEPOSIT.toLowerCase(), Constant.UNTAGGED);
+        default_remarks.put(Constant.RBC_WITHDRAWAL.toLowerCase(), Constant.UNTAGGED);
         return default_remarks;
     }
 

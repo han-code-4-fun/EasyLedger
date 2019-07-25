@@ -36,16 +36,13 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
 
     public OverviewFragmentViewModel(@NonNull Application application) {
         super(application);
-//        mDB = TransactionDB.getInstance(application);
+
 
         mRepository = new Repository(application);
 
         untaggedTransactions = mRepository.getUntaggedTransaction();
 
-//        untaggedTransactions = mDB.transactionDAO().loadUntaggedTransactions(Constant.UNTAGGED);
 
-//        listOfTransactionsOfCertainDaysChooseByUser =
-//                mDB.transactionDAO().loadTransactionByTimeUserDefined(inputTime);
         revenue =new MutableLiveData<>();
         revenue.setValue(0.0f);
 
@@ -54,17 +51,6 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
     }
 
 
-//  public OverviewFragmentViewModel(int inputTime, TransactionDB mDB){
-//      untaggedTransactions = mDB.transactionDAO().loadUntaggedTransactions(Constant.UNTAGGED);
-//
-//      listOfTransactionsOfCertainDaysChooseByUser =
-//              mDB.transactionDAO().loadTransactionByTimeUserDefined(inputTime);
-//      revenue =new MutableLiveData<>();
-//      revenue.setValue(0.0f);
-//
-//      spend = new MutableLiveData<>();
-//      spend.setValue(0.0f);
-//  }
 
 
     public void updateTransactionOverviewPeriod(int time){
@@ -105,35 +91,6 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
     }
 
 
-
-    //todo, convert back Adpater class from singleton to normall
-    /*
-
-      if (currentLedger.equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
-            entries = untaggedTransactions.getValue();
-        } else {
-
-     */
-/*
-    public List<TransactionEntry> getSelectedTransactions() {
-        List<hanzhou.easyledger.data.TransactionEntry> entries;
-
-        entries = untaggedTransactions.getValue();
-
-        int[] selectedNumbers = new int[selectedBooleanArrayViewMode.size()];
-        //todo, may have issue from ++i to i++
-        for (int i = 0; i < selectedBooleanArrayViewMode.size(); i++) {
-            selectedNumbers[i] = selectedBooleanArrayViewMode.keyAt(i);
-        }
-
-        List<hanzhou.easyledger.data.TransactionEntry> output = new ArrayList<>(selectedNumbers.length);
-
-        for (Integer i : selectedNumbers) {
-            output.add(entries.get(i));
-        }
-
-        return output;
-    }*/
 
 
 }
