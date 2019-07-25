@@ -52,8 +52,21 @@ public class HistoryRemark {
         * */
         if(!remark.equals(Constant.RBC_WITHDRAWAL )
                 && !remark.equals(Constant.RBC_DEPOSIT)) {
-            mRemarks.put(remark, category);
-            return true;
+
+            /*only return true, if inserted new and modified previous*/
+
+            if(!mRemarks.containsKey(remark)){
+
+                mRemarks.put(remark, category);
+                return true;
+
+            }else{
+
+                String replacedCategory = mRemarks.put(remark, category);
+                if(!replacedCategory.equals(category)){
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -71,10 +84,8 @@ public class HistoryRemark {
         if(addToRemarks(remark,category)){
             Log.d("test_tagger", " after saving tagg -> \n ------->"+mRemarks.keySet()+"\n------->"+mRemarks.values() );
             saveToFile(gsonHelper);
-
             applyUpdateToExistingUntaggedTransaction(remark, category);
         }
-
     }
 
     private void applyUpdateToExistingUntaggedTransaction(String remark, String category) {

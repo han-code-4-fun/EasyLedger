@@ -417,18 +417,20 @@ public class AddNEditTransactionFragment extends Fragment
                 if (mMoneyOut.isChecked()) {
                     tempAmount = 0 - tempAmount;
                 }
+                String remark = mEditTextRemark.getText().toString();
                 final TransactionEntry entry = new TransactionEntry(
                         mSpinner.getSelectedItem().toString(),
                         mDateNum,
                         tempAmount,
                         mCategoryAdapter.getClickedCategory(),
-                        mEditTextRemark.getText().toString()
+                        remark
 
                 );
 
+
                 /*update HistoryRemark for auto-tagging */
                HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
-                       mEditTextRemark.getText().toString(),
+                       remark,
                        mCategoryAdapter.getClickedCategory(),
                        mGsonHelper
                );
