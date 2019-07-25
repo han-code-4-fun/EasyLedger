@@ -39,7 +39,6 @@ public class DetailTransactionFragment extends Fragment {
 
     private static final String LEDGER = "ledger_to_show";
 
-    private TransactionDBViewModel mTransactionViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
 
     private TransactionAdapter mAdapter;
@@ -50,6 +49,8 @@ public class DetailTransactionFragment extends Fragment {
     private String mLedgerName;
 
     public static DetailTransactionFragment newInstance(String ledgerTypeName) {
+        Log.d("test_life", "detail frag  new instance   "+ledgerTypeName);
+
         DetailTransactionFragment fragment = new DetailTransactionFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LEDGER, ledgerTypeName);
@@ -69,15 +70,18 @@ public class DetailTransactionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            mLedgerName = getArguments().getString(LEDGER);
-        }
+        Log.d("test_life", "onCreate: detail frag");
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
+
+        if (getArguments() != null) {
+            mLedgerName = getArguments().getString(LEDGER);
+        }
+        Log.d("test_life", "onCreateView: detail frag   -> "+mLedgerName);
         mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
@@ -100,6 +104,7 @@ public class DetailTransactionFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d("test_life", "onActivityCreated: detail frag");
         setupViewModelObserver();
 
     }
@@ -111,6 +116,12 @@ public class DetailTransactionFragment extends Fragment {
         appCompatActivity = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("test_life", "onDestroyView: detail Frag");
+
+    }
 
     private void setActionModeToFalse() {
         boolean isActionMode = mAdapterActionViewModel.getActionModeState().getValue();
@@ -123,7 +134,7 @@ public class DetailTransactionFragment extends Fragment {
 
         mAdapterActionViewModel.setCurrentLedger(mLedgerName);
 
-        mTransactionViewModel = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
+        TransactionDBViewModel mTransactionViewModel = ViewModelProviders.of(appCompatActivity).get(TransactionDBViewModel.class);
         mTransactionViewModel.updateTransactionOnUserInput(mLedgerName);
 
 

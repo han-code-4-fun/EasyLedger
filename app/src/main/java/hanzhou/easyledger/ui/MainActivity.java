@@ -37,6 +37,7 @@ import hanzhou.easyledger.utility.TestingData;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -491,6 +492,18 @@ public class MainActivity extends AppCompatActivity {
                 //start the fragment
                 if (integer != null) {
                     openAddNEditTransactionFragment();
+                }
+            }
+        });
+
+        final SettingsViewModel mSettingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        mSettingsViewModel.getmRefreshLedgerFragmentTrigger().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    switchFragmentWithinActivity(new LedgerFragment());
+
+                    mSettingsViewModel.setmRefreshLedgerFragmentTrigger(false);
                 }
             }
         });

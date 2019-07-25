@@ -6,10 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.ArrayList;
-
 import hanzhou.easyledger.data.RepositoryUpdate;
-import hanzhou.easyledger.data.TransactionEntry;
 
 public class SettingsViewModel extends AndroidViewModel {
 
@@ -18,6 +15,7 @@ public class SettingsViewModel extends AndroidViewModel {
 //    private MutableLiveData<ArrayList<String>> mCategoryExpense;
 //    private MutableLiveData<ArrayList<String>> mCategoryRevenue;
 
+    private MutableLiveData<Boolean> mRefreshLedgerFragmentTrigger;
 
     private RepositoryUpdate mRepositoryUpdate;
     public SettingsViewModel(@NonNull Application application) {
@@ -25,6 +23,8 @@ public class SettingsViewModel extends AndroidViewModel {
 
         mRepositoryUpdate = new RepositoryUpdate(application);
         mCategoryToEdit = new MutableLiveData<>();
+        mRefreshLedgerFragmentTrigger = new MutableLiveData<>();
+        mRefreshLedgerFragmentTrigger.setValue(false);
     }
 
     public void setSettingEditType(String input){
@@ -43,4 +43,11 @@ public class SettingsViewModel extends AndroidViewModel {
         mRepositoryUpdate.renameHistoryCategory(inputString, deletedCategory);
     }
 
+    public MutableLiveData<Boolean> getmRefreshLedgerFragmentTrigger() {
+        return mRefreshLedgerFragmentTrigger;
+    }
+
+    public void setmRefreshLedgerFragmentTrigger(Boolean input) {
+        this.mRefreshLedgerFragmentTrigger.setValue(input);
+    }
 }
