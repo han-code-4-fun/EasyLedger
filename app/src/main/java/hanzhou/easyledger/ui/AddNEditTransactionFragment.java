@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -124,8 +125,9 @@ public class AddNEditTransactionFragment extends Fragment
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
         mDB = TransactionDB.getInstance(getContext());
-//        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
-        mGsonHelper = new GsonHelper(mAppCompatActivity);
+        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        mGsonHelper = GsonHelper.getInstance();
+        mGsonHelper.setmSharedPreferences(mSharedPreference);
 
     }
 

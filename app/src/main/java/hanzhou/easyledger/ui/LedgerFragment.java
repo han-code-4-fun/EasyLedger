@@ -73,7 +73,7 @@ public class LedgerFragment extends Fragment {
 
         appCompatActivity = (AppCompatActivity) context;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(appCompatActivity);
-        mGsonHelper = new GsonHelper(appCompatActivity);
+        mGsonHelper = GsonHelper.getInstance();
 
 
         mLedgersList = mGsonHelper.getLedgers(Constant.LEDGERS);
@@ -91,6 +91,7 @@ public class LedgerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ledger, container, false);
+        mGsonHelper.setmSharedPreferences(mSharedPreferences);
         /*
             refresh the whole LedgerFragment to avoid strange viewpager title and data mismatch
             behaviour after crazily add/delete ledgers

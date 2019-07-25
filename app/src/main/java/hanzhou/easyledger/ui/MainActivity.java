@@ -142,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
         String resultExp = mSharedPreference.getString(Constant.CATEGORY_TYPE_EXPENSE, null);
         String resultLedger = mSharedPreference.getString(Constant.LEDGERS, null);
 
-        mGsonHelper = new GsonHelper(this);
+        mGsonHelper = GsonHelper.getInstance();
+        mGsonHelper.setmSharedPreferences(mSharedPreference);
 
         /*only populates the default category one when first-mOverviewDateStartTime run the app*/
 

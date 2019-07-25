@@ -69,7 +69,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
 
-        mGsonHelper = new GsonHelper(mAppCompatActivity);
+        mGsonHelper = GsonHelper.getInstance();
 
     }
 

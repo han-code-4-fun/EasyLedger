@@ -16,15 +16,30 @@ public class GsonHelper {
 
     private static final String TAG =GsonHelper.class.getSimpleName();
 
+    private static GsonHelper mInstance;
+
     private Gson mGson;
     private SharedPreferences mSharedPreferences;
 
 
+    public static GsonHelper getInstance(){
+        if(mInstance ==null){
+            mInstance = new GsonHelper();
+        }
 
-    public GsonHelper(Context context) {
+        return mInstance;
+    }
+
+
+    private GsonHelper() {
         mGson = new Gson();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
+    public void setmSharedPreferences(SharedPreferences inputSP){
+        if(mSharedPreferences!=inputSP){
+
+            mSharedPreferences = inputSP;
+        }
     }
 
     public ArrayList<String> getLedgers(String name){

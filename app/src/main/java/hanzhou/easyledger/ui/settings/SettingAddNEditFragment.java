@@ -76,7 +76,8 @@ public class SettingAddNEditFragment extends Fragment {
         setHasOptionsMenu(true);
         mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
         isRBCMsgExtractionOn = mSharedPreference.getBoolean(getString(R.string.setting_others_msg_tracker_rbc_default_key),true);
-        mGsonHelper = new GsonHelper(mAppCompatActivity);
+        mGsonHelper = GsonHelper.getInstance();
+        mGsonHelper.setmSharedPreferences(mSharedPreference);
 
 
     }

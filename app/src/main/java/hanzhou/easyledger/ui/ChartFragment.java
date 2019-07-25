@@ -150,7 +150,8 @@ public class ChartFragment extends Fragment implements
 
         mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
         mColors = new BackGroundColor();
-        mGsonHelper = new GsonHelper(mAppCompatActivity);
+        mGsonHelper =GsonHelper.getInstance();
+        mGsonHelper.setmSharedPreferences(mAppPreferences);
 
 //        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
 
