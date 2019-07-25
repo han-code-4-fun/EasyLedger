@@ -43,6 +43,10 @@ public interface TransactionDAO {
     @Query("UPDATE transactions SET remark = :remarkInFront || remark WHERE ledger = :ledger")
     void markHistoryLedger(String remarkInFront,String ledger);
 
+    /*only update new category to untagged transacion, the other(historical) transaction should not be affected*/
+    @Query("UPDATE transactions SET category = :category WHERE remark = :remark AND category = :untagged ")
+    void applyUpdateCategory(String remark, String category,String untagged);
+
     @Insert
     void insertTransaction(TransactionEntry transactionEntry);
 

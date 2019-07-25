@@ -28,7 +28,7 @@ public class ChartDataViewModel extends AndroidViewModel {
 
     public ChartDataViewModel(@NonNull Application application) {
         super(application);
-        mRepository = new Repository(application);
+        mRepository =Repository.getInstance();
     }
 
     public void initializeDatesForVM(int historyStartDate,int historyEndDate, int currentStartDate){

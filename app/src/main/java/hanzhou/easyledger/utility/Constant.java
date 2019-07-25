@@ -71,7 +71,7 @@ public class Constant {
 
     public static final String[] DEFAULT_CATEGORIES_EXPENSE = {
             "Restaurant", "Shopping", "Commuting", "Grocery", "Auto", "Travel", "Education",
-            "House", "Personal Care", "Children", "Medical", "Credit Card Pay-out", CATEGORY_OTHERS
+            "House", "Entertainment", "Children", "Medical", "Credit Card Pay-out", CATEGORY_OTHERS
     };
 
     public static final String LEDGER_OVERALL = "OVERALL";

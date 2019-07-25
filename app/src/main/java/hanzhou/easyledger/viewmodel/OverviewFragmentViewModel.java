@@ -38,7 +38,8 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
         super(application);
 
 
-        mRepository = new Repository(application);
+        mRepository = Repository.getInstance();
+        mRepository.initializeRepository(application);
 
         untaggedTransactions = mRepository.getUntaggedTransaction();
 

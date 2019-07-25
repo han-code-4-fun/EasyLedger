@@ -21,7 +21,8 @@ public class SettingsViewModel extends AndroidViewModel {
     public SettingsViewModel(@NonNull Application application) {
         super(application);
 
-        mRepositoryUpdate = new RepositoryUpdate(application);
+        mRepositoryUpdate = RepositoryUpdate.getInstance();
+        mRepositoryUpdate.initializeRepository(application);
         mCategoryToEdit = new MutableLiveData<>();
         mRefreshLedgerFragmentTrigger = new MutableLiveData<>();
         mRefreshLedgerFragmentTrigger.setValue(false);

@@ -35,7 +35,7 @@ public class TransactionDBViewModel extends AndroidViewModel {
         super(application);
         mDB = TransactionDB.getInstance(this.getApplication());
 
-        mRepository= new Repository(application);
+        mRepository= Repository.getInstance();
 
         //for future development, e.g. user creates multiple ledger
 //        transactionsByLedger = mDB.transactionDAO().loadTransactionByLedger(Constant.UNTAGGED);

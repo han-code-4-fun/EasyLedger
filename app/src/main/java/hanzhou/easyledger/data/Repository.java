@@ -10,38 +10,51 @@ import hanzhou.easyledger.utility.Constant;
 
 public class Repository {
 
-    private final TransactionDAO mTransactionDAO;
+    private TransactionDB mTransactionDB;
+    private static Repository mInstance;
 
+    private Repository() {
 
-    public Repository(Application application){
-        TransactionDB mTransactionDB = TransactionDB.getInstance(application);
-        mTransactionDAO = mTransactionDB.transactionDAO();
     }
 
-    public LiveData<List<TransactionEntry>> getPeriodOfEntries(int start, int end){
-        return mTransactionDAO.loadTransactionInPeriodForChart(start, end);
+    public static Repository getInstance() {
+        if (mInstance == null) {
+            mInstance = new Repository();
+        }
+        return mInstance;
     }
 
-    public LiveData<List<TransactionEntry>> getCurrentRevenueOfEntries(int startDate){
-        return mTransactionDAO.loadTransactionRevenuePeriod(startDate);
-    }
-    public LiveData<List<TransactionEntry>> getCurrentExpenseOfEntries(int startDate){
-        return mTransactionDAO.loadTransactionExpensePeriod(startDate);
+    public void initializeRepository(Application application) {
+        mTransactionDB = TransactionDB.getInstance(application);
+//        mTransactionDAO = mTransactionDB.transactionDAO();
     }
 
-    public LiveData<List<TransactionEntry>> getPeriodOfEntriesForOverview(int start){
-        return mTransactionDAO.loadTransactionByTimeUserDefined(start);
-    }
-    public LiveData<List<TransactionEntry>> getUntaggedTransaction(){
-        return mTransactionDAO.loadUntaggedTransactions(Constant.UNTAGGED);
+    public LiveData<List<TransactionEntry>> getPeriodOfEntries(int start, int end) {
+        return mTransactionDB.transactionDAO().loadTransactionInPeriodForChart(start, end);
     }
 
-   public LiveData<List<TransactionEntry>> getTransactionByLedger(String ledgerName){
-        return mTransactionDAO.loadTransactionByLedger(ledgerName);
-   }
+    public LiveData<List<TransactionEntry>> getCurrentRevenueOfEntries(int startDate) {
+        return mTransactionDB.transactionDAO().loadTransactionRevenuePeriod(startDate);
+    }
 
-    public LiveData<List<TransactionEntry>> getAllTransactions(){
-        return mTransactionDAO.loadAllTransactions();
+    public LiveData<List<TransactionEntry>> getCurrentExpenseOfEntries(int startDate) {
+        return mTransactionDB.transactionDAO().loadTransactionExpensePeriod(startDate);
+    }
+
+    public LiveData<List<TransactionEntry>> getPeriodOfEntriesForOverview(int start) {
+        return mTransactionDB.transactionDAO().loadTransactionByTimeUserDefined(start);
+    }
+
+    public LiveData<List<TransactionEntry>> getUntaggedTransaction() {
+        return mTransactionDB.transactionDAO().loadUntaggedTransactions(Constant.UNTAGGED);
+    }
+
+    public LiveData<List<TransactionEntry>> getTransactionByLedger(String ledgerName) {
+        return mTransactionDB.transactionDAO().loadTransactionByLedger(ledgerName);
+    }
+
+    public LiveData<List<TransactionEntry>> getAllTransactions() {
+        return mTransactionDB.transactionDAO().loadAllTransactions();
     }
 
 

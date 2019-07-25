@@ -2,23 +2,41 @@ package hanzhou.easyledger.data;
 
 import android.app.Application;
 
+import hanzhou.easyledger.utility.Constant;
+
 public class RepositoryUpdate {
 
-    private final TransactionDAO mTransactionDAO;
+    private static RepositoryUpdate mInstance;
 
+    private RepositoryUpdate(){
+
+    }
+
+    public static RepositoryUpdate getInstance(){
+        if(mInstance == null){
+            mInstance = new RepositoryUpdate();
+        }
+        return mInstance;
+    }
+
+    private TransactionDB mTransactionDB;
     private AppExecutors mAppExecutors;
 
-    public RepositoryUpdate(Application application){
-        TransactionDB mTransactionDB = TransactionDB.getInstance(application);
-        mTransactionDAO = mTransactionDB.transactionDAO();
+
+
+    public void initializeRepository(Application application){
+        mTransactionDB = TransactionDB.getInstance(application);
+
         mAppExecutors=AppExecutors.getInstance();
     }
+
+
 
     public void renameHistoryLedger(final String inputString, final String deletedLedgerName){
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mTransactionDAO.markHistoryLedger(inputString, deletedLedgerName);
+                mTransactionDB.transactionDAO().markHistoryLedger(inputString, deletedLedgerName);
 
             }
         });
@@ -28,9 +46,20 @@ public class RepositoryUpdate {
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mTransactionDAO.markHistoryCategory(inputString, deletedCategory);
+                mTransactionDB.transactionDAO().markHistoryCategory(inputString, deletedCategory);
 
             }
         });
     }
+
+    public void applyUpdateToExistingUntaggedTransaction(final String remark, final String category){
+        mAppExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mTransactionDB.transactionDAO().applyUpdateCategory(remark,category, Constant.UNTAGGED);
+            }
+        });
+    }
+
+
 }

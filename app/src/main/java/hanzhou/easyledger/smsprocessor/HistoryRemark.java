@@ -4,6 +4,8 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+import hanzhou.easyledger.data.Repository;
+import hanzhou.easyledger.data.RepositoryUpdate;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 
@@ -67,10 +69,16 @@ public class HistoryRemark {
     public void synchronizeUserTaggingBehaviour(String remark, String category, GsonHelper gsonHelper){
 
         if(addToRemarks(remark,category)){
-            Log.d("test_tagger", " after saving tagg -> "+mRemarks.keySet()+"\n"+mRemarks.values() );
+            Log.d("test_tagger", " after saving tagg -> \n ------->"+mRemarks.keySet()+"\n------->"+mRemarks.values() );
             saveToFile(gsonHelper);
+
+            applyUpdateToExistingUntaggedTransaction(remark, category);
         }
 
+    }
+
+    private void applyUpdateToExistingUntaggedTransaction(String remark, String category) {
+        RepositoryUpdate.getInstance().applyUpdateToExistingUntaggedTransaction(remark,category);
     }
 
 }
