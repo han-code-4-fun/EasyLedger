@@ -6,7 +6,10 @@ import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.ArrayList;
+
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /*
@@ -24,29 +27,45 @@ public class AutoCategorizer {
      */
 
 
+
+
+
+
+    /*
+    *
+    *  return a category or n/a (untagged transaction) according to user's remark, based on user history remark-cateogry hashmap
+    *
+    *  and whether the returned category a present category
+    *
+    *
+    * */
     public static String process(Context context, String remark, float amount) {
 
         if (!remark.equals("")) {
 
             if (Constant.getIsAutoTaggerOn()) {
 
+                /*get hashmaped remark-category value and check if user 'used' this remark before of not*/
+
                 if (HistoryRemark.getInstance().isContainRemark(remark)) {
 
                     String category = HistoryRemark.getInstance().getCategoryFromRemark(remark);
+
                     SharedPreferences defaultSp =
                             context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
+
+                    ArrayList<String> categoriesList;
                     if(amount >=0){
 
-                        //todo convert to arraylist
-                        defaultSp.getString(Constant.CATEGORY_TYPE_REVENUE, null);
-
+                        categoriesList = GsonHelper.getInstance().getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE);
                     }else{
 
-                        //todo convert to arraylist
-
-                        defaultSp.getString(Constant.CATEGORY_TYPE_EXPENSE, null);
+                        categoriesList = GsonHelper.getInstance().getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE);
                     }
-
+                    /*only need to auto-mark if category is present categories*/
+                    if(categoriesList.contains(category)){
+                        return category;
+                    }
                 }
 
             }

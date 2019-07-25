@@ -211,16 +211,6 @@ public class AddNEditTransactionFragment extends Fragment
 
 
 
-
-//        mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
-//        mSettingsViewModel.setmCategoryExpense(gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
-//
-//        mSettingsViewModel.setmCategoryRevenue(gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE));
-
-//todo, change viewmodel
-
-//        mAdapterActionViewModel.setmIsInAddNEditFragment(true);
-
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_TASK_ID)) {
             mTransactionId = savedInstanceState.getInt(INSTANCE_TASK_ID, DEFAULT_TASK_ID);
         }
@@ -236,7 +226,6 @@ public class AddNEditTransactionFragment extends Fragment
                     mTransactionId = integer;
                     AddTransactionVMFactory factory = new AddTransactionVMFactory(mDB, mTransactionId);
 
-                    //todo, check error
                     /* this viewmodel can only stay within the fragment */
                     final AddTransactionViewModel mAddTransactionViewModel = ViewModelProviders.of(AddNEditTransactionFragment.this, factory).get(AddTransactionViewModel.class);
                     mAddTransactionViewModel.getTransactionEntry().observe(getViewLifecycleOwner(), new Observer<TransactionEntry>() {
@@ -248,7 +237,6 @@ public class AddNEditTransactionFragment extends Fragment
                     });
 
                 } else {
-//                    mIsNewTransaction = true;
                     /* add a new transaction*/
                     toolbar.setTitle(R.string.title_add_transaction);
                     setMoneyInActive();
@@ -437,6 +425,15 @@ public class AddNEditTransactionFragment extends Fragment
                         mEditTextRemark.getText().toString()
 
                 );
+
+                /*update HistoryRemark for auto-tagging */
+               HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
+                       mEditTextRemark.getText().toString(),
+                       mCategoryAdapter.getClickedCategory(),
+                       mGsonHelper
+               );
+
+               /*save to DB*/
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -463,10 +460,8 @@ public class AddNEditTransactionFragment extends Fragment
 
     private void populateUIWithExistingData(TransactionEntry transactionEntry) {
         if (transactionEntry == null) {
-            Log.d("test_flow11", "populateUIWithExistingData: transactionEntry is null");
             return;
         }
-        Log.d("test_flow8", "populateUIWithExistingData: ledger is " + transactionEntry.getLedger());
         if (transactionEntry.getAmount() >= 0) {
             //this transaction is revenue, need to active the money In btn
             setMoneyInActive();
@@ -500,11 +495,6 @@ public class AddNEditTransactionFragment extends Fragment
         if (mPositionInSpinner != -1) {
             mSpinner.setSelection(mPositionInSpinner);
         }
-
-        //IDK what is this now
-//        //todo, change it to real category data source
-//        TestingData.getLedgers().indexOf(transactionEntry.getCategory());
-
 
         //set date
         mDateNum = transactionEntry.getTime();
@@ -552,7 +542,7 @@ public class AddNEditTransactionFragment extends Fragment
     * when adding/editing transaction, there is no need to that*/
     private ArrayList<String> notDisplayLedgerOVERALL(ArrayList<String> input){
 
-        input.remove("OVERALL");
+        input.remove(Constant.LEDGER_OVERALL);
         return input;
     }
 

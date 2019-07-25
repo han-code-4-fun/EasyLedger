@@ -1,5 +1,7 @@
 package hanzhou.easyledger.smsprocessor;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 import hanzhou.easyledger.utility.Constant;
@@ -40,8 +42,18 @@ public class HistoryRemark {
         return mRemarks.get(inputRemark);
     }
 
-    public void addToRemarks(String remark, String category) {
-        mRemarks.put(remark, category);
+    public boolean addToRemarks(String remark, String category) {
+        /*
+        *    don't update "Withdrawal" and "Deposit" remarks
+        *    because they are app's remark for debit card account
+        *
+        * */
+        if(!remark.equals(Constant.RBC_WITHDRAWAL )
+                && !remark.equals(Constant.RBC_DEPOSIT)) {
+            mRemarks.put(remark, category);
+            return true;
+        }
+        return false;
     }
 
     public void removeFromRemarks(String remark) {
@@ -50,6 +62,15 @@ public class HistoryRemark {
 
     public void saveToFile(GsonHelper gsonHelper) {
         gsonHelper.saveHashMapToSharedPreference(mRemarks, Constant.PREFERENCE_KEY_REMARK);
+    }
+
+    public void synchronizeUserTaggingBehaviour(String remark, String category, GsonHelper gsonHelper){
+
+        if(addToRemarks(remark,category)){
+            Log.d("test_tagger", " after saving tagg -> "+mRemarks.keySet()+"\n"+mRemarks.values() );
+            saveToFile(gsonHelper);
+        }
+
     }
 
 }
