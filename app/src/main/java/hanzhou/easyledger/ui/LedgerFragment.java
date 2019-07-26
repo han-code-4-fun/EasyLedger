@@ -40,15 +40,16 @@ import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel
 public class LedgerFragment extends Fragment {
 
     private static final String TAG = LedgerFragment.class.getSimpleName();
-
+    private int currentPage;
 
     private AppCompatActivity appCompatActivity;
     private TransactionDBViewModel viewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
     private SharedPreferences mSharedPreferences;
-
+    private ViewPager viewPager;
 
     private GsonHelper mGsonHelper;
+    private LedgersAdapter mLedgersAdapter;
 
 
 //    private Toolbar toolBar;
@@ -83,7 +84,7 @@ public class LedgerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("test_life", "onCreate: __ledger frag");
+        Log.d("test_life", "onCreate: ______________ledger frag");
     }
 
 
@@ -97,33 +98,43 @@ public class LedgerFragment extends Fragment {
             behaviour after crazily add/delete ledgers
             this will trigger the viewmodel in MainActivity to refresh current LedgerFragment
         */
-        if (!mLedgersList.equals(mGsonHelper.getLedgers(Constant.LEDGERS))) {
-            mLedgersList = mGsonHelper.getLedgers(Constant.LEDGERS);
-            final SettingsViewModel settingsViewModel = ViewModelProviders.of(appCompatActivity).get(SettingsViewModel.class);
-            settingsViewModel.setmRefreshLedgerFragmentTrigger(true);
+//        if (!mLedgersList.equals(mGsonHelper.getLedgers(Constant.LEDGERS))) {
+//            mLedgersList = mGsonHelper.getLedgers(Constant.LEDGERS);
+//            final SettingsViewModel settingsViewModel = ViewModelProviders.of(appCompatActivity).get(SettingsViewModel.class);
+//            settingsViewModel.setmRefreshLedgerFragmentTrigger(true);
+//
+//        }else{
 
-        }else{
-
-            Log.d("test_life", "onCreateView: __ledger frag");
+            Log.d("test_life", "onCreateView: ________________________ledger frag");
 
 
             TabLayout tabLayout = rootView.findViewById(R.id.transaction_tablayout);
 
-            ViewPager viewPager = rootView.findViewById(R.id.transaction_viewpager);
+            viewPager = rootView.findViewById(R.id.transaction_viewpager);
 
-            LedgersAdapter mLedgersAdapter = new LedgersAdapter(getChildFragmentManager(), mLedgersList);
+            mLedgersAdapter = new LedgersAdapter(getChildFragmentManager(), mLedgersList);
 
             viewPager.setAdapter(mLedgersAdapter);
 
+            viewPager.addOnPageChangeListener(listener);
+
             tabLayout.setupWithViewPager(viewPager);
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        }
+//        }
 
         return rootView;
 
 
 
     }
+    private ViewPager.SimpleOnPageChangeListener listener =  new ViewPager.SimpleOnPageChangeListener(){
+        @Override
+        public void onPageSelected(int position) {
+            Log.i("test_222", "page selected " + position);
+            currentPage = position;
+        }
+    };
+
 
 //    private boolean isLedgerListChanged() {
 //
@@ -133,7 +144,7 @@ public class LedgerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("test_life", "onActivityCreated: ledger frag");
+        Log.d("test_life", "onActivityCreated: ____________ledger frag");
         setupViewModel();
         String temp = "";
     }
@@ -141,7 +152,7 @@ public class LedgerFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("test_life", "onDestroyView: Ledger Frag");
+        Log.d("test_life", "onDestroyView: ____________Ledger Frag");
     }
 
     @Override
@@ -152,16 +163,18 @@ public class LedgerFragment extends Fragment {
 
     private void setupViewModel() {
         mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
-//        SPViewModelFactory factory = new SPViewModelFactory(mSharedPreferences);
-//        SPViewModel spViewModel = ViewModelProviders.of(appCompatActivity,factory).get(SPViewModel.class);
-//
-//        spViewModel.getmLedgersList().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(String s) {
-//                mLedgersList = mGsonHelper.convertJsonToArrayListString(s);
-//                mLedgersAdapter.setmLedgers(mLedgersList);
-//            }
-//        });
+        mLedgersAdapter.setViewModel(mAdapterActionViewModel);
+        SPViewModelFactory factory = new SPViewModelFactory(mSharedPreferences);
+        SPViewModel spViewModel = ViewModelProviders.of(appCompatActivity,factory).get(SPViewModel.class);
+
+        spViewModel.getmLedgersList().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                mLedgersList = mGsonHelper.convertJsonToArrayListString(s);
+                mLedgersAdapter.setmLedgers(mLedgersList);
+                viewPager.setCurrentItem(0);
+            }
+        });
     }
 
 

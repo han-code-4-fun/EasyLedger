@@ -42,6 +42,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
 
     public void setAdapterData(List<TransactionEntry> inputEntries) {
+        Log.d("test_vm", "setAdapterData:  new data "+ inputEntries.size());
         mTransactionEntryList = inputEntries;
         notifyDataSetChanged();
 

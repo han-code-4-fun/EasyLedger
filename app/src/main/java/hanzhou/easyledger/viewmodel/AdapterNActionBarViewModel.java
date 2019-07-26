@@ -173,7 +173,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     */
     public List<TransactionEntry> getSelectedTransactions(List<TransactionEntry> inputList) {
 
-        Log.d("test_delete", "getSelectedTransactions: inputlist size "+ inputList.size() );
+        Log.d("test_vm", "getSelectedTransactions: inputlist size "+ inputList.size() );
 
         int[] selectedNumbers = getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires();
 

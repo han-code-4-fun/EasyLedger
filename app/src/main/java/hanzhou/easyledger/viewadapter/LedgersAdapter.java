@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.ui.DetailTransactionFragment;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 
 public class LedgersAdapter extends FragmentPagerAdapter {
 
@@ -26,7 +27,9 @@ public class LedgersAdapter extends FragmentPagerAdapter {
 
     private ArrayList<String> mLedgers;
 
-    public LedgersAdapter(FragmentManager fm, /*Fragment fragment*/  ArrayList<String> ledgers) {
+    private AdapterNActionBarViewModel mAdapterActionViewModel;
+
+    public LedgersAdapter(FragmentManager fm, /*Fragment fragment*/  ArrayList<String> ledgers ) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 //        this.fragment = fragment;
         mLedgers=ledgers;
@@ -36,6 +39,11 @@ public class LedgersAdapter extends FragmentPagerAdapter {
         mLedgers = input;
         notifyDataSetChanged();
     }
+
+    public void setViewModel(AdapterNActionBarViewModel input){
+        mAdapterActionViewModel = input;
+    }
+
 
 
     @Override
@@ -47,6 +55,10 @@ public class LedgersAdapter extends FragmentPagerAdapter {
             temp += " "+s;
         }
         Log.d("test_life", "ledgers in ledger adapter" + temp);
+        Log.d("test_life", "          calling     ->" + mLedgers.get(position));
+
+        //to reset actionbar while switching between fragments
+        mAdapterActionViewModel.setmIsInBaseFragment(true);
 
         return DetailTransactionFragment.newInstance(mLedgers.get(position),Constant.FRAG_CALL_FROM_LEDGER);
     }
@@ -54,7 +66,6 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-
         return mLedgers.get(position);
     }
 

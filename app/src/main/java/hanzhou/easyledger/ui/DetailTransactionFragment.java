@@ -77,7 +77,7 @@ public class DetailTransactionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Log.d("test_life", "onCreate: detail frag");
+        Log.d("test_life", "onCreate: detail frag -> "+mLedgerName+" and "+mParentFragment);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DetailTransactionFragment extends Fragment {
             mLedgerName = getArguments().getString(LEDGER);
             mParentFragment = getArguments().getString(PARENT_NAME);
         }
-        Log.d("test_life", "onCreateView: detail frag   -> "+mLedgerName);
+        Log.d("test_life", "onCreateView: detail frag   -> "+mLedgerName+" and "+mParentFragment);
         mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
@@ -112,7 +112,7 @@ public class DetailTransactionFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("test_life", "onActivityCreated: detail frag");
+        Log.d("test_life", "onActivityCreated: detail frag"+mLedgerName+" "+mParentFragment);
         setupViewModelObserver();
 
     }
@@ -127,7 +127,7 @@ public class DetailTransactionFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("test_life", "onDestroyView: detail Frag");
+        Log.d("test_life", "onDestroyView: detail Frag"+mLedgerName+"  () "+mParentFragment);
 
     }
 
@@ -149,6 +149,7 @@ public class DetailTransactionFragment extends Fragment {
         mTransactionViewModel.getTransactionsByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
+                Log.d("test_vm", " adapter get new list " + transactionEntryList.size());
                 mAdapter.setAdapterData(transactionEntryList);
             }
         });
