@@ -13,9 +13,9 @@ import android.util.Log;
 
 import hanzhou.easyledger.utility.Constant;
 
-public class SMSBankSelector {
+public class SMSProcessor {
 
-    public static void smsFromWhichBank(Context context, String sender, String msgBody){
+    public static void processExtraction(Context context, String sender, String msgBody){
 
         /*check sender number first, then check msgBody*/
         checkSenderNumber(context,sender,msgBody);

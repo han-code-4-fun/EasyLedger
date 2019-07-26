@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import hanzhou.easyledger.R;
 
 public class LauncherActivity extends AppCompatActivity {
 
-    public final static int REQUEST_CODE_READMSG = 1001;
+    public final static int REQUEST_PERMISSION_APP_START = 1001;
 
     private static final String TAG = LauncherActivity.class.getSimpleName();
     @Override
@@ -23,18 +24,44 @@ public class LauncherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        //app must read sms in order to work
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECEIVE_SMS},
-                    REQUEST_CODE_READMSG);
-        }else{
-            // Permission is granted
-            Log.d(TAG, "onCreate: Already granted");
+        String[] PERMISSIONS = {
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.READ_SMS,
+                Manifest.permission.INTERNET,
+        };
+
+
+        if(isAllPermissionsGranted(this, PERMISSIONS)){
             startMainActivity();
+        }else{
+            ActivityCompat.requestPermissions(this,
+                    PERMISSIONS,
+                    REQUEST_PERMISSION_APP_START);
         }
+        //app must read sms in order to work
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            // Permission is not granted
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.RECEIVE_SMS},
+//                    REQUEST_PERMISSION_APP_START);
+//        }else{
+//            // Permission is granted
+//            Log.d(TAG, "onCreate: Already granted");
+//            startMainActivity();
+//        }
+    }
+
+
+    private boolean isAllPermissionsGranted(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -42,10 +69,13 @@ public class LauncherActivity extends AppCompatActivity {
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == REQUEST_CODE_READMSG) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: Granted");
+        if(requestCode == REQUEST_PERMISSION_APP_START) {
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Log.d(TAG, "onRequestPermissionsResult: Granted");
+//                startMainActivity();
+//            }
+            if(isAllPermissionsGranted(this,permissions)){
                 startMainActivity();
             }
         }

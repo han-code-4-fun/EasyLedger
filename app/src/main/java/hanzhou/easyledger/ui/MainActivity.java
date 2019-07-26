@@ -22,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.smsprocessor.HistoryRemark;
+import hanzhou.easyledger.smsprocessor.HistorySMSReader;
 import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
 import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.utility.GsonHelper;
@@ -31,7 +32,6 @@ import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chart_personalization.ChartDialogSetting;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
-import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.TestingData;
@@ -46,9 +46,11 @@ import androidx.lifecycle.ViewModelProviders;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
@@ -173,13 +175,60 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        /*mark present time, which will be used to as ending time for history sms search when user get back*/
+        DateTime now = LocalTime.now().toDateTimeToday();
+        mSharedPreference.edit().putLong(Constant.PREFERENCE_TIME_BACK_TO_APP, now.getMillis()).apply();
+
         this.registerReceiver(mSmsReceiver, mSmsIntentFilter);
 
+        processHistorySMSInBackGround();
+    }
+
+    private void processHistorySMSInBackGround() {
+
+        long startTime = mSharedPreference.getLong(Constant.PREFERENCE_TIME_LEFT_APP, 0);
+        long endTime = mSharedPreference.getLong(Constant.PREFERENCE_TIME_BACK_TO_APP, 1);
+
+        if(startTime != 0){
+            if(endTime>startTime){
+                /*read history message and process them*/
+
+                String filter = Constant.SMS_COLUMN_DATE +
+                        " >= "+startTime +" and "+
+                        Constant.SMS_COLUMN_DATE + " <= "+endTime;
+
+
+                HistorySMSReader.readHistorySMS(
+                        this,
+                        Constant.SMS_PROJECTION,
+                        filter,
+                        null,
+                        null
+                );
+
+
+            }else{
+                Log.e(TAG, "processHistorySMSInBackGround:  " +
+                        "time get back to app is eariler than get left app, is there a time travel?");
+            }
+
+        }else{
+            /*first time start the app, do nothing*/
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+          /*
+            right before stop real-time sms extraction, save current time mark,
+            when get back to app, read sms that is from this time mark and
+             process them if they are matching banking MSGs.
+        */
+        DateTime now = LocalTime.now().toDateTimeToday();
+        mSharedPreference.edit().putLong(Constant.PREFERENCE_TIME_LEFT_APP, now.getMillis()).apply();
+
         unregisterReceiver(mSmsReceiver);
     }
 

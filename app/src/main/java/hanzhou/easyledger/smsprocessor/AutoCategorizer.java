@@ -29,8 +29,6 @@ public class AutoCategorizer {
 
 
 
-
-
     /*
     *
     *  return a category or n/a (untagged transaction) according to user's remark, based on user history remark-cateogry hashmap

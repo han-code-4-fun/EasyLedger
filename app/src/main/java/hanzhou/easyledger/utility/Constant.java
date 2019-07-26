@@ -1,13 +1,7 @@
 package hanzhou.easyledger.utility;
 
-import android.content.SharedPreferences;
-import android.util.Log;
-
 import hanzhou.easyledger.R;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Constant {
@@ -19,13 +13,16 @@ public class Constant {
 
     public static final String TESTFLOW = "test_";
 
+    public static final String PREFERENCE_TIME_LEFT_APP = "preferece_time_left_app";
+    public static final String PREFERENCE_TIME_BACK_TO_APP = "preferece_time_back_to_app";
+
 //    public static final String APP_PREFERENCE = "sharedPreferences";
 
     public static final String LEDGERS = "sharedPreference_ledgers";
 
     public static final String CATEGORY_ADD = "add_a_category";
 
-    public static final String  CATEGORY_OTHERS = "Others";
+    public static final String CATEGORY_OTHERS = "Others";
 
     public static final String CATEGORY_TYPE_REVENUE = "revenue_categories";
 
@@ -55,10 +52,10 @@ public class Constant {
 
     public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_LIST_KEY = "setting_general_overview_date_range_list_key";
     public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH = "overview_by_month";
-    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_WEEK ="overview_by_week";
-    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_RANGE ="overview_by_custom_range";
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_WEEK = "overview_by_week";
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_RANGE = "overview_by_custom_range";
 
-    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_KEY ="setting_general_overview_date_range_custom_seekbar_key";
+    public static final String SETTING_GENERAL_OVERVIEW_DATE_RANGE_CUSTOM_KEY = "setting_general_overview_date_range_custom_seekbar_key";
 
     public static final String SETTING_AUTO_TAGGER_KEY = "setting_auto_tagger_key";
 
@@ -84,8 +81,6 @@ public class Constant {
     public static final String RBC_LEDGER_NAME = "RBC";
 
 
-
-
     public static final String BMO_NUMBER = "-1";
 
     public static final String CIBC_NUMBER = "-2";
@@ -103,35 +98,41 @@ public class Constant {
             "RBC: Deposit of $2.00 to RBC acct 4784 made JUL22. Stop-txt STOP/Help-txt HELP";
 
     public static final String[] MONTHS_CAP = {
-      "JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"
+            "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
     };
     public static String[] MONTHS_NON_CAP = {"Jan", "Feb", "Mar", "Apr", "May",
-            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",  "Dec"};
+            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-    public static final String RBC_DEPOSIT= "Deposit";
+    public static final String RBC_DEPOSIT = "Deposit";
     public static final String RBC_WITHDRAWAL = "Withdrawal";
 
     public static final String CREDIT_CARD = "credit card";
 
 
     private static boolean isAutoTaggerOn = true;
-    public static boolean getIsAutoTaggerOn(){
+
+    public static boolean getIsAutoTaggerOn() {
         return isAutoTaggerOn;
     }
-    public static void setIsAutoTaggerOn(boolean input){
+
+    public static void setIsAutoTaggerOn(boolean input) {
         isAutoTaggerOn = input;
     }
 
 
     public static final String PREFERENCE_KEY_REMARK = "pref_key_remark";
 
-    private static HashMap<String,String> default_remarks =  new HashMap<>();
-    public static HashMap<String,String> getDefaultRemarks(){
+    private static HashMap<String, String> default_remarks = new HashMap<>();
+
+    public static HashMap<String, String> getDefaultRemarks() {
         default_remarks.put(Constant.RBC_DEPOSIT.toLowerCase(), Constant.UNTAGGED);
         default_remarks.put(Constant.RBC_WITHDRAWAL.toLowerCase(), Constant.UNTAGGED);
         return default_remarks;
     }
 
+
+    public static final String[] SMS_PROJECTION = {"address", "body"};
+    public static final String SMS_COLUMN_DATE = "date";
 
 
 }

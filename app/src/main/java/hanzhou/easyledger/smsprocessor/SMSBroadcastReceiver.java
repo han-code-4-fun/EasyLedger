@@ -42,7 +42,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 
                     String[] msgContent = getMSGContent(pdusObj, intent);
 
-                    SMSBankSelector.smsFromWhichBank(context, msgContent[0],msgContent[1]);
+                    SMSProcessor.processExtraction(context, msgContent[0],msgContent[1]);
 
                 } else {
                     Log.e(TAG, "onReceive: error getting 'pdus'");

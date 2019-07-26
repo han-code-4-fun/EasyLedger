@@ -50,8 +50,8 @@ public class HistoryRemark {
         *    because they are app's remark for debit card account
         *
         * */
-        if(!remark.equals(Constant.RBC_WITHDRAWAL )
-                && !remark.equals(Constant.RBC_DEPOSIT)) {
+        if(!remark.equals(Constant.RBC_WITHDRAWAL.toLowerCase() )
+                && !remark.equals(Constant.RBC_DEPOSIT.toLowerCase())) {
 
             /*only return true, if inserted new and modified previous*/
 
