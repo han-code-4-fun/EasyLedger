@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.smsprocessor.HistoryRemark;
 import hanzhou.easyledger.smsprocessor.HistorySMSReader;
 import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
@@ -51,6 +52,7 @@ import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
@@ -804,31 +806,31 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
 
-//            final List<TransactionEntry> entries;
-////            if (mAdapterActionViewModel.getParentFragment().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
-////                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
-////                Log.d("test_delete", "deleteSelectedRecords:   from untagged transactions");
-////            } else {
-////                entries = mTransactionViewModel.getAllTransactions().getValue();
-////                Log.d("test_delete", "deleteSelectedRecords:   from all transactions ");
-////
-////            }
-//            entries = mTransactionViewModel.getTransactionsByLedger().getValue();
+            final List<TransactionEntry> entries;
+//            if (mAdapterActionViewModel.getParentFragment().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
+//                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
+//                Log.d("test_delete", "deleteSelectedRecords:   from untagged transactions");
+//            } else {
+//                entries = mTransactionViewModel.getAllTransactions().getValue();
+//                Log.d("test_delete", "deleteSelectedRecords:   from all transactions ");
 //
-//            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                    mDb.transactionDAO().deleteListOfTransactions(
-//                            mAdapterActionViewModel.getSelectedTransactions(entries)
-//                    );
-//                }
-//            });
+//            }
+            entries = mTransactionViewModel.getTransactionsByLedger().getValue();
 
-            mAdapterActionViewModel.setmDeleteItemTrigger(true);
-            Toast.makeText(this,
-                    getResources().getString(R.string.msg_deleting_complete),
-                    Toast.LENGTH_LONG).show();
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+
+                    mDb.transactionDAO().deleteListOfTransactions(
+                            mAdapterActionViewModel.getSelectedTransactions(entries)
+                    );
+                }
+            });
+
+//            mAdapterActionViewModel.setmDeleteItemTrigger(true);
+//            Toast.makeText(this,
+//                    getResources().getString(R.string.msg_deleting_complete),
+//                    Toast.LENGTH_LONG).show();
 
         }
     }

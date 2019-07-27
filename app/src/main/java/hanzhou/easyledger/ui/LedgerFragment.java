@@ -75,6 +75,7 @@ public class LedgerFragment extends Fragment {
         appCompatActivity = (AppCompatActivity) context;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(appCompatActivity);
         mGsonHelper = GsonHelper.getInstance();
+        mGsonHelper.setmSharedPreferences(mSharedPreferences);
 
 
         mLedgersList = mGsonHelper.getLedgers(Constant.LEDGERS);
@@ -92,7 +93,7 @@ public class LedgerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ledger, container, false);
-        mGsonHelper.setmSharedPreferences(mSharedPreferences);
+//        mGsonHelper.setmSharedPreferences(mSharedPreferences);
         /*
             refresh the whole LedgerFragment to avoid strange viewpager title and data mismatch
             behaviour after crazily add/delete ledgers
@@ -136,10 +137,6 @@ public class LedgerFragment extends Fragment {
     };
 
 
-//    private boolean isLedgerListChanged() {
-//
-//        return ;
-//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -170,9 +167,16 @@ public class LedgerFragment extends Fragment {
         spViewModel.getmLedgersList().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                mLedgersList = mGsonHelper.convertJsonToArrayListString(s);
-                mLedgersAdapter.setmLedgers(mLedgersList);
-                viewPager.setCurrentItem(0);
+                ArrayList<String> temp = mGsonHelper.convertJsonToArrayListString(s);
+                if(!mLedgersList.equals(temp)){
+
+                    mLedgersList = mGsonHelper.convertJsonToArrayListString(s);
+                    mLedgersAdapter.setmLedgers(mLedgersList);
+                    final SettingsViewModel settingsViewModel = ViewModelProviders.of(appCompatActivity).get(SettingsViewModel.class);
+                    settingsViewModel.setmRefreshLedgerFragmentTrigger(true);
+
+
+                }
             }
         });
     }
