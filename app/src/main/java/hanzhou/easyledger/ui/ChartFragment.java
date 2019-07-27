@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -390,11 +391,17 @@ public class ChartFragment extends Fragment implements
         mHistoryBarChart.setDrawBarShadow(false);
         mHistoryBarChart.setDrawGridBackground(false);
 
-        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view);
-        // For bounds control
-        mv.setChartView(mHistoryBarChart);
-        // Set the marker to the mHistoryBarChart
-        mHistoryBarChart.setMarker(mv);
+        /*
+        *   MPAndroidChart bug, version lower than API24 cannot have custom Marker due to memory issue
+        * */
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+
+            MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view);
+            // For bounds control
+            mv.setChartView(mHistoryBarChart);
+            // Set the marker to the mHistoryBarChart
+            mHistoryBarChart.setMarker(mv);
+        }
 
 
         YAxis leftAxis = mHistoryBarChart.getAxisLeft();
