@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
     <TextView
         style="@style/dialog_sub_class_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="@string/setting_add_entry_title"/>
-    <EditText
-        style="@style/dialog_sub_class_margin"
-        android:id="@+id/setting_dialog_add_entry_editText_id"
+        android:text="@string/setting_add_entry_title"
+        android:textSize="20sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/setting_dialog_add_entry_textinputlayout_id"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:textSize="15sp"
-        android:maxLength="14"
-        />
+        app:counterEnabled="true"
+        app:counterMaxLength="15"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/setting_dialog_add_entry_editText_id"
+            style="@style/dialog_sub_class_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textSize="15sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

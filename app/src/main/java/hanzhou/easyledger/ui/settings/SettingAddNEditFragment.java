@@ -319,7 +319,14 @@ public class SettingAddNEditFragment extends Fragment {
         @Override
         public void onClick(View view) {
             AddEntryDialog dialog = new AddEntryDialog();
+            Bundle args = new Bundle();
+            args.putStringArrayList(Constant.SETTING_BUNDLE_LIST_OF_NAMES, mListData);
+            dialog.setArguments(args);
             dialog.setTargetFragment(SettingAddNEditFragment.this, REQUEST_DIALOG_CODE);
+
+
+
+
             dialog.show(mAppCompatActivity.getSupportFragmentManager(), null);
         }
     };

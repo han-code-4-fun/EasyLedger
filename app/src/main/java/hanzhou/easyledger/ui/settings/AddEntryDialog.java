@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,19 +20,33 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.ArrayList;
+
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 
 public class AddEntryDialog  extends AppCompatDialogFragment {
     private AppCompatActivity mAppCompatActivity;
 
-    private EditText mEditText;
+    private TextInputEditText mEditText;
+    private TextInputLayout mTextInputLayout;
+    private ArrayList<String> mList;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments()!= null)
+            mList = getArguments().getStringArrayList(Constant.SETTING_BUNDLE_LIST_OF_NAMES);
     }
 
     @NonNull
@@ -41,12 +57,50 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
                 from(mAppCompatActivity).
                 inflate(R.layout.dialog_add_entry, null);
 
+        mTextInputLayout = view.findViewById(R.id.setting_dialog_add_entry_textinputlayout_id);
+
         mEditText = view.findViewById(R.id.setting_dialog_add_entry_editText_id);
+        
         builder.setView(view)
                 .setNegativeButton(getString(R.string.dialog_negative_btn_title), cancelBTNClickListener)
-                .setPositiveButton(getString(R.string.dialog_positive_btn_title),  saveBtnClickListener );
+                .setPositiveButton(getString(R.string.dialog_positive_btn_title),  null );
 
-        return builder.create();
+        final AlertDialog dialog =builder.create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button btnPositive = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                btnPositive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(validateUserInput()){
+                            Intent intent = new Intent();
+                            intent.putExtra(Constant.CATEGORY_ADD, mEditText.getText().toString());
+                            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+                            dialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+
+
+        return dialog;
+    }
+
+    private boolean validateUserInput(){
+
+        String input= mEditText.getText().toString();
+        if(input.trim().equals("")){
+            mTextInputLayout.setError(getString(R.string.setting_warning_msg_empty_string));
+        }else if(mList.contains(input)){
+            mTextInputLayout.setError(getString(R.string.setting_warning_msg_duplicate_word));
+        }else{
+            mTextInputLayout.setError(null);
+            return true;
+        }
+        return false;
     }
 
     private DialogInterface.OnClickListener cancelBTNClickListener = new DialogInterface.OnClickListener() {
@@ -57,14 +111,5 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
         }
     };
 
-    private DialogInterface.OnClickListener saveBtnClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            Intent intent = new Intent();
-            intent.putExtra(Constant.CATEGORY_ADD, mEditText.getText().toString());
 
-            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-
-        }
-    };
 }

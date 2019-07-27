@@ -95,6 +95,14 @@
         "There is no ledger \"RBC\", I create one for you."
     </string>
 
+    <string name="setting_warning_msg_empty_string">
+        Cannot take empty words.
+    </string>
+    <string name="setting_warning_msg_duplicate_word">
+        This is a duplicate name.
+    </string>
+
+
 
 
 </resources>

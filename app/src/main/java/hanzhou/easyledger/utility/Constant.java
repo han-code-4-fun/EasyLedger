@@ -152,5 +152,7 @@ public class Constant {
 
     public static final int REQUEST_DIALOG_CODE_SETTING_ADD_EDIT_FRAGMENT = 12345;
 
+    public static final String SETTING_BUNDLE_LIST_OF_NAMES = "setting_bundle_list_of_names";
+
 
 }
