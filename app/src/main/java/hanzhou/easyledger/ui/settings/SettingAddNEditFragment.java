@@ -36,10 +36,13 @@ import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.SettingAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 public class SettingAddNEditFragment extends Fragment {
 
+
+    private GeneralViewModel mGeneralViewModel;
     private AdapterNActionBarViewModel adapterNActionBarViewModel;
     private SettingsViewModel mSettingsViewModel;
     private AppCompatActivity mAppCompatActivity;
@@ -66,7 +69,7 @@ public class SettingAddNEditFragment extends Fragment {
 
     private boolean isRBCMsgExtractionOn;
 
-    public static final int REQUEST_DIALOG_CODE = 12345;
+    public static final int REQUEST_DIALOG_CODE = Constant.REQUEST_DIALOG_CODE_SETTING_ADD_EDIT_FRAGMENT;
 
 
     @Override
@@ -90,6 +93,7 @@ public class SettingAddNEditFragment extends Fragment {
 
         mFloatingActionButton = root.findViewById(R.id.btn_setting_add_entry_btn);
         mFloatingActionButton.setOnClickListener(onClickFAB);
+
 
         mLinearLayoutManager = new LinearLayoutManager(mAppCompatActivity);
 
@@ -218,6 +222,10 @@ public class SettingAddNEditFragment extends Fragment {
     }
 
     private void setupViewModel() {
+
+        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_SETTING_ADD_EDIT);
+
         adapterNActionBarViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);

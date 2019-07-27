@@ -56,6 +56,7 @@ import java.util.Map;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chart_personalization.LabelFormatterCurrentBarChart;
 import hanzhou.easyledger.chart_personalization.MonthValueFormatter;
@@ -96,6 +97,9 @@ public class ChartFragment extends Fragment implements
     private TransactionDB mDb;
 
     private AppCompatActivity mAppCompatActivity;
+
+
+    private GeneralViewModel mGeneralViewModel;
     private SPViewModel sharedPreferenceViewModel;
     private ChartDataViewModel mChartDataViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
@@ -191,13 +195,15 @@ public class ChartFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        mAdapterActionViewModel.setmIsInBaseFragment(true);
+//        mAdapterActionViewModel.setmIsInBaseFragment(true);
 
     }
 
 
     private void setupViewModel() {
 
+        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_CHART);
 
         //todo, test custom LIvedata SP
 

@@ -32,6 +32,7 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /**
@@ -42,6 +43,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private AppCompatActivity mAppCompatActivity;
 
+    private GeneralViewModel mGeneralViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
 
     private SharedPreferences mSharedPreferences;
@@ -203,7 +205,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
     @Override
     public void onResume() {
         super.onResume();
-        mAdapterActionViewModel.setmIsInBaseFragment(false);
+//        mAdapterActionViewModel.setmIsInBaseFragment(false);
     }
 
 
@@ -296,6 +298,10 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
 
     private void setupViewModel() {
+
+        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_SETTING);
+
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);

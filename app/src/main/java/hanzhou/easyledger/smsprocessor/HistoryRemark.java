@@ -4,8 +4,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 
-import hanzhou.easyledger.data.Repository;
-import hanzhou.easyledger.data.RepositoryUpdate;
+import hanzhou.easyledger.data.RepositoryDB;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 
@@ -89,7 +88,7 @@ public class HistoryRemark {
     }
 
     private void applyUpdateToExistingUntaggedTransaction(String remark, String category) {
-        RepositoryUpdate.getInstance().applyUpdateToExistingUntaggedTransaction(remark,category);
+        RepositoryDB.getInstance().applyUpdateToExistingUntaggedTransaction(remark,category);
     }
 
 }

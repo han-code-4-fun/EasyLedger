@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import hanzhou.easyledger.data.RepositoryUpdate;
+import hanzhou.easyledger.data.RepositoryDB;
 
 public class SettingsViewModel extends AndroidViewModel {
 
@@ -17,12 +17,12 @@ public class SettingsViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> mRefreshLedgerFragmentTrigger;
 
-    private RepositoryUpdate mRepositoryUpdate;
+    private RepositoryDB mDBRepository;
     public SettingsViewModel(@NonNull Application application) {
         super(application);
 
-        mRepositoryUpdate = RepositoryUpdate.getInstance();
-        mRepositoryUpdate.initializeRepository(application);
+        mDBRepository = RepositoryDB.getInstance();
+        mDBRepository.initializeRepository(application);
         mCategoryToEdit = new MutableLiveData<>();
         mRefreshLedgerFragmentTrigger = new MutableLiveData<>();
         mRefreshLedgerFragmentTrigger.setValue(false);
@@ -37,11 +37,11 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     public void renameHistoryLedger(String inputString, String deletedLedgerName){
-        mRepositoryUpdate.renameHistoryLedger(inputString,deletedLedgerName);
+        mDBRepository.renameHistoryLedger(inputString,deletedLedgerName);
     }
 
     public void renameHistoryCategory(String inputString, String deletedCategory){
-        mRepositoryUpdate.renameHistoryCategory(inputString, deletedCategory);
+        mDBRepository.renameHistoryCategory(inputString, deletedCategory);
     }
 
     public MutableLiveData<Boolean> getmRefreshLedgerFragmentTrigger() {

@@ -33,6 +33,7 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 
@@ -40,6 +41,7 @@ public class OverviewFragment extends Fragment{
 
     private static final String TAG = OverviewFragment.class.getSimpleName();
 
+    private GeneralViewModel mGeneralViewModel;
     private OverviewFragmentViewModel mOverviewFragmentViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
     private SPViewModel mSharedPreferenceViewModel;
@@ -101,7 +103,7 @@ public class OverviewFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        mAdapterActionViewModel.setmIsInBaseFragment(true);
+//        mAdapterActionViewModel.setmIsInBaseFragment(true);
 
     }
 
@@ -121,7 +123,7 @@ public class OverviewFragment extends Fragment{
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.overview_recyclerview_for_untagged_transactions,
-                       DetailTransactionFragment.newInstance(Constant.UNTAGGED, Constant.FRAG_CALL_FROM_OVERVIEW))
+                       DetailTransactionFragment.newInstance(Constant.FRAG_NAME_OVERVIEW))
                 .commit();
 
         return root;
@@ -266,6 +268,9 @@ public class OverviewFragment extends Fragment{
 
 
     private void setupViewModel() {
+
+        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_OVERVIEW);
 
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
         mOverviewFragmentViewModel = ViewModelProviders.of(mAppCompatActivity).get(OverviewFragmentViewModel.class);

@@ -1,6 +1,13 @@
 package hanzhou.easyledger.utility;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.ui.AddNEditTransactionFragment;
+import hanzhou.easyledger.ui.ChartFragment;
+import hanzhou.easyledger.ui.LedgerFragment;
+import hanzhou.easyledger.ui.OverviewFragment;
+import hanzhou.easyledger.ui.QuestionFragment;
+import hanzhou.easyledger.ui.settings.SettingAddNEditFragment;
+import hanzhou.easyledger.ui.settings.SettingMain;
 
 import java.util.HashMap;
 
@@ -133,6 +140,17 @@ public class Constant {
 
     public static final String[] SMS_PROJECTION = {"address", "body"};
     public static final String SMS_COLUMN_DATE = "date";
+
+    public static final String FRAG_NAME_ADD_EDIT_TRANSACTION = "AddNEditTransactionFragment";
+    public static final String FRAG_NAME_OVERVIEW = "OverviewFragment";
+    public static final String FRAG_NAME_LEDGER = "LedgerFragment";
+    public static final String FRAG_NAME_CHART = "ChartFragment";
+    public static final String FRAG_NAME_SETTING = "SettingMain";
+    public static final String FRAG_NAME_SETTING_ADD_EDIT = "SettingAddNEditFragment";
+    public static final String FRAG_NAME_QUESTION = "QuestionFragment";
+
+
+    public static final int REQUEST_DIALOG_CODE_SETTING_ADD_EDIT_FRAGMENT = 12345;
 
 
 }

@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer;
 
 import java.util.List;
 
-import hanzhou.easyledger.data.Repository;
+import hanzhou.easyledger.data.RepositoryDB;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionEntry;
 
@@ -18,7 +18,7 @@ public class ChartDataViewModel extends AndroidViewModel {
 
     private AppExecutors mAppexecutor;
 
-    private final Repository mRepository;
+    private final RepositoryDB mDBRepository;
 
 
     private final MediatorLiveData<List<TransactionEntry>> mHistoryListEntries= new MediatorLiveData<>();
@@ -28,7 +28,7 @@ public class ChartDataViewModel extends AndroidViewModel {
 
     public ChartDataViewModel(@NonNull Application application) {
         super(application);
-        mRepository =Repository.getInstance();
+        mDBRepository = RepositoryDB.getInstance();
     }
 
     public void initializeDatesForVM(int historyStartDate,int historyEndDate, int currentStartDate){
@@ -37,7 +37,7 @@ public class ChartDataViewModel extends AndroidViewModel {
     }
 
     public void updatesHistoryDatesForVM(int historyStartDate, int historyEndDate){
-        mHistoryListEntries.addSource(mRepository.getPeriodOfEntries(historyStartDate, historyEndDate), new Observer<List<TransactionEntry>>() {
+        mHistoryListEntries.addSource(mDBRepository.getPeriodOfEntries(historyStartDate, historyEndDate), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
                 mHistoryListEntries.setValue(transactionEntryList);
@@ -46,13 +46,13 @@ public class ChartDataViewModel extends AndroidViewModel {
     }
 
     public void updatesCurrentDatesforVM(int currentChartStartDate){
-        mRevenueListEntries.addSource(mRepository.getCurrentRevenueOfEntries(currentChartStartDate), new Observer<List<TransactionEntry>>() {
+        mRevenueListEntries.addSource(mDBRepository.getCurrentRevenueOfEntries(currentChartStartDate), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
                 mRevenueListEntries.setValue(transactionEntryList);
             }
         });
-        mExpenseListEntries.addSource(mRepository.getCurrentExpenseOfEntries(currentChartStartDate), new Observer<List<TransactionEntry>>() {
+        mExpenseListEntries.addSource(mDBRepository.getCurrentExpenseOfEntries(currentChartStartDate), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
                 mExpenseListEntries.setValue(transactionEntryList);

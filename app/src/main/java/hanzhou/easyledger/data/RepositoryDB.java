@@ -8,25 +8,26 @@ import java.util.List;
 
 import hanzhou.easyledger.utility.Constant;
 
-public class Repository {
+public class RepositoryDB {
 
     private TransactionDB mTransactionDB;
-    private static Repository mInstance;
+    private static RepositoryDB mInstance;
+    private AppExecutors mAppExecutors;
 
-    private Repository() {
+    private RepositoryDB() {
 
     }
 
-    public static Repository getInstance() {
+    public static RepositoryDB getInstance() {
         if (mInstance == null) {
-            mInstance = new Repository();
+            mInstance = new RepositoryDB();
         }
         return mInstance;
     }
 
     public void initializeRepository(Application application) {
         mTransactionDB = TransactionDB.getInstance(application);
-//        mTransactionDAO = mTransactionDB.transactionDAO();
+        mAppExecutors=AppExecutors.getInstance();
     }
 
     public LiveData<List<TransactionEntry>> getPeriodOfEntries(int start, int end) {
@@ -55,6 +56,37 @@ public class Repository {
 
     public LiveData<List<TransactionEntry>> getAllTransactions() {
         return mTransactionDB.transactionDAO().loadAllTransactions();
+    }
+
+
+
+    public void renameHistoryLedger(final String inputString, final String deletedLedgerName){
+        mAppExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mTransactionDB.transactionDAO().markHistoryLedger(inputString, deletedLedgerName);
+
+            }
+        });
+    }
+
+    public void renameHistoryCategory(final String inputString, final String deletedCategory){
+        mAppExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mTransactionDB.transactionDAO().markHistoryCategory(inputString, deletedCategory);
+
+            }
+        });
+    }
+
+    public void applyUpdateToExistingUntaggedTransaction(final String remark, final String category){
+        mAppExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mTransactionDB.transactionDAO().applyUpdateCategory(remark,category, Constant.UNTAGGED);
+            }
+        });
     }
 
 

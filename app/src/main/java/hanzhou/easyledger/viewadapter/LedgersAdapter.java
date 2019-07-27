@@ -1,8 +1,9 @@
 package hanzhou.easyledger.viewadapter;
 
-import android.os.Bundle;
 import android.util.Log;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,12 +12,14 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-import hanzhou.easyledger.R;
 import hanzhou.easyledger.ui.DetailTransactionFragment;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.LedgerViewModel;
+import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 public class LedgersAdapter extends FragmentPagerAdapter {
+
+    private String mCurrentVisiblePage;
 
 //    private Fragment fragment;
 
@@ -27,12 +30,14 @@ public class LedgersAdapter extends FragmentPagerAdapter {
 
     private ArrayList<String> mLedgers;
 
-    private AdapterNActionBarViewModel mAdapterActionViewModel;
+    private TransactionDBViewModel mTransactionDBViewModel;
 
-    public LedgersAdapter(FragmentManager fm, /*Fragment fragment*/  ArrayList<String> ledgers ) {
+
+
+    public LedgersAdapter(FragmentManager fm, ArrayList<String> ledgers) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-//        this.fragment = fragment;
         mLedgers=ledgers;
+        mCurrentVisiblePage = "";
     }
 
     public void setmLedgers(ArrayList<String> input){
@@ -40,8 +45,25 @@ public class LedgersAdapter extends FragmentPagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void setViewModel(AdapterNActionBarViewModel input){
-        mAdapterActionViewModel = input;
+    public void setViewModel(TransactionDBViewModel inputVM ){
+        mTransactionDBViewModel = inputVM;
+    }
+
+    @Override
+    public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.setPrimaryItem(container, position, object);
+
+//        if(!mLedgers.get(position).equals(mCurrentVisiblePage)){
+//            mCurrentVisiblePage = mLedgers.get(position);
+//            Log.d("test_frag", " ***%%%%%%  Adapter %%%%%%%*** setPrimaryItem:   name ->"+mCurrentVisiblePage);
+//            if(mLedgerViewModel!= null){
+//
+//                mLedgerViewModel.setmLedgerName(mCurrentVisiblePage);
+//                Log.d("test_frag", " ***%%%%%%% Adapter %%%%%%%*** setPrimaryItem:   viewmodel will update name ->"+mCurrentVisiblePage);
+//
+//            }
+//        }
+
     }
 
 
@@ -49,18 +71,11 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        String temp= "";
-        for (String s :
-                mLedgers) {
-            temp += " "+s;
-        }
-        Log.d("test_life", "ledgers in ledger adapter" + temp);
-        Log.d("test_life", "          calling     ->" + mLedgers.get(position));
+//        Log.d("test_frag", " ***Adapter*** getItem:   name ->"+mLedgers.get(position));
+//        return DetailTransactionFragment.newInstance(Constant.FRAG_NAME_LEDGER);
+        mTransactionDBViewModel.setLedgerName(mLedgers.get(position));
+        return DetailTransactionFragment.newInstance(mLedgers.get(position));
 
-        //to reset actionbar while switching between fragments
-        mAdapterActionViewModel.setmIsInBaseFragment(true);
-
-        return DetailTransactionFragment.newInstance(mLedgers.get(position),Constant.FRAG_CALL_FROM_LEDGER);
     }
 
     @Nullable

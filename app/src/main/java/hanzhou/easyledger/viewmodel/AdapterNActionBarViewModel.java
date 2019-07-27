@@ -39,9 +39,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     //keep track of user selection
     private SparseBooleanArray selectedBooleanArrayViewMode;
 
-    private String mCurrentParent;
-
-
     private MutableLiveData<Integer> mClickedEntryID;
 
     private MutableLiveData<String> mSelectedCategory;
@@ -60,7 +57,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     public AdapterNActionBarViewModel(@NonNull Application application) {
         super(application);
-
 
         mIsActionMode = new MutableLiveData<>();
         mIsActionMode.setValue(false);
@@ -81,10 +77,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         selectedBooleanArrayViewMode = new SparseBooleanArray();
 
-        mCurrentParent = Constant.FRAG_CALL_FROM_OVERVIEW;
-
-//        mIsInQuestionFragment = new MutableLiveData<>();
-//        mIsInQuestionFragment.setValue(false);
 
         mClickedEntryID = new MutableLiveData<>();
         mClickedEntryID.setValue(null);
@@ -110,10 +102,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         mCategorizeItemsToOthersTrigger = new MutableLiveData<>();
         mCategorizeItemsToOthersTrigger.setValue(false);
-    }
-
-    public SparseBooleanArray getTesttt(){
-        return selectedBooleanArrayViewMode;
     }
 
 
@@ -152,6 +140,13 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     }
 
     public void setDeselectAllTrigger(boolean input) {
+
+        if(input){
+            emptySelectedItems();
+            setmTransactionSelectedNumber();
+            setmIsAllSelected(false);
+        }
+
         mDeselectAllTrigger.setValue(input);
     }
 
@@ -159,13 +154,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         return mDeselectAllTrigger;
     }
 
-
-    public TransactionEntry getOneSelectedTransaction(List<TransactionEntry> inputList){
-        TransactionEntry output;
-        int selectPosition = selectedBooleanArrayViewMode.keyAt(0);
-        output = inputList.get(selectPosition);
-        return output;
-    }
 
     /*
         get selected items from inner variable SparseBooleanArray and
@@ -214,6 +202,10 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         return output;
     }
 
+    public SparseBooleanArray getTheSelectionArray(){
+        return selectedBooleanArrayViewMode;
+    }
+
     public void emptySelectedItems() {
         selectedBooleanArrayViewMode.clear();
     }
@@ -239,23 +231,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     }
 
 
-    public String getParentFragment() {
-        return mCurrentParent;
-    }
-
-    public void setParentFragment(String fragName) {
-        this.mCurrentParent = fragName;
-    }
-
-//    public MutableLiveData<Boolean> getmIsInQuestionFragment() {
-//        return mIsInQuestionFragment;
-//    }
-//
-//    public void setmIsInQuestionFragment(Boolean input) {
-//        Log.d("test_flow5", "setmIsInQuestionFragment: the viewmodel is "+this.hashCode());
-//        this.mIsInQuestionFragment.setValue(input);
-//    }
-
     public MutableLiveData<Integer> getmClickedEntryID() {
         return mClickedEntryID;
     }
@@ -268,31 +243,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         mClickedEntryID.setValue(null);
     }
 
-//    public MutableLiveData<Boolean> getmIsInSettingsFragment() {
-//        return mIsInSettingsFragment;
-//    }
-//
-//    public void setmIsInSettingsFragment(Boolean input) {
-//        this.mIsInSettingsFragment.setValue(input);
-//    }
 
-
-
-//    public LiveData<Boolean> getmIsInAddNEditFragment() {
-//        return mIsInAddNEditFragment;
-//    }
-//
-//    public void setmIsInAddNEditFragment(Boolean input) {
-//        this.mIsInAddNEditFragment.setValue(input);
-//    }
-//
-//    public MutableLiveData<Boolean> getmIsInEditLedgerFragment() {
-//        return mIsInEditLedgerFragment;
-//    }
-//
-//    public void setmIsInEditLedgerFragment(boolean input) {
-//        this.mIsInEditLedgerFragment.setValue(input);
-//    }
 
     public MutableLiveData<String> getmSelectedCategory() {
         return mSelectedCategory;
@@ -302,30 +253,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.mSelectedCategory.setValue(input);
     }
 
-
-    public MutableLiveData<Boolean> getmShowBottomNavigationBar() {
-        return mShowBottomNavigationBar;
-    }
-
-    public void setmShowBottomNavigationBar(boolean input) {
-        this.mShowBottomNavigationBar.setValue(input);
-    }
-
-    public MutableLiveData<Boolean> getmShowFloatingActionBtn() {
-        return mShowFloatingActionBtn;
-    }
-
-    public void setmShowFloatingActionBtn(boolean input) {
-        this.mShowFloatingActionBtn.setValue(input);
-    }
-
-    public MutableLiveData<Boolean> getmIsInBaseFragment() {
-        return mIsInBaseFragment;
-    }
-
-    public void setmIsInBaseFragment(boolean input) {
-        this.mIsInBaseFragment.setValue(input);
-    }
 
     /*a one way trigger called from MainActivity (actionbar) to inform DetailTransacitonFragment to delete selected items*/
     public void setmDeleteItemTrigger(boolean input){

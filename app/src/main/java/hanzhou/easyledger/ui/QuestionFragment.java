@@ -21,8 +21,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,8 +38,10 @@ public class QuestionFragment extends Fragment {
     private Button btnLessFriendly;
     private Button btnGithub;
     private TextView explanationTxt;
+
+    private GeneralViewModel mGeneralViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
-    private AppCompatActivity appCompatActivity;
+    private AppCompatActivity mAppCompatActivity;
     private Toolbar toolbar;
 
     public QuestionFragment() {
@@ -48,7 +52,7 @@ public class QuestionFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         setHasOptionsMenu(true);
-        appCompatActivity = (AppCompatActivity)context;
+        mAppCompatActivity = (AppCompatActivity)context;
     }
 
 
@@ -79,17 +83,17 @@ public class QuestionFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        toolbar =  appCompatActivity.findViewById(R.id.toolbar_layout);
+        toolbar =  mAppCompatActivity.findViewById(R.id.toolbar_layout);
         toolbar.setTitle(getString(R.string.title_question_fragment));
         toolbar.getMenu().clear();
         inflater.inflate(R.menu.toolbar_empty, menu);
-        appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mAppCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mAdapterActionViewModel.setmIsInBaseFragment(false);
+//        mAdapterActionViewModel.setmIsInBaseFragment(false);
     }
 
     @Override
@@ -154,10 +158,8 @@ public class QuestionFragment extends Fragment {
 
 
     private void setupViewModel() {
-        mAdapterActionViewModel = ViewModelProviders.of(appCompatActivity).get(AdapterNActionBarViewModel.class);
-        //todo, change viewmodel
-
-//        mAdapterActionViewModel.setmIsInQuestionFragment(true);
+        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_QUESTION);
 
 
     }

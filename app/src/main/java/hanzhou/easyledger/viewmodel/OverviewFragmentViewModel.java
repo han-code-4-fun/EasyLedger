@@ -8,14 +8,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-import hanzhou.easyledger.data.Repository;
-import hanzhou.easyledger.data.TransactionDB;
+import hanzhou.easyledger.data.RepositoryDB;
 import hanzhou.easyledger.data.TransactionEntry;
-import hanzhou.easyledger.utility.Constant;
 
 public class OverviewFragmentViewModel extends AndroidViewModel {
 
@@ -32,16 +29,16 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
 
 //    private TransactionDB mDB;
 
-    private Repository mRepository;
+    private RepositoryDB mDBRepository;
 
     public OverviewFragmentViewModel(@NonNull Application application) {
         super(application);
 
 
-        mRepository = Repository.getInstance();
-        mRepository.initializeRepository(application);
+        mDBRepository = RepositoryDB.getInstance();
+        mDBRepository.initializeRepository(application);
 
-        untaggedTransactions = mRepository.getUntaggedTransaction();
+        untaggedTransactions = mDBRepository.getUntaggedTransaction();
 
 
         revenue =new MutableLiveData<>();
@@ -56,7 +53,7 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
 
     public void updateTransactionOverviewPeriod(int time){
         listOfTransactionsOfCertainDaysChooseByUser.
-                addSource(mRepository.getPeriodOfEntriesForOverview(time), new Observer<List<TransactionEntry>>() {
+                addSource(mDBRepository.getPeriodOfEntriesForOverview(time), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
                 listOfTransactionsOfCertainDaysChooseByUser.setValue(transactionEntryList);

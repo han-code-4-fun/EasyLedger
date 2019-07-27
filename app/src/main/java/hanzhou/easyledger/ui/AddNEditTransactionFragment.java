@@ -49,6 +49,7 @@ import hanzhou.easyledger.viewadapter.CategoryAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.AddTransactionVMFactory;
 import hanzhou.easyledger.viewmodel.AddTransactionViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /**
@@ -65,6 +66,7 @@ public class AddNEditTransactionFragment extends Fragment
 
     private TransactionDB mDB;
 
+    private GeneralViewModel mGeneralViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
     private SettingsViewModel mSettingsViewModel;
 //    private AddTransactionViewModel mAddTransactionViewModel;
@@ -209,7 +211,8 @@ public class AddNEditTransactionFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
+        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_ADD_EDIT_TRANSACTION);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_TASK_ID)) {
             mTransactionId = savedInstanceState.getInt(INSTANCE_TASK_ID, DEFAULT_TASK_ID);
@@ -281,7 +284,7 @@ public class AddNEditTransactionFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        mAdapterActionViewModel.setmIsInBaseFragment(false);
+//        mAdapterActionViewModel.setmIsInBaseFragment(false);
 
     }
 

@@ -26,7 +26,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
 //    private CustomListItemClickListener mOnClickListener;
     private List<TransactionEntry> mTransactionEntryList;
-    private AdapterNActionBarViewModel mViewModel;
+    private AdapterNActionBarViewModel mAdapterNActionBarViewModel;
 
     private boolean isInActionMode;
 
@@ -35,8 +35,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public TransactionAdapter( AdapterNActionBarViewModel inputVM) {
 
 //        mOnClickListener = listener;
-        mViewModel = inputVM;
-        mViewModel.emptySelectedItems();
+        mAdapterNActionBarViewModel = inputVM;
+        mAdapterNActionBarViewModel.emptySelectedItems();
     }
 
 
@@ -44,52 +44,56 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void setAdapterData(List<TransactionEntry> inputEntries) {
         Log.d("test_vm", "setAdapterData:  new data "+ inputEntries.size());
         mTransactionEntryList = inputEntries;
+        mAdapterNActionBarViewModel.emptySelectedItems();
         notifyDataSetChanged();
 
     }
 
     public List<TransactionEntry> getAdateperData(){
+        Log.d("test_delete", "getAdateperData: "+mTransactionEntryList.toString());
         return  mTransactionEntryList;
     }
 
     public void updateSelectedItemsArray(int position){
 
         /*if selected, unselect(delete) it*/
-        if (mViewModel.getAValueFromSelectedItems(position)) {
-            mViewModel.deleteAValueFromSelectedItems(position);
+        if (mAdapterNActionBarViewModel.getAValueFromSelectedItems(position)) {
+            mAdapterNActionBarViewModel.deleteAValueFromSelectedItems(position);
         } else {
             /*else select it*/
-            mViewModel.putAValueIntoSelectedItems(position, true);
+            mAdapterNActionBarViewModel.putAValueIntoSelectedItems(position, true);
         }
 
         /*update selected number that will display in the toolbar*/
-        mViewModel.setmTransactionSelectedNumber();
+        mAdapterNActionBarViewModel.setmTransactionSelectedNumber();
 
-        if(mViewModel.getNumberOfSelectedItems() == getItemCount()){
-            mViewModel.setmIsAllSelected(true);
+        if(mAdapterNActionBarViewModel.getNumberOfSelectedItems() == getItemCount()){
+            mAdapterNActionBarViewModel.setmIsAllSelected(true);
         }else{
-            mViewModel.setmIsAllSelected(false);
+            mAdapterNActionBarViewModel.setmIsAllSelected(false);
         }
+        Log.d("test_delete", "updateSelectedItemsArray: "+
+                mAdapterNActionBarViewModel.getTheSelectionArray().toString());
         this.notifyItemChanged(position);
     }
 
 
     public int getOneSelectedEntryID(){
-        int position = mViewModel.getFirstSelectedItems();
+        int position = mAdapterNActionBarViewModel.getFirstSelectedItems();
         return mTransactionEntryList.get(position).getId();
     }
 
 
     public void selectAll() {
         for(int i =0;i<mTransactionEntryList.size(); i++){
-            if(!mViewModel.getAValueFromSelectedItems(i)){
-                mViewModel.putAValueIntoSelectedItems(i,true);
+            if(!mAdapterNActionBarViewModel.getAValueFromSelectedItems(i)){
+                mAdapterNActionBarViewModel.putAValueIntoSelectedItems(i,true);
                 this.notifyItemChanged(i);
             }
         }
-        mViewModel.setmTransactionSelectedNumber();
+        mAdapterNActionBarViewModel.setmTransactionSelectedNumber();
 
-        mViewModel.setmIsAllSelected(true);
+        mAdapterNActionBarViewModel.setmIsAllSelected(true);
     }
 
     public List<TransactionEntry> getmTransactionEntryList() {
@@ -97,9 +101,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public void deselectAll() {
-        mViewModel.emptySelectedItems();
-        mViewModel.setmTransactionSelectedNumber();
-        mViewModel.setmIsAllSelected(false);
+//        mAdapterNActionBarViewModel.emptySelectedItems();
+//        mAdapterNActionBarViewModel.setmTransactionSelectedNumber();
+//        mAdapterNActionBarViewModel.setmIsAllSelected(false);
         this.notifyDataSetChanged();
     }
 
@@ -145,7 +149,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
                     updateSelectedItemsArray(position);
                 }
             });
-            holder.checkBox.setChecked(mViewModel.getAValueFromSelectedItems(position));
+            holder.checkBox.setChecked(mAdapterNActionBarViewModel.getAValueFromSelectedItems(position));
 
         } else {
             holder.amount.setBackgroundColor(Color.WHITE);
@@ -200,7 +204,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
                     int id = mTransactionEntryList.get(position).getId();
 
-                    mViewModel.setmClickedEntryID(id);
+                    mAdapterNActionBarViewModel.setmClickedEntryID(id);
                 }
             }
         }
@@ -208,7 +212,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         @Override
         public boolean onLongClick(View view) {
 
-            if (!isInActionMode) {  mViewModel.setActionModeState(true); }
+            if (!isInActionMode) {  mAdapterNActionBarViewModel.setActionModeState(true); }
             return false;
         }
     }
