@@ -573,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Integer integer) {
 
                 mNumberOfSelection = integer;
-                toolbarActionModeOnSelectedNumber(integer);
+                toolbarActionModeOnSelectedNumber(mNumberOfSelection);
             }
         });
 
@@ -635,7 +635,9 @@ public class MainActivity extends AppCompatActivity {
         textViewOnToolBar.setVisibility(View.GONE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mAdapterActionViewModel.emptySelectedItems();
+        mAdapterActionViewModel.setmTransactionSelectedNumber();
         mAdapterActionViewModel.setActionModeState(false);
+        mAdapterActionViewModel.setmIsAllSelected(false);
 
     }
 

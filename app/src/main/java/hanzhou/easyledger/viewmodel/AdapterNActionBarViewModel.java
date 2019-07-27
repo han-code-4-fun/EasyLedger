@@ -115,6 +115,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     public void setmTransactionSelectedNumber() {
         mTransactionSelectedNumber.setValue(selectedBooleanArrayViewMode.size());
+
     }
 
     public LiveData<Integer> getTransactionSelectedNumberLiveData() {

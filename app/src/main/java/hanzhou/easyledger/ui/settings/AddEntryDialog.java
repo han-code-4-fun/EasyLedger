@@ -60,7 +60,7 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
         mTextInputLayout = view.findViewById(R.id.setting_dialog_add_entry_textinputlayout_id);
 
         mEditText = view.findViewById(R.id.setting_dialog_add_entry_editText_id);
-        
+
         builder.setView(view)
                 .setNegativeButton(getString(R.string.dialog_negative_btn_title), cancelBTNClickListener)
                 .setPositiveButton(getString(R.string.dialog_positive_btn_title),  null );
