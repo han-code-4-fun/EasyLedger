@@ -16,15 +16,17 @@ public class GeneralViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mCurrentScreen = new MutableLiveData<>();
 
+    private MutableLiveData<String> mCurrentLedger = new MutableLiveData<>();
+
+
     private MutableLiveData<Boolean> mIsSwitchViewPager = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> mIsInBaseFragment = new MutableLiveData<>();
 
-    private RepositoryDB mRepositoryDB;
 
     public GeneralViewModel(@NonNull Application application) {
         super(application);
-        mRepositoryDB = RepositoryDB.getInstance();
+        mCurrentLedger.setValue(Constant.LEDGER_OVERALL);
     }
 
     public void setmCurrentScreen(String name) {
@@ -52,5 +54,13 @@ public class GeneralViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getmIsInBaseFragment() {
         return mIsInBaseFragment;
+    }
+
+    public LiveData<String> getmCurrentLedger() {
+        return mCurrentLedger;
+    }
+
+    public void setmCurrentLedger(String input) {
+        this.mCurrentLedger.setValue(input);
     }
 }

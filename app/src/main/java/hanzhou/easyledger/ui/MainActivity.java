@@ -21,6 +21,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.data.RepositoryDB;
+import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.smsprocessor.HistoryRemark;
 import hanzhou.easyledger.smsprocessor.HistorySMSReader;
 import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
@@ -52,6 +54,7 @@ import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewOnToolBar;
 
     private String mCurrentScreen;
-
+    private String mVisibleLedger;
 
     /*
         Ignore btn on toolbar that appears when toolbar is in action mode,
@@ -343,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.toolbar_delete:
                 toolbarActionDeleteSelectedRecords();
-                toolbarActionToOriginMode();
+
                 break;
             case R.id.toolbar_ignore:
                 mAdapterActionViewModel.setmCategorizeItemsToOthersTrigger(true);
@@ -421,6 +424,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("test_screen_change", "onChanged: current -> " + s);
                 mCurrentScreen = s;
                 uiActionsOnScreenChange(s);
+            }
+        });
+        mGeneralViewModel.getmIsSwitchViewPager().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+
+                    toolbarActionToOriginMode();
+                    mGeneralViewModel.setmIsSwitchViewPager(false);
+                }
+            }
+        });
+
+        mGeneralViewModel.getmCurrentLedger().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                mVisibleLedger =s ;
             }
         });
 
@@ -688,6 +708,47 @@ public class MainActivity extends AppCompatActivity {
                     getResources().getString(R.string.msg_deleting_need_to_have_one),
                     Toast.LENGTH_LONG).show();
         } else {
+
+            mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
+
+
+            mTransactionViewModel.getTransactionsByLedger().observe(this, new Observer<List<TransactionEntry>>() {
+                @Override
+                public void onChanged(List<TransactionEntry> transactionEntryList) {
+
+                        RepositoryDB.getInstance().deleteSelectedTransactions(
+                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
+                        );
+                    toolbarActionToOriginMode();
+                }
+            });
+
+//            mAdapterActionViewModel.getmDeleteItemTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+//                @Override
+//                public void onChanged(Boolean aBoolean) {
+//                    if (aBoolean) {
+//
+//                        List<TransactionEntry> list;
+//                        if(mVisibleLedger.equals(Constant.UNTAGGED)){
+//                            list = RepositoryDB.getInstance().getUntaggedTransaction().getValue();
+//                        }else{
+//                            if(mVisibleLedger.equals("OVERALL")){
+//                                list = RepositoryDB.getInstance().getAllTransactions().getValue();
+//                            }else{
+//                                list = RepositoryDB.getInstance().getTransactionByLedger(mVisibleLedger).getValue();
+//                                Log.d("test_test", "updateTransactionOnUserInput:   ledger name -> "+list.size());
+//                            }
+//
+//                        }
+//
+//
+//                        list=  mAdapterActionViewModel.getSelectedTransactions(list);
+//                        RepositoryDB.getInstance().deleteSelectedTransactions(list);
+//
+//
+//                    }
+//                }
+//            });
 
 //<<<<<<< HEAD
 //            final List<TransactionEntry> entries;

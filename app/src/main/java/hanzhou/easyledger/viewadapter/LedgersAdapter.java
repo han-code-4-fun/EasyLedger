@@ -73,7 +73,7 @@ public class LedgersAdapter extends FragmentPagerAdapter {
 
 //        Log.d("test_frag", " ***Adapter*** getItem:   name ->"+mLedgers.get(position));
 //        return DetailTransactionFragment.newInstance(Constant.FRAG_NAME_LEDGER);
-        mTransactionDBViewModel.setLedgerName(mLedgers.get(position));
+//        mTransactionDBViewModel.setLedgerName(mLedgers.get(position));
         return DetailTransactionFragment.newInstance(mLedgers.get(position));
 
     }

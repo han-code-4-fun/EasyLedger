@@ -21,9 +21,13 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.data.AppExecutors;
+import hanzhou.easyledger.data.RepositoryDB;
 import hanzhou.easyledger.data.TransactionDB;
+import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.LedgersAdapter;
@@ -132,7 +136,7 @@ public class LedgerFragment extends Fragment {
 
         viewPager.setAdapter(mLedgersAdapter);
 
-//        viewPager.addOnPageChangeListener(listener);
+        viewPager.addOnPageChangeListener(listener);
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -145,14 +149,13 @@ public class LedgerFragment extends Fragment {
 
     }
 
-//    private ViewPager.SimpleOnPageChangeListener listener = new ViewPager.SimpleOnPageChangeListener() {
-//        @Override
-//        public void onPageSelected(int position) {
-//            Log.i("test_222", "page selected " + position);
-//            currentPage = position;
-//        }
-//    };
-
+    private ViewPager.SimpleOnPageChangeListener listener = new ViewPager.SimpleOnPageChangeListener() {
+        @Override
+        public void onPageSelected(int position) {
+            mGeneralViewModel.setmCurrentLedger(mLedgersList.get(position));
+            mGeneralViewModel.setmIsSwitchViewPager(true);
+        }
+    };
 
 
     @Override
@@ -200,6 +203,9 @@ public class LedgerFragment extends Fragment {
 
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
+
+
+
         SPViewModelFactory factory = new SPViewModelFactory(mSharedPreferences);
         SPViewModel spViewModel = ViewModelProviders.of(mAppCompatActivity, factory).get(SPViewModel.class);
 
@@ -208,13 +214,11 @@ public class LedgerFragment extends Fragment {
             public void onChanged(String s) {
 
                 ArrayList<String> temp = mGsonHelper.convertJsonToArrayListString(s);
-                if(!mLedgersList.equals(temp)){
-
+                if (!mLedgersList.equals(temp)) {
                     mLedgersList = temp;
-                    mLedgersAdapter.setmLedgers(mLedgersList);
+//                    mLedgersAdapter.setmLedgers(mLedgersList);
                     final SettingsViewModel settingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
                     settingsViewModel.setmRefreshLedgerFragmentTrigger(true);
-
 
 
                 }

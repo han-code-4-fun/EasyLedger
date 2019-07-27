@@ -123,7 +123,7 @@ public class OverviewFragment extends Fragment{
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.overview_recyclerview_for_untagged_transactions,
-                       DetailTransactionFragment.newInstance(Constant.FRAG_NAME_OVERVIEW))
+                       DetailTransactionFragment.newInstance(Constant.UNTAGGED))
                 .commit();
 
         return root;

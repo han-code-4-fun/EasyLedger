@@ -22,6 +22,7 @@ import java.util.List;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
+import hanzhou.easyledger.data.RepositoryDB;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
@@ -51,14 +52,16 @@ public class DetailTransactionFragment extends Fragment {
 
     private String mInput;
 
-    private String mParentFragInput;
+    private String mLedgerName;
+
+    private String mVisibleLedger;
 
 
-    public static DetailTransactionFragment newInstance(String inputCurrentScreen) {
+    public static DetailTransactionFragment newInstance(String ledger) {
 
         DetailTransactionFragment fragment = new DetailTransactionFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(PARENT_NAME, inputCurrentScreen);
+        bundle.putString(INPUT, ledger);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -77,7 +80,7 @@ public class DetailTransactionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            mParentFragInput = getArguments().getString(PARENT_NAME);
+            mLedgerName = getArguments().getString(INPUT);
         }
         Log.d("test_frag", "onCreate: " );
     }
@@ -143,11 +146,32 @@ public class DetailTransactionFragment extends Fragment {
                 ViewModelProviders.of(mAppCompatActivity).get(TransactionDBViewModel.class);
 
         GeneralViewModel mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+
+        mGeneralViewModel.getmCurrentLedger().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                mVisibleLedger =s ;
+            }
+        });
+
+//        mAdapterActionViewModel.setParentFragment(mParentFragment);
+
+        mTransactionViewModel.updateTransactionOnUserInput(mLedgerName);
+
+
+        mTransactionViewModel.getTransactionsByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+                mAdapter.setAdapterData(transactionEntryList);
+            }
+        });
+
+
 //        mGeneralViewModel.getCurrentScreen().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
 //            public void onChanged(String s) {
-//                mParentFragInput =s;
-//                if(mParentFragInput.equals(Constant.FRAG_NAME_OVERVIEW)){
+//                mLedgerName =s;
+//                if(mLedgerName.equals(Constant.FRAG_NAME_OVERVIEW)){
 //                    mTransactionViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
 //                        @Override
 //                        public void onChanged(List<TransactionEntry> transactionEntryList) {
@@ -155,7 +179,7 @@ public class DetailTransactionFragment extends Fragment {
 //
 //                        }
 //                    });
-//                }else if(mParentFragInput.equals(Constant.FRAG_NAME_LEDGER)){
+//                }else if(mLedgerName.equals(Constant.FRAG_NAME_LEDGER)){
 //
 //
 //
@@ -172,25 +196,25 @@ public class DetailTransactionFragment extends Fragment {
 //        });
 
 
-        if(mParentFragInput.equals(Constant.FRAG_NAME_OVERVIEW)){
-            mTransactionViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-                @Override
-                public void onChanged(List<TransactionEntry> transactionEntryList) {
-                    mAdapter.setAdapterData(transactionEntryList);
-
-                }
-            });
-        }else {
-
-
-            mTransactionViewModel.getListEntriesByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-                @Override
-                public void onChanged(List<TransactionEntry> transactionEntryList) {
-                    mAdapter.setAdapterData(transactionEntryList);
-
-                }
-            });
-        }
+//        if(mLedgerName.equals(Constant.FRAG_NAME_OVERVIEW)){
+//            mTransactionViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+//                @Override
+//                public void onChanged(List<TransactionEntry> transactionEntryList) {
+//                    mAdapter.setAdapterData(transactionEntryList);
+//
+//                }
+//            });
+//        }else {
+//
+//
+//            mTransactionViewModel.getListEntriesByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+//                @Override
+//                public void onChanged(List<TransactionEntry> transactionEntryList) {
+//                    mAdapter.setAdapterData(transactionEntryList);
+//
+//                }
+//            });
+//        }
 
 
 
@@ -243,26 +267,7 @@ public class DetailTransactionFragment extends Fragment {
             }
         });
 
-        mAdapterActionViewModel.getmDeleteItemTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
 
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            TransactionDB.getInstance(mAppCompatActivity).transactionDAO().deleteListOfTransactions(
-                                    mAdapterActionViewModel.getSelectedTransactions(mTransactionViewModel.getAllTransactions().getValue())
-                            );
-
-                        }
-                    });
-
-                    mAdapterActionViewModel.setmDeleteItemTrigger(false);
-                }
-            }
-        });
 
         mAdapterActionViewModel.getmEditAnEntryTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -295,5 +300,7 @@ public class DetailTransactionFragment extends Fragment {
             }
         });
     }
+
+
 
 }

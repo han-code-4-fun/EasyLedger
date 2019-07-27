@@ -42,7 +42,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
 
     public void setAdapterData(List<TransactionEntry> inputEntries) {
-        Log.d("test_vm", "setAdapterData:  new data "+ inputEntries.size());
+        Log.d("test_delete", "setAdapterData:  new data "+ inputEntries.size());
         mTransactionEntryList = inputEntries;
         mAdapterNActionBarViewModel.emptySelectedItems();
         notifyDataSetChanged();
@@ -165,6 +165,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         return mTransactionEntryList.size();
     }
+
+
 
     public class TransactionViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnLongClickListener {

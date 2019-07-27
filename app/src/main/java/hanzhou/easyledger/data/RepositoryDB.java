@@ -1,6 +1,7 @@
 package hanzhou.easyledger.data;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -85,6 +86,17 @@ public class RepositoryDB {
             @Override
             public void run() {
                 mTransactionDB.transactionDAO().applyUpdateCategory(remark,category, Constant.UNTAGGED);
+            }
+        });
+    }
+
+    public void deleteSelectedTransactions(final List<TransactionEntry> input){
+        mAppExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                Log.d("test_delete", "run deletion size ->" +input.size());
+                mTransactionDB.transactionDAO().deleteListOfTransactions(input);
             }
         });
     }
