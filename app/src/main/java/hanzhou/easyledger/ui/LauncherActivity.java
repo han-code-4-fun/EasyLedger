@@ -6,11 +6,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import hanzhou.easyledger.R;
 
@@ -18,26 +23,49 @@ public class LauncherActivity extends AppCompatActivity {
 
     public final static int REQUEST_PERMISSION_APP_START = 1001;
 
+    private static final long splashScreenTime = 3000L;
+
+    private String[] PERMISSIONS = {
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.INTERNET,
+    };
+
+
     private static final String TAG = LauncherActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        String[] PERMISSIONS = {
-                Manifest.permission.RECEIVE_SMS,
-                Manifest.permission.READ_SMS,
-                Manifest.permission.INTERNET,
-        };
 
+        LottieAnimationView startAnimation = findViewById(R.id.app_start_animation);
+        startAnimation.addAnimatorListener(new AnimatorListenerAdapter() {
 
-        if(isAllPermissionsGranted(this, PERMISSIONS)){
-            startMainActivity();
-        }else{
-            ActivityCompat.requestPermissions(this,
-                    PERMISSIONS,
-                    REQUEST_PERMISSION_APP_START);
-        }
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                
+
+                if(isAllPermissionsGranted(LauncherActivity.this, PERMISSIONS)){
+                    startMainActivity();
+                }else{
+                    ActivityCompat.requestPermissions(LauncherActivity.this,
+                            PERMISSIONS,
+                            REQUEST_PERMISSION_APP_START);
+                }
+            }
+        });
+
+//
+//
+//
+//        if(isAllPermissionsGranted(this, PERMISSIONS)){
+//            startMainActivity();
+//        }else{
+//            ActivityCompat.requestPermissions(this,
+//                    PERMISSIONS,
+//                    REQUEST_PERMISSION_APP_START);
+//        }
         //app must read sms in order to work
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
 //                != PackageManager.PERMISSION_GRANTED) {
@@ -81,7 +109,19 @@ public class LauncherActivity extends AppCompatActivity {
         }
     }
     private void startMainActivity(){
-        startActivity(new Intent(this, MainActivity.class));
+
+
+        /*
+        *  let flash screen run for 3 seconds;
+        * */
+
+        Handler myHandler = new Handler();
+        myHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+            }
+        }, splashScreenTime);
         finish();
     }
 }
