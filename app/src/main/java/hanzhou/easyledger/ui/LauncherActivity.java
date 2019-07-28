@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 
@@ -38,23 +39,28 @@ public class LauncherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
+        LottieAnimationView lottieAnimationView = findViewById(R.id.app_start_animation);
 
-        LottieAnimationView startAnimation = findViewById(R.id.app_start_animation);
-        startAnimation.addAnimatorListener(new AnimatorListenerAdapter() {
-
+        lottieAnimationView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animator) {
-                
+            public void onAnimationEnd(Animator animation) {
 
                 if(isAllPermissionsGranted(LauncherActivity.this, PERMISSIONS)){
+
+
                     startMainActivity();
                 }else{
                     ActivityCompat.requestPermissions(LauncherActivity.this,
                             PERMISSIONS,
                             REQUEST_PERMISSION_APP_START);
                 }
+
+
             }
         });
+
+
+
 
 //
 //
@@ -120,8 +126,9 @@ public class LauncherActivity extends AppCompatActivity {
             @Override
             public void run() {
                 startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+                finish();
             }
         }, splashScreenTime);
-        finish();
+
     }
 }
