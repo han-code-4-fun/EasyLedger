@@ -3,4 +3,6 @@
     <dimen name="dialog_sub_item_margin_start">20dp</dimen>
     <dimen name="dialog_sub_item_margin_end">20dp</dimen>
 
+    <dimen name="bottom_navigation_view_height">60dp</dimen>
+
 </resources>

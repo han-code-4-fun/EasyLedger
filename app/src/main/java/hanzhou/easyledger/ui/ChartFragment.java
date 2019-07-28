@@ -10,7 +10,9 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,7 +157,7 @@ public class ChartFragment extends Fragment implements
 
         mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
         mColors = new BackGroundColor();
-        mGsonHelper =GsonHelper.getInstance();
+        mGsonHelper = GsonHelper.getInstance();
         mGsonHelper.setmSharedPreferences(mAppPreferences);
 
 //        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
@@ -179,6 +181,7 @@ public class ChartFragment extends Fragment implements
 
         mHistoryBarChart = rootView.findViewById(R.id.chart_history_barchart);
 
+        setChartHeightForAllTypeOfScreenHeight();
 
         return rootView;
     }
@@ -200,173 +203,90 @@ public class ChartFragment extends Fragment implements
 
     }
 
+    /*
+        everything is in the NestedScrollView.
+        setup charts height 90% of visible screen size, so
+        user will notices that there are more charts downwards
+     */
+    private void setChartHeightForAllTypeOfScreenHeight() {
+
+       int screenHeight = getIdealScreenHeight();
+
+       setChartHeight(screenHeight);
+
+    }
+
+    private int getIdealScreenHeight() {
+
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (mAppCompatActivity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        Log.d("test_dimension", "getIdealScreenHeight:  actionbar ->"+actionBarHeight);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        mAppCompatActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+
+        Log.d("test_dimension", "getIdealScreenHeight:  screenHeight ->"+screenHeight);
+
+        int bottomNavigationViewHeight = Math.round(getResources().getDimension(R.dimen.bottom_navigation_view_height));
+        Log.d("test_dimension", "getIdealScreenHeight:  bottomNavigationViewHeight ->"+bottomNavigationViewHeight);
+
+        /*after getting the real display size by removing actionbar
+         and bottomNavigationView, make height times 0.9 */
+        screenHeight = screenHeight - bottomNavigationViewHeight - actionBarHeight;
+
+        Log.d("test_dimension", "screenHeight  after remove actionbar and bottomnavigationview ->"+screenHeight);
+
+
+        screenHeight = (int) Math.round(screenHeight * 0.9);
+
+
+        Log.d("test_dimension", "screenHeight  after * 0.9 ->"+screenHeight);
+
+
+        return screenHeight;
+    }
+
+    private void setChartHeight(int screenHeight) {
+        ViewGroup.LayoutParams layoutParams = mCurrentPieChartRevenue.getLayoutParams();
+        layoutParams.height = screenHeight;
+        mCurrentPieChartRevenue.setLayoutParams(layoutParams);
+
+        layoutParams = mCurrentPieChartExpense.getLayoutParams();
+        layoutParams.height = screenHeight;
+        mCurrentPieChartExpense.setLayoutParams(layoutParams);
+
+        layoutParams = mCurrentBarChartRevenue.getLayoutParams();
+        layoutParams.height = screenHeight;
+        mCurrentBarChartRevenue.setLayoutParams(layoutParams);
+
+        layoutParams = mCurrentBarChartExpense.getLayoutParams();
+        layoutParams.height = screenHeight;
+        mCurrentBarChartExpense.setLayoutParams(layoutParams);
+
+        layoutParams = mHistoryBarChart.getLayoutParams();
+        layoutParams.height = screenHeight;
+        mHistoryBarChart.setLayoutParams(layoutParams);
+    }
+
 
     private void setupViewModel() {
 
         mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_CHART);
 
-        //todo, test custom LIvedata SP
-
-        mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
-
         sharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
         );
 
-        sharedPreferenceViewModel.getNumberOfHistoryPeriodSelectedByUserOnChartFrag().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
+        setupSharedPreferenceViewModelObserverForChartDisplay(sharedPreferenceViewModel);
 
-                Log.d("test_new", " get new number of period  -> " + integer);
-
-                if (mNumberOfPeriodsToCompare != integer) {
-
-                    mNumberOfPeriodsToCompare = integer;
-                    setPeriodForHistoryChartOnPeriodType();
-
-                    mChartDataViewModel.updatesHistoryDatesForVM(mHistoryChartStartDate, mHistoryChartEndDate);
-
-                    Log.d("test_new", " get new number of period  -> start date and end date" + mHistoryChartStartDate + " + " + mHistoryChartEndDate);
-
-                }
-            }
-        });
-
-        sharedPreferenceViewModel.getmChartHistoryPeriodType().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if (mHistoryPeriodType != integer) {
-
-                    mHistoryPeriodType = integer;
-                    setPeriodForHistoryChartOnPeriodType();
-                    mChartDataViewModel.updatesHistoryDatesForVM(mHistoryChartStartDate, mHistoryChartEndDate);
-                }
-            }
-
-        });
-
-        sharedPreferenceViewModel.getmChartCurrentChartType().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-
-                if (mCurrentChartType != integer) {
-
-                    mCurrentChartType = integer;
-
-                    if (mCurrentChartType == R.id.radioButton_current_period_type_piechart) {
-                        mUserSelection = CATEGORY_PIECHART;
-                    } else {
-                        mUserSelection = CATEGORY_BARCHART;
-                    }
-
-                    mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
-                }
-
-
-            }
-        });
-
-        sharedPreferenceViewModel.getmChartCurrentPeriodType().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-
-                if (mCurrentPeriodType != integer) {
-
-                    mCurrentPeriodType = integer;
-
-                    if (mCurrentPeriodType != R.id.radioButton_current_period_type_custom) {
-                        setDataCurrentPeriod(mNumOfCustomDays);
-                        mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
-                    }
-
-                }
-
-            }
-        });
-
-        sharedPreferenceViewModel.getmChartCurrentPeriodCustomNum().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-
-                if (mNumOfCustomDays != integer) {
-
-                    mNumOfCustomDays = integer;
-
-                    if (mCurrentPeriodType == R.id.radioButton_current_period_type_custom) {
-                        mIsCustomCurrentPeriod = true;
-                        setDataCurrentPeriod(integer);
-                        mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
-                    }
-                }
-
-            }
-        });
-
-        sharedPreferenceViewModel.getmChartPercentageAmountBool().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                mIsPieChartShowPercentage = aBoolean;
-
-                if (mCurrentChartStartingDate != -1 && mCurrentPeriodType != -1 && mUserSelection != null) {
-
-                    mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
-                }
-
-            }
-        });
-
-
-//        final ChartDataInitialViewModelFactory factory = new ChartDataInitialViewModelFactory(mCurrentChartStartingDate, mHistoryChartStartDate, mHistoryChartEndDate, mDb);
-
-//        mChartDataViewModel = ViewModelProviders.of(mAppCompatActivity, factory).get(ChartDataViewModel.class);
         mChartDataViewModel = ViewModelProviders.of(mAppCompatActivity).get(ChartDataViewModel.class);
         mChartDataViewModel.initializeDatesForVM(mHistoryChartStartDate, mHistoryChartEndDate, mCurrentChartStartingDate);
 
-        mChartDataViewModel.getmExpenseListEntry().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-            @Override
-            public void onChanged(List<TransactionEntry> transactionEntryList) {
-
-                mCategoryExpense = new HashMap<>();
-                initializeHashMap(
-                        mCategoryExpense,
-                        mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE)
-                );
-                for (int i = 0; i < transactionEntryList.size(); i++) {
-                    TransactionEntry entry = transactionEntryList.get(i);
-                    categorizeExpenseValues(entry, mCategoryExpense);
-                }
-                setDataForCurrentChart(CHART_EXPENSE);
-            }
-        });
-
-        mChartDataViewModel.getmRevenueListEntry().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-            @Override
-            public void onChanged(List<TransactionEntry> transactionEntryList) {
-
-                mCategoryRevenue = new HashMap<>();
-
-                initializeHashMap(
-                        mCategoryRevenue,
-                        mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE)
-                );
-
-                for (TransactionEntry entry : transactionEntryList) {
-                    categorizeRevenueValues(entry, mCategoryRevenue);
-                }
-
-                setDataForCurrentChart(CHART_REVENUE);
-
-            }
-        });
-
-        mChartDataViewModel.getmHistoryListEntryPeriod().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-            @Override
-            public void onChanged(List<TransactionEntry> transactionEntryList) {
-                Log.d("test_new", "  chartFragment  observer");
-
-                setDataHistoryBarChart(transactionEntryList);
-            }
-        });
+        setupChartDataViewModelObserver(mChartDataViewModel);
 
 
 //        ChartDataInitialViewModelFactory factory = new ChartDataInitialViewModelFactory(mCurrentChartStartingDate, mHistoryChartStartDate, mHistoryChartEndDate, mDb);
@@ -382,6 +302,8 @@ public class ChartFragment extends Fragment implements
     }
 
 
+
+
     private void initializeHistoryBarChart() {
 
         mHistoryBarChart.setOnChartValueSelectedListener(this);
@@ -392,9 +314,9 @@ public class ChartFragment extends Fragment implements
         mHistoryBarChart.setDrawGridBackground(false);
 
         /*
-        *   MPAndroidChart bug, version lower than API24 cannot have custom Marker due to memory issue
-        * */
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+         *   MPAndroidChart bug, version lower than API24 cannot have custom Marker due to memory issue
+         * */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view);
             // For bounds control
@@ -1248,4 +1170,155 @@ public class ChartFragment extends Fragment implements
 //        mHistoryChartEndDate = mDateListForEachPeriod.get(mDateListForEachPeriod.size() - 1);
 //
 //    }
+
+
+
+
+    private void setupSharedPreferenceViewModelObserverForChartDisplay(SPViewModel sharedPreferenceViewModel) {
+        sharedPreferenceViewModel.getNumberOfHistoryPeriodSelectedByUserOnChartFrag().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+
+                if (mNumberOfPeriodsToCompare != integer) {
+
+                    mNumberOfPeriodsToCompare = integer;
+                    setPeriodForHistoryChartOnPeriodType();
+
+                    mChartDataViewModel.updatesHistoryDatesForVM(mHistoryChartStartDate, mHistoryChartEndDate);
+
+                }
+            }
+        });
+
+        sharedPreferenceViewModel.getmChartHistoryPeriodType().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (mHistoryPeriodType != integer) {
+
+                    mHistoryPeriodType = integer;
+                    setPeriodForHistoryChartOnPeriodType();
+                    mChartDataViewModel.updatesHistoryDatesForVM(mHistoryChartStartDate, mHistoryChartEndDate);
+                }
+            }
+
+        });
+
+        sharedPreferenceViewModel.getmChartCurrentChartType().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+
+                if (mCurrentChartType != integer) {
+
+                    mCurrentChartType = integer;
+
+                    if (mCurrentChartType == R.id.radioButton_current_period_type_piechart) {
+                        mUserSelection = CATEGORY_PIECHART;
+                    } else {
+                        mUserSelection = CATEGORY_BARCHART;
+                    }
+
+                    mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
+                }
+
+
+            }
+        });
+
+        sharedPreferenceViewModel.getmChartCurrentPeriodType().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+
+                if (mCurrentPeriodType != integer) {
+
+                    mCurrentPeriodType = integer;
+
+                    if (mCurrentPeriodType != R.id.radioButton_current_period_type_custom) {
+                        setDataCurrentPeriod(mNumOfCustomDays);
+                        mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
+                    }
+
+                }
+
+            }
+        });
+
+        sharedPreferenceViewModel.getmChartCurrentPeriodCustomNum().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+
+                if (mNumOfCustomDays != integer) {
+
+                    mNumOfCustomDays = integer;
+
+                    if (mCurrentPeriodType == R.id.radioButton_current_period_type_custom) {
+                        mIsCustomCurrentPeriod = true;
+                        setDataCurrentPeriod(integer);
+                        mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
+                    }
+                }
+
+            }
+        });
+
+        sharedPreferenceViewModel.getmChartPercentageAmountBool().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                mIsPieChartShowPercentage = aBoolean;
+
+                if (mCurrentChartStartingDate != -1 && mCurrentPeriodType != -1 && mUserSelection != null) {
+
+                    mChartDataViewModel.updatesCurrentDatesforVM(mCurrentChartStartingDate);
+                }
+
+            }
+        });
+    }
+
+    private void setupChartDataViewModelObserver(ChartDataViewModel mChartDataViewModel) {
+        mChartDataViewModel.getmExpenseListEntry().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+
+                mCategoryExpense = new HashMap<>();
+                initializeHashMap(
+                        mCategoryExpense,
+                        mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE)
+                );
+                for (int i = 0; i < transactionEntryList.size(); i++) {
+                    TransactionEntry entry = transactionEntryList.get(i);
+                    categorizeExpenseValues(entry, mCategoryExpense);
+                }
+                setDataForCurrentChart(CHART_EXPENSE);
+            }
+        });
+
+        mChartDataViewModel.getmRevenueListEntry().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+
+                mCategoryRevenue = new HashMap<>();
+
+                initializeHashMap(
+                        mCategoryRevenue,
+                        mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE)
+                );
+
+                for (TransactionEntry entry : transactionEntryList) {
+                    categorizeRevenueValues(entry, mCategoryRevenue);
+                }
+
+                setDataForCurrentChart(CHART_REVENUE);
+
+            }
+        });
+
+        mChartDataViewModel.getmHistoryListEntryPeriod().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
+            @Override
+            public void onChanged(List<TransactionEntry> transactionEntryList) {
+                Log.d("test_new", "  chartFragment  observer");
+
+                setDataHistoryBarChart(transactionEntryList);
+            }
+        });
+    }
 }
