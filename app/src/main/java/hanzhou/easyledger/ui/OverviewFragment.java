@@ -1,5 +1,6 @@
 package hanzhou.easyledger.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +34,7 @@ import java.util.List;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
@@ -56,6 +59,9 @@ public class OverviewFragment extends Fragment{
     private AppCompatActivity mAppCompatActivity;
 
     private SharedPreferences mAppPreferences;
+
+
+    private TextView mTotalAmount;
 
 //    /*two variable are boolean triggers that only update UI when both data updated*/
 //    private boolean mReceivedRevenueData;
@@ -119,6 +125,7 @@ public class OverviewFragment extends Fragment{
 
         initiazlizeBarChart();
 
+        mTotalAmount = root.findViewById(R.id.overview_total_balance_amount);
 
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
@@ -321,6 +328,8 @@ public class OverviewFragment extends Fragment{
 //        }
 
     }
+
+    @SuppressLint("SetTextI18n")
     private void calculateSpendingNRevenueSum(List<TransactionEntry> transactionEntryList) {
         float revenue = 0;
         float spending = 0;
@@ -334,6 +343,8 @@ public class OverviewFragment extends Fragment{
 
         mOverviewFragmentViewModel.setRevenue(revenue);
         mOverviewFragmentViewModel.setSpend(spending);
+
+        mTotalAmount.setText(UnitUtil.formatMoney(revenue+spending));
 
     }
 }

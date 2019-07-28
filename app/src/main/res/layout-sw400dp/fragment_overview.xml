@@ -16,7 +16,7 @@
         android:layout_marginLeft="@dimen/margin_overview_total_balance_title"
         android:layout_marginTop="@dimen/margin_overview_total_balance_title"
         android:text="@string/overview_totalbalance_title"
-        android:textSize="@dimen/textsize_smaller_screen_title"
+        android:textSize="@dimen/textsize_larger_screen_title"
 
         app:layout_constraintBottom_toTopOf="@+id/overview_total_balance_barchart"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,8 @@
         android:layout_marginEnd="@dimen/margin_overview_total_balance_title"
         android:layout_marginRight="@dimen/margin_overview_total_balance_title"
         android:gravity="end"
-        android:textSize="@dimen/textsize_smaller_screen_title"
+        android:textSize="@dimen/textsize_larger_screen_title"
+
         app:layout_constraintBottom_toBottomOf="@+id/overview_total_balance_title"
         app:layout_constraintEnd_toEndOf="@+id/overview_recyclerview_for_untagged_transactions"
 
@@ -47,9 +48,10 @@
         android:layout_marginTop="8dp"
 
         android:gravity="center|end"
-
         android:text="@string/add_edit_transaction_money_in"
-        android:textSize="@dimen/textsize_smaller_screen_moneyflow"
+
+        android:textSize="@dimen/textsize_larger_screen_moneyflow"
+
         app:layout_constraintBottom_toTopOf="@+id/overview_tv_moneyout"
         app:layout_constraintEnd_toEndOf="@+id/overview_tv_moneyout"
         app:layout_constraintTop_toTopOf="@+id/overview_total_balance_barchart" />
@@ -66,7 +68,8 @@
         android:gravity="center|end"
         android:text="@string/add_edit_transaction_money_out"
 
-        android:textSize="@dimen/textsize_smaller_screen_moneyflow"
+
+        android:textSize="@dimen/textsize_larger_screen_moneyflow"
         app:layout_constraintBottom_toBottomOf="@+id/overview_total_balance_barchart"
         app:layout_constraintEnd_toStartOf="@id/overview_total_balance_barchart"
         app:layout_constraintHorizontal_weight="1"
@@ -103,12 +106,12 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
 
-
         android:layout_marginBottom="@dimen/margin_overview_total_balance_title"
+
         android:text="@string/overview_transaction_tag_textview_title"
-        android:textSize="@dimen/textsize_smaller_screen_title"
+        android:textSize="@dimen/textsize_larger_screen_title"
         app:layout_constraintBottom_toTopOf="@+id/overview_recyclerview_for_untagged_transactions"
-        app:layout_constraintEnd_toEndOf="@+id/overview_total_balance_amount"
+        app:layout_constraintEnd_toEndOf="@+id/overview_total_balance_barchart"
         app:layout_constraintStart_toStartOf="@+id/overview_total_balance_title"
         app:layout_constraintTop_toBottomOf="@+id/overview_total_balance_barchart"
         app:layout_constraintVertical_weight="1" />
@@ -130,9 +133,9 @@
         app:layout_constraintVertical_weight="7" />
 
     <View
-        android:id="@+id/divider7"
+        android:id="@+id/divider6"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -142,10 +145,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+
     <View
         android:id="@+id/divider8"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -156,7 +160,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <View
-        android:id="@+id/divider6"
+        android:id="@+id/divider7"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="8dp"
@@ -185,9 +189,3 @@
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-
-
-
-<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->

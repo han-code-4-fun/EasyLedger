@@ -141,6 +141,7 @@ public class Constant {
     public static final String[] SMS_PROJECTION = {"address", "body"};
     public static final String SMS_COLUMN_DATE = "date";
 
+    public static final String FRAG_NAME_LAUNCHER = "LauncherFragment";
     public static final String FRAG_NAME_ADD_EDIT_TRANSACTION = "AddNEditTransactionFragment";
     public static final String FRAG_NAME_OVERVIEW = "OverviewFragment";
     public static final String FRAG_NAME_LEDGER = "LedgerFragment";

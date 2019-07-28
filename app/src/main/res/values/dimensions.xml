@@ -3,6 +3,35 @@
     <dimen name="dialog_sub_item_margin_start">20dp</dimen>
     <dimen name="dialog_sub_item_margin_end">20dp</dimen>
 
-    <dimen name="bottom_navigation_view_height">60dp</dimen>
+
+
+
+    <dimen name="toolbar_height_larger_screen_phone">60dp</dimen>
+    <dimen name="toolbar_height_smaller_screen_phone">45dp</dimen>
+
+    <dimen name="tablayout_height_larger_screen_phone">60dp</dimen>
+    <dimen name="tablayout_height_smaller_screen_phone">45dp</dimen>
+
+
+    <dimen name="bottom_navigation_view_height_larger_screen_phone">60dp</dimen>
+    <dimen name="bottom_navigation_view_height_small_screen_phone">45dp</dimen>
+
+
+    <dimen name="floatingactionbtn_margin_larger_screen_phone">15dp</dimen>
+    <dimen name="floatingactionbtn_width_height_larger_screen_phone">60dp</dimen>
+
+    <dimen name="floatingactionbtn_margin_smaller_screen_phone">5dp</dimen>
+    <dimen name="floatingactionbtn_width_height_smaller_screen_phone">40dp</dimen>
+
+
+
+    <dimen name="margin_overview_total_balance_title">8dp</dimen>
+
+    <dimen name="textsize_smaller_screen_title">15sp</dimen>
+    <dimen name="textsize_smaller_screen_moneyflow">12sp</dimen>
+
+    <dimen name="textsize_larger_screen_title">20sp</dimen>
+    <dimen name="textsize_larger_screen_moneyflow">17sp</dimen>
+
 
 </resources>

@@ -21,8 +21,6 @@ import androidx.preference.SeekBarPreference;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -117,7 +115,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
                     mAppCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.base_fragment, new SettingAddNEditFragment())
+                            .replace(R.id.fragment_base, new SettingAddNEditFragment())
                             .addToBackStack(null)
                             .commit();
                     return true;
@@ -137,7 +135,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
                     mAppCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.base_fragment, new SettingAddNEditFragment())
+                            .replace(R.id.fragment_base, new SettingAddNEditFragment())
                             .addToBackStack(null)
                             .commit();
                     return true;
@@ -156,7 +154,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
                     mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_EXPENSE);
                     mAppCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.base_fragment, new SettingAddNEditFragment())
+                            .replace(R.id.fragment_base, new SettingAddNEditFragment())
                             .addToBackStack(null)
                             .commit();
                     return true;

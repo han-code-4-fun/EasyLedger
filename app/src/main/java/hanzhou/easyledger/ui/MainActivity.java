@@ -605,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void runAppStartingFragment() {
-        selectedFragment = new OverviewFragment();
+        selectedFragment = new LauncherFragment();
         switchFragmentsOnBottomNavigationBar(selectedFragment);
     }
 
@@ -621,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.base_fragment, input)
+                .replace(R.id.fragment_base, input)
                 .addToBackStack(null)
                 .commit();
     }
@@ -853,6 +853,12 @@ public class MainActivity extends AppCompatActivity {
     private void uiActionsOnScreenChange(String s) {
 
         switch (s) {
+            case Constant.FRAG_NAME_LAUNCHER:
+                bottomNavigation.setVisibility(View.GONE);
+                toolBar.setVisibility(View.GONE);
+                btnFA.hide();
+                break;
+
             case Constant.FRAG_NAME_SETTING_ADD_EDIT:
                 btnFA.hide();
                 bottomNavigation.setVisibility(View.GONE);
@@ -863,6 +869,7 @@ public class MainActivity extends AppCompatActivity {
                 bottomNavigation.setVisibility(View.GONE);
                 break;
             case Constant.FRAG_NAME_OVERVIEW:
+                toolBar.setVisibility(View.VISIBLE);
                 toolbarActionToOriginMode();
                 btnFA.show();
                 btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
@@ -992,7 +999,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.base_fragment, input)
+                .replace(R.id.fragment_base, input)
                 .commit();
     }
 

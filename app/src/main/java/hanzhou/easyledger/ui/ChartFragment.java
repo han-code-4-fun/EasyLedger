@@ -235,7 +235,10 @@ public class ChartFragment extends Fragment implements
 
         Log.d("test_dimension", "getIdealScreenHeight:  screenHeight ->"+screenHeight);
 
-        int bottomNavigationViewHeight = Math.round(getResources().getDimension(R.dimen.bottom_navigation_view_height));
+//        int bottomNavigationViewHeight = Math.round(getResources().getDimension(R.dimen.bottom_navigation_view_height_larger_screen_phone));
+
+        int bottomNavigationViewHeight = mAppCompatActivity.findViewById(R.id.bottom_navigation).getMeasuredHeight();
+
         Log.d("test_dimension", "getIdealScreenHeight:  bottomNavigationViewHeight ->"+bottomNavigationViewHeight);
 
         /*after getting the real display size by removing actionbar
@@ -659,11 +662,17 @@ public class ChartFragment extends Fragment implements
 
         l.setExtra(colorArray, categoriesArray);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-        MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view, categoriesArray);
-        // For bounds control
-        mv.setChartView(barChart);
-        barChart.setMarker(mv);
+            MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view, categoriesArray);
+            // For bounds control
+            mv.setChartView(barChart);
+
+            barChart.setMarker(mv);
+        }
+
+
+
 
         BarData data = new BarData(barDataSet);
         data.setBarWidth(0.9f);

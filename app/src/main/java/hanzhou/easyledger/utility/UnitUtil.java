@@ -35,7 +35,7 @@ public class UnitUtil {
     }
 
     public static String formatMoney(double money){
-        DecimalFormat moneyFormater = new DecimalFormat("$#.##");
+        DecimalFormat moneyFormater = new DecimalFormat("$#,###.##");
         return moneyFormater.format(money);
     }
 
