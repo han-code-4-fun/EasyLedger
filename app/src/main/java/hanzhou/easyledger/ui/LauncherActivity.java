@@ -117,18 +117,22 @@ public class LauncherActivity extends AppCompatActivity {
     private void startMainActivity(){
 
 
-        /*
-        *  let flash screen run for 3 seconds;
-        * */
+        startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+        finish();
 
-        Handler myHandler = new Handler();
-        myHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
-                finish();
-            }
-        }, splashScreenTime);
+
+//        /*
+//        *  let flash screen run for 3 seconds;
+//        * */
+//
+//        Handler myHandler = new Handler();
+//        myHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+//                finish();
+//            }
+//        }, splashScreenTime);
 
     }
 }
