@@ -229,6 +229,10 @@ public class ChartFragment extends Fragment implements
         mAppCompatActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenHeight = displayMetrics.heightPixels;
 
+        int screenWidth = displayMetrics.widthPixels;
+
+        Log.d("test_dimension", "getIdealScreenHeight:   screenwidth is ****** "+ screenWidth);
+
         Log.d("test_dimension", "getIdealScreenHeight:  screenHeight ->"+screenHeight);
 
         int bottomNavigationViewHeight = Math.round(getResources().getDimension(R.dimen.bottom_navigation_view_height));
