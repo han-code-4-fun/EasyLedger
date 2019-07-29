@@ -348,7 +348,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
 
-        android:tint="@color/transaction_default_background"
+        android:tint="@color/color_white"
         app:srcCompat="@drawable/ic_save_btn" />
 
 </FrameLayout>

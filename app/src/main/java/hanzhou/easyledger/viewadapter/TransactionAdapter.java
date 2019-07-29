@@ -1,5 +1,6 @@
 package hanzhou.easyledger.viewadapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,8 +10,11 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import hanzhou.easyledger.R;
@@ -29,14 +33,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     private AdapterNActionBarViewModel mAdapterNActionBarViewModel;
 
     private boolean isInActionMode;
+    private Context mContext;
 
 
-
-    public TransactionAdapter( AdapterNActionBarViewModel inputVM) {
+    public TransactionAdapter(AdapterNActionBarViewModel inputVM, Context context) {
 
 //        mOnClickListener = listener;
         mAdapterNActionBarViewModel = inputVM;
         mAdapterNActionBarViewModel.emptySelectedItems();
+        mContext = context;
     }
 
 
@@ -135,13 +140,21 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         Log.d("flow", "onBindViewHolder: update THIS data");
         TransactionEntry currentRecord = mTransactionEntryList.get(position);
 
+        float amount = currentRecord.getAmount();
 
-        holder.time.setText(String.valueOf(currentRecord.getTime()));
-        holder.amount.setText(UnitUtil.formatMoney(currentRecord.getAmount()));
+        holder.time.setText(UnitUtil.getTimeIntInMoreReadableFormat(currentRecord.getTime()));
+        holder.amount.setText(UnitUtil.formatMoney(amount));
+        if(amount>=0){
+            holder.amount.setTextColor(ContextCompat.getColor(mContext,R.color.color_money_in));
+
+        }else{
+            holder.amount.setTextColor(ContextCompat.getColor(mContext,R.color.color_money_out));
+
+        }
         holder.category.setText(currentRecord.getCategory());
         holder.remark.setText(currentRecord.getRemark());
         if (isInActionMode) {
-            holder.amount.setBackgroundColor(Color.RED);
+            holder.layout.setBackgroundColor(ContextCompat.getColor(mContext,R.color.color_selected_bg));
             holder.checkBox.setVisibility(View.VISIBLE);
             holder.checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -152,7 +165,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             holder.checkBox.setChecked(mAdapterNActionBarViewModel.getAValueFromSelectedItems(position));
 
         } else {
-            holder.amount.setBackgroundColor(Color.WHITE);
+            holder.layout.setBackground(mContext.getResources().getDrawable(R.drawable.background_list_item));
+
             holder.checkBox.setVisibility(View.GONE);
             holder.checkBox.setChecked(false);
         }
@@ -170,6 +184,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public class TransactionViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnLongClickListener {
+
+        ConstraintLayout layout;
+
         TextView time;
         TextView amount;
         TextView category;
@@ -180,6 +197,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            layout = itemView.findViewById(R.id.transaction_layout);
             time = itemView.findViewById(R.id.transaction_time);
             amount = itemView.findViewById(R.id.transaction_amount);
             category = itemView.findViewById(R.id.transaction_category);

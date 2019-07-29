@@ -1,72 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
 
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/transaction_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/inner_element_margin_left_right"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/background_list_item"
+    android:elevation="5dp">
 
     <TextView
         android:id="@+id/transaction_time"
+        style="@style/padding_around"
+        android:background="@drawable/background_round_corner_grey"
+        android:elevation="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        tools:text="@string/placeholder_time"
-        android:textSize="15sp"
-        style="@style/list_item_transaction_textview_padding"
-
-        />
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:gravity="center"
+        android:textSize="@dimen/textsize_larger_screen_title"
+        app:layout_constraintBottom_toBottomOf="@+id/transaction_category"
+        app:layout_constraintEnd_toStartOf="@+id/transaction_amount"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/transaction_category"
+        tools:text="@string/placeholder_time" />
 
     <TextView
         android:id="@+id/transaction_amount"
+        style="@style/padding_around"
+        android:elevation="5dp"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:textSize="15sp"
         android:layout_gravity="center_vertical"
-
+        android:layout_weight="2"
+        android:gravity="center"
         android:text="@string/placeholder_amount"
-        style="@style/list_item_transaction_textview_padding"
+        android:textSize="@dimen/textsize_larger_screen_title"
 
-        />
+        app:layout_constraintBottom_toBottomOf="@+id/transaction_category"
+        app:layout_constraintEnd_toStartOf="@+id/transaction_category"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintStart_toEndOf="@+id/transaction_time"
+        app:layout_constraintTop_toTopOf="@+id/transaction_category" />
 
     <TextView
         android:id="@+id/transaction_category"
+        style="@style/padding_around"
+        android:elevation="5dp"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="@string/placeholder_category"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_weight="2"
+        android:textStyle="bold"
 
-        android:textSize="15sp"
-        style="@style/list_item_transaction_textview_padding"
+        android:text="@string/placeholder_category"
+        android:textSize="@dimen/textsize_larger_screen_title"
+        app:layout_constraintEnd_toStartOf="@+id/transaction_checkbox"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintStart_toEndOf="@+id/transaction_amount"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-        />
 
     <TextView
         android:id="@+id/transaction_remark"
+        style="@style/padding_around"
+
         android:layout_width="0dp"
-        android:layout_weight="2"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
 
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+
+        android:layout_marginRight="8dp"
+
+        android:layout_marginBottom="8dp"
+        android:layout_weight="2"
+        android:ellipsize="end"
+        android:gravity="center_vertical|end"
         android:maxLines="2"
-        android:textSize="15sp"
-        style="@style/list_item_transaction_textview_padding"
+        android:text="@string/placeholder_remark"
+        android:textSize="@dimen/textsize_larger_screen_title"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/transaction_checkbox"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_category" />
 
-        android:text= "@string/placeholder_remark"
-
-
-        />
     <CheckBox
         android:id="@+id/transaction_checkbox"
+        style="@style/padding_around"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-
-</LinearLayout>

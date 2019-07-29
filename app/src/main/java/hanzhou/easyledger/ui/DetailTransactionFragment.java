@@ -99,7 +99,7 @@ public class DetailTransactionFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
 
-        mAdapter = new TransactionAdapter(mAdapterActionViewModel);
+        mAdapter = new TransactionAdapter(mAdapterActionViewModel,mAppCompatActivity);
 
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
 

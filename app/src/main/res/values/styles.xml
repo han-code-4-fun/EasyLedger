@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/background_light_grey_1</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -25,11 +26,53 @@
 
     </style>
 
+    <style name="standard_margin_left_right" >
+        <item name="android:layout_marginStart">@dimen/margin_standard</item>
+        <item name="android:layout_marginLeft">@dimen/margin_standard</item>
+        <item name="android:layout_marginEnd">@dimen/margin_standard</item>
+        <item name="android:layout_marginRight">@dimen/margin_standard</item>
+    </style>
+
+
+    <style name="standard_margin_all_around" parent="standard_margin_left_right">
+        <item name="android:layout_marginTop">@dimen/margin_standard</item>
+        <item name="android:layout_marginBottom">@dimen/margin_standard</item>
+
+    </style>
+
+    <style name="inner_element_margin_left_right">
+        <item name="android:layout_marginStart">@dimen/margin_inner_element</item>
+        <item name="android:layout_marginLeft">@dimen/margin_inner_element</item>
+        <item name="android:layout_marginEnd">@dimen/margin_inner_element</item>
+        <item name="android:layout_marginRight">@dimen/margin_inner_element</item>
+    </style>
+
+
+    <style name="inner_element_margin_all_around" parent="inner_element_margin_left_right">
+
+        <item name="android:layout_marginTop">@dimen/margin_inner_element</item>
+        <item name="android:layout_marginBottom">@dimen/margin_inner_element</item>
+
+    </style>
+
+
+
 
     <style name="list_item_transaction_textview_padding">
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
+
+    </style>
+
+
+    <style name="padding_around">
+        <item name="android:paddingTop">@dimen/list_item_padding</item>
+        <item name="android:paddingBottom">@dimen/list_item_padding</item>
+        <item name="android:paddingLeft">@dimen/list_item_padding</item>
+        <item name="android:paddingRight">@dimen/list_item_padding</item>
+        <item name="android:paddingStart">@dimen/list_item_padding</item>
+        <item name="android:paddingEnd">@dimen/list_item_padding</item>
 
     </style>
 

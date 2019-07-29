@@ -4,8 +4,6 @@
     <dimen name="dialog_sub_item_margin_end">20dp</dimen>
 
 
-
-
     <dimen name="toolbar_height_larger_screen_phone">60dp</dimen>
     <dimen name="toolbar_height_smaller_screen_phone">45dp</dimen>
 
@@ -24,6 +22,10 @@
     <dimen name="floatingactionbtn_width_height_smaller_screen_phone">40dp</dimen>
 
 
+    <dimen name="list_item_padding">5dp</dimen>
+
+    <dimen name="margin_standard">20dp</dimen>
+    <dimen name="margin_inner_element">5dp</dimen>
 
     <dimen name="margin_overview_total_balance_title">8dp</dimen>
 
@@ -32,6 +34,12 @@
 
     <dimen name="textsize_larger_screen_title">20sp</dimen>
     <dimen name="textsize_larger_screen_moneyflow">17sp</dimen>
+
+
+    <dimen name="round_corner_general_radius">10dp</dimen>
+    <dimen name="round_corner_list_item_radius">20dp</dimen>
+    <dimen name="round_corner_small_item_radius">30dp</dimen>
+
 
 
 </resources>
