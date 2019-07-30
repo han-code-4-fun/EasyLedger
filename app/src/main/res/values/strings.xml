@@ -95,8 +95,8 @@
 
     <string name="add_edit_transaction_money_flow_change_btn_text">Money In/Out</string>
 
-    <string name="add_edit_transaction_money_flow_change_msg_money_in">Current transaction revenue.</string>
-    <string name="add_edit_transaction_money_flow_change_msg_money_out">Current transaction expense.</string>
+    <string name="add_edit_transaction_money_flow_change_msg_money_in">Transaction type revenue.</string>
+    <string name="add_edit_transaction_money_flow_change_msg_money_out">Transaction type expense.</string>
 
     <string name="dollor_sign">$</string>
 
