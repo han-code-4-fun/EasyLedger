@@ -17,8 +17,8 @@
     <color name="color_money_out">#EF5350</color>
     <color name="color_money_in">#66BB6A</color>
 
-    <color name="color_money_out_bg">#FFCDD2</color>
-    <color name="color_money_in_bg">#C8E6C9</color>
+    <color name="color_money_out_bg">#FFF3F5</color>
+    <color name="color_money_in_bg">#F5FCF6</color>
 
     <color name="color_selected_bg">#E1F5FE</color>
 

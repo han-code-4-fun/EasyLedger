@@ -93,6 +93,10 @@
     <string name="add_edit_transaction_warning_enter_amount">Enter An Amount</string>
     <string name="add_edit_transaction_warning_enter_date">Select A Date</string>
 
+    <string name="add_edit_transaction_money_flow_change_btn_text">Money In/Out</string>
+
+    <string name="add_edit_transaction_money_flow_change_msg_money_in">Current transaction revenue.</string>
+    <string name="add_edit_transaction_money_flow_change_msg_money_out">Current transaction expense.</string>
 
     <string name="dollor_sign">$</string>
 

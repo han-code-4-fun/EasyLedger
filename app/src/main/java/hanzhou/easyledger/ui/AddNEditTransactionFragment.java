@@ -1,6 +1,7 @@
 package hanzhou.easyledger.ui;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,17 +22,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sackcentury.shinebuttonlib.ShineButton;
 
 import org.joda.time.LocalDate;
 
@@ -56,7 +60,7 @@ import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel
  * A simple {@link Fragment} subclass.
  */
 public class AddNEditTransactionFragment extends Fragment
-        implements DatePickerDialog.OnDateSetListener {
+        implements DatePickerDialog.OnDateSetListener/*, View.OnFocusChangeListener*/ {
 
     // Constant for default task id to be used when not in update mode
     private static final int DEFAULT_TASK_ID = -1;
@@ -80,8 +84,8 @@ public class AddNEditTransactionFragment extends Fragment
     private TextView mAmountLabel;
     private TextView mCategoryLabel;
 
-    private ShineButton mMoneyIn;
-    private ShineButton mMoneyOut;
+    private ImageView mMoneyIn;
+    private ImageView mMoneyOut;
 
     private EditText mEditTextAmount;
     private EditText mEditTextRemark;
@@ -91,6 +95,8 @@ public class AddNEditTransactionFragment extends Fragment
     private TextView mTVDateLabel;
 
     private Spinner mSpinner;
+
+    private Button mMoneyFlowBtn;
 
     private FloatingActionButton mSaveBtn;
 
@@ -115,6 +121,7 @@ public class AddNEditTransactionFragment extends Fragment
     private int mPositionInSpinner;
 
     private HistoryRemark mHistoryRemark;
+    private boolean mIsMoneyInChecked;
 
 
     public AddNEditTransactionFragment() {
@@ -130,7 +137,7 @@ public class AddNEditTransactionFragment extends Fragment
         mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
         mGsonHelper = GsonHelper.getInstance();
         mGsonHelper.setmSharedPreferences(mSharedPreference);
-
+        mIsMoneyInChecked=true;
     }
 
     @Override
@@ -142,9 +149,31 @@ public class AddNEditTransactionFragment extends Fragment
 
         toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
 
-//        mIsNewTransaction = false;
         View rootView = inflater.inflate(R.layout.fragment_add_n_edit_transaction, container, false);
 
+        setupUI(rootView);
+
+        setupUIListenerForClosingSoftKeyboard(rootView);
+
+        return rootView;
+
+    }
+
+
+
+    private void setupUI(View rootView) {
+
+        mMoneyFlowBtn = rootView.findViewById(R.id.money_flow_change_btn);
+        mMoneyFlowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mIsMoneyInChecked){
+                    setMoneyOutActive();
+                }else{
+                    setMoneyInActive();
+                }
+            }
+        });
 
         mEditTextAmount = rootView.findViewById(R.id.add_edit_transaction_amount);
 
@@ -162,15 +191,8 @@ public class AddNEditTransactionFragment extends Fragment
         mTVCategory = rootView.findViewById(R.id.add_edit_transaction_category_display_current);
 
         mMoneyIn = rootView.findViewById(R.id.add_edit_transaction_btn_money_in);
-        mMoneyIn.init(mAppCompatActivity);
-
-        mTvMoneyIn = rootView.findViewById(R.id.add_edit_transaction_tv_money_in);
-
 
         mMoneyOut = rootView.findViewById(R.id.add_edit_transaction_btn_money_out);
-        mMoneyOut.init(mAppCompatActivity);
-
-        mTvMoneyOut = rootView.findViewById(R.id.add_edit_transaction_tv_money_out);
 
         mCategoryRecyclerView = rootView.findViewById(R.id.add_edit_transaction_category_recycler_view);
 
@@ -195,17 +217,37 @@ public class AddNEditTransactionFragment extends Fragment
                 mAppCompatActivity,
                 android.R.layout.simple_spinner_item,
                 notDisplayLedgerOVERALL(mGsonHelper.getLedgers(Constant.LEDGERS))
-                );
+        );
         mSpinnerLedgerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mSpinner = rootView.findViewById(R.id.add_edit_transaction_spinner_choose_ledger);
 
         mSpinner.setAdapter(mSpinnerLedgerAdapter);
+    }
 
+    private void setupUIListenerForClosingSoftKeyboard(View rootView) {
 
-        return rootView;
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (!(rootView instanceof EditText)) {
+            rootView.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard();
+                    return false;
+                }
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (rootView instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) rootView).getChildCount(); i++) {
+                View innerView = ((ViewGroup) rootView).getChildAt(i);
+                setupUIListenerForClosingSoftKeyboard(innerView);
+            }
+        }
+
 
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -243,7 +285,6 @@ public class AddNEditTransactionFragment extends Fragment
                     /* add a new transaction*/
                     toolbar.setTitle(R.string.title_add_transaction);
                     setMoneyInActive();
-                    setMoneyOutDeActive();
                     mDateNum = -1;
 
                 }
@@ -258,10 +299,10 @@ public class AddNEditTransactionFragment extends Fragment
             }
         });
 
-
-        mMoneyIn.setOnClickListener(moneyInBtnListener);
-
-        mMoneyOut.setOnClickListener(moneyOutBtnListener);
+//
+//        mMoneyIn.setOnClickListener(moneyInBtnListener);
+//
+//        mMoneyOut.setOnClickListener(moneyOutBtnListener);
 
         Log.d("flow_test4", "onActivityCreated:  new fragment");
     }
@@ -298,67 +339,68 @@ public class AddNEditTransactionFragment extends Fragment
 
     private void setMoneyInActive() {
 
-        mMoneyIn.setChecked(true);
-        Log.d("test_flow7", " setMoneyInActive   mMoneyIn ->  " + mMoneyIn.isChecked());
-        mTvMoneyIn.setTextColor(getResources().getColor(R.color.color_money_in));
+
+        mIsMoneyInChecked =true;
+        mMoneyIn.setVisibility(View.VISIBLE);
+        mMoneyOut.setVisibility(View.GONE);
         mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE));
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
         mAdapterActionViewModel.setmSelectedCategory("");
+        Toast.makeText(
+                mAppCompatActivity,
+                getString(R.string.add_edit_transaction_money_flow_change_msg_money_in),
+                Toast.LENGTH_LONG).show();
     }
 
-    private void setMoneyInDeActive() {
-
-        mMoneyIn.setChecked(false);
-        Log.d("test_flow7", "setMoneyInDeActive mMoneyIn -> " + mMoneyIn.isChecked());
-        mTvMoneyIn.setTextColor(getResources().getColor(R.color.color_deactive));
-
-    }
 
     private void setMoneyOutActive() {
+        mIsMoneyInChecked =false;
         mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
 
-        mMoneyOut.setChecked(true);
-        Log.d("test_flow7", "setMoneyOutActive  mMoneyOut  ->" + mMoneyOut.isChecked());
-        mTvMoneyOut.setTextColor(getResources().getColor(R.color.color_money_out));
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
 
         mAdapterActionViewModel.setmSelectedCategory("");
+        mMoneyOut.setVisibility(View.VISIBLE);
+        mMoneyIn.setVisibility(View.GONE);
+        Toast.makeText(
+                mAppCompatActivity,
+                getString(R.string.add_edit_transaction_money_flow_change_msg_money_out),
+                Toast.LENGTH_LONG).show();
+
+
     }
 
-    private void setMoneyOutDeActive() {
 
-        mMoneyOut.setChecked(false);
-        Log.d("test_flow7", "setMoneyOutDeActive   mMoneyOut  ->" + mMoneyOut.isChecked());
-        mTvMoneyOut.setTextColor(getResources().getColor(R.color.color_deactive));
-    }
 
-    private Button.OnClickListener moneyInBtnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d("test_flow7", "onclick, money in is " + mMoneyIn.isChecked());
-            if (mMoneyIn.isChecked()) {
-                setMoneyInActive();
-                setMoneyOutDeActive();
-            } else {
-                setMoneyInDeActive();
-                setMoneyOutActive();
-            }
-        }
-    };
-
-    private Button.OnClickListener moneyOutBtnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d("test_flow7", "onclick, money out is " + mMoneyOut.isChecked());
-            if (mMoneyOut.isChecked()) {
-                setMoneyOutActive();
-                setMoneyInDeActive();
-            } else {
-                setMoneyOutDeActive();
-                setMoneyInActive();
-            }
-        }
-    };
+//    private Button.OnClickListener moneyInBtnListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+////            Log.d("test_flow7", "onclick, money in is " + mMoneyIn.isChecked());
+////            if (mMoneyIn.isChecked()) {
+//            if(!mIsMoneyInChecked){
+//                setMoneyInActive();
+//
+//            } else {
+//
+//                setMoneyOutActive();
+//            }
+//        }
+//    };
+//
+//    private Button.OnClickListener moneyOutBtnListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+////            Log.d("test_flow7", "onclick, money out is " + mMoneyOut.isChecked());
+////            if (mMoneyOut.isChecked()) {
+//            if(mIsMoneyInChecked){
+//                setMoneyOutActive();
+//
+//            } else {
+//
+//                setMoneyInActive();
+//            }
+//        }
+//    };
 
     private TextView.OnClickListener txtViewDateClickListener = new View.OnClickListener() {
         @Override
@@ -417,7 +459,9 @@ public class AddNEditTransactionFragment extends Fragment
             if (checkIfUserEnteredNecessaryDate()) {
                 //String ledger, int time, Float amount, String category, String remark
                 float tempAmount = Float.parseFloat(mEditTextAmount.getText().toString());
-                if (mMoneyOut.isChecked()) {
+//                if (mMoneyOut.isChecked()) {
+                if (!mIsMoneyInChecked) {
+
                     tempAmount = 0 - tempAmount;
                 }
                 String remark = mEditTextRemark.getText().toString();
@@ -470,12 +514,13 @@ public class AddNEditTransactionFragment extends Fragment
         if (transactionEntry.getAmount() >= 0) {
             //this transaction is revenue, need to active the money In btn
             setMoneyInActive();
-            setMoneyOutDeActive();
+
         } else {
             //this transaction is expense, need to active the money out btn
-            setMoneyInDeActive();
+
             setMoneyOutActive();
         }
+
 
         mMoneyNum = transactionEntry.getAmount();
 
@@ -550,5 +595,17 @@ public class AddNEditTransactionFragment extends Fragment
         input.remove(Constant.LEDGER_OVERALL);
         return input;
     }
+
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager =(InputMethodManager)mAppCompatActivity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            View view = mAppCompatActivity.getCurrentFocus();
+
+            if (view != null) {
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
+
 
 }

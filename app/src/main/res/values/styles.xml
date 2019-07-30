@@ -66,6 +66,7 @@
     </style>
 
 
+
     <style name="padding_around">
         <item name="android:paddingTop">@dimen/list_item_padding</item>
         <item name="android:paddingBottom">@dimen/list_item_padding</item>

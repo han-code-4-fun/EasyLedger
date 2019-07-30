@@ -15,23 +15,30 @@
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/chart_current_piechart_expense"
+                android:background="@color/color_money_out_bg"
                 android:layout_width="match_parent"
                 android:layout_height="500dp" />
 
             <!--by default not visible unless user set it-->
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/chart_current_barchart_expense"
+                android:background="@color/color_money_out_bg"
+
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
                 />
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/chart_current_piechart_revenue"
+                android:background="@color/color_money_in_bg"
+
                 android:layout_width="match_parent"
                 android:layout_height="500dp" />
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/chart_current_barchart_revenue"
+                android:background="@color/color_money_in_bg"
+
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
                 />
