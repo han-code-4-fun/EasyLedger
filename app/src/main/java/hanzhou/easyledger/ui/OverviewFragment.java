@@ -129,6 +129,7 @@ public class OverviewFragment extends Fragment{
 
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_top, R.anim.exit_to_bottom)
                 .replace(R.id.overview_recyclerview_for_untagged_transactions,
                        DetailTransactionFragment.newInstance(Constant.UNTAGGED))
                 .commit();

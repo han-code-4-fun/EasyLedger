@@ -115,8 +115,9 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
                     mAppCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
                             .replace(R.id.fragment_base, new SettingAddNEditFragment())
-                            .addToBackStack(null)
+                            .addToBackStack(Constant.FRAG_NAME_SETTING_ADD_EDIT)
                             .commit();
                     return true;
                 }
@@ -135,8 +136,9 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
                     mAppCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
                             .replace(R.id.fragment_base, new SettingAddNEditFragment())
-                            .addToBackStack(null)
+                            .addToBackStack(Constant.FRAG_NAME_SETTING_ADD_EDIT)
                             .commit();
                     return true;
                 }
@@ -154,8 +156,9 @@ public class SettingMain extends PreferenceFragmentCompat implements
                     mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_EXPENSE);
                     mAppCompatActivity.getSupportFragmentManager()
                             .beginTransaction()
+                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                             .replace(R.id.fragment_base, new SettingAddNEditFragment())
-                            .addToBackStack(null)
+                            .addToBackStack(Constant.FRAG_NAME_SETTING_ADD_EDIT)
                             .commit();
                     return true;
                 }

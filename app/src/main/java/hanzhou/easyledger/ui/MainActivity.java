@@ -2,6 +2,7 @@ package hanzhou.easyledger.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
@@ -558,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    switchFragmentsOnBottomNavigationBar(new LedgerFragment());
+                    switchFragmentsOnBottomNavigationBar(new LedgerFragment(),Constant.FRAG_NAME_LEDGER);
 
                     mSettingsViewModel.setmRefreshLedgerFragmentTrigger(false);
                 }
@@ -606,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void runAppStartingFragment() {
         selectedFragment = new LauncherFragment();
-        switchFragmentsOnBottomNavigationBar(selectedFragment);
+        switchFragmentsOnBottomNavigationBar(selectedFragment,"launcher");
     }
 
 
@@ -614,6 +615,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void openAddNEditTransactionFragment() {
         selectedFragment = new AddNEditTransactionFragment();
+
+//        Fragment currentRecyclerViewFragment;
+//        if(mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)){
+//            currentRecyclerViewFragment = getSupportFragmentManager().findFragmentByTag(Constant.FRAG_NAME_OVERVIEW);
+//        }else{
+//            currentRecyclerViewFragment = getSupportFragmentManager().findFragmentByTag(Constant.FRAG_NAME_LEDGER);
+//
+//        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+        }
         addBaseFragmentToBack(selectedFragment);
     }
 
@@ -621,6 +634,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_top, R.anim.exit_to_bottom)
                 .replace(R.id.fragment_base, input)
                 .addToBackStack(null)
                 .commit();
@@ -975,31 +989,36 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
+                    String tag = "";
+
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_overview:
                             selectedFragment = new OverviewFragment();
+                            tag = Constant.FRAG_NAME_OVERVIEW;
 
                             break;
                         case R.id.navigation_transaction:
                             selectedFragment = new LedgerFragment();
-
+                            tag = Constant.FRAG_NAME_LEDGER;
                             break;
                         case R.id.navigation_charts:
                             selectedFragment = new ChartFragment();
+                            tag = Constant.FRAG_NAME_CHART;
                             break;
                     }
 
-                    switchFragmentsOnBottomNavigationBar(selectedFragment);
+                    switchFragmentsOnBottomNavigationBar(selectedFragment,tag);
 
                     return true;
                 }
             };
 
-    private void switchFragmentsOnBottomNavigationBar(Fragment input) {
+    private void switchFragmentsOnBottomNavigationBar(Fragment input,String tag) {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_base, input)
+                .setCustomAnimations(R.anim.enter_from_top, R.anim.exit_to_bottom)
+                .replace(R.id.fragment_base, input,tag)
                 .commit();
     }
 

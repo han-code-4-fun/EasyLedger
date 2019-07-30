@@ -123,7 +123,8 @@ public class LauncherFragment extends Fragment {
     private void loadInitialFragment(){
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_base, new OverviewFragment())
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_top, R.anim.exit_to_bottom)
+                .replace(R.id.fragment_base, new OverviewFragment(),Constant.FRAG_NAME_OVERVIEW)
                 .commit();
 
     }
