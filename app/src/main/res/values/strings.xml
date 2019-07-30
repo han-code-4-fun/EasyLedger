@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">EasyLedger</string>
+    
+    <string name="app_slogan">Ease your money flow!</string>
 
     <string name="actionbar_title">test title</string>
 
@@ -110,32 +112,7 @@
     <string name="msg_deleting_complete">Records deleted!!!</string>
     <string name="msg_deleting_need_to_have_one">Please select at least one records!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
-
-    <!--todo: remove below lines, they are for testing only-->
-
-    <string name="pref_test_list_default">test_aaa</string>
-
-    <string name="pref_color_key">test_key</string>
-    <string name="pref_color_label">test_label</string>
-
-    <!-- Label for red color preference -->
-    <string name="pref_color_label_red">Red</string>
-    <!-- Label for blue color preference -->
-    <string name="pref_color_label_blue">Blue</string>
-    <!-- Label for green color preference -->
-    <string name="pref_color_label_green">Green</string>
-
-    <!-- Value in SharedPreferences for red color option -->
-    <string name="pref_color_red_value" translatable="false">red</string>
-
-    <!-- Value in SharedPreferences for blue color option -->
-    <string name="pref_color_blue_value" translatable="false">blue</string>
-
-    <!-- Value in SharedPreferences for green color option -->
-    <string name="pref_color_green_value" translatable="false">green</string>
 
     <!-- Key name for storing size in SharedPreferences -->
     <string name="pref_size_key" translatable="false">size</string>

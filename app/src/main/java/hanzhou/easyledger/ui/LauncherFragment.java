@@ -6,6 +6,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,14 +17,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.Handler;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.ui.animation.DetailsTransition;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 
@@ -35,6 +40,7 @@ public class LauncherFragment extends Fragment {
     public final static int REQUEST_PERMISSION_APP_START = 1001;
 
     private AppCompatActivity mAppCompatActivity;
+    private ImageView mLogo;
 
     private static final long splashScreenTime = 3000L;
 
@@ -61,16 +67,12 @@ public class LauncherFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View root = inflater.inflate(R.layout.fragment_launcher, container, false);
+        mLogo = root.findViewById(R.id.app_start_logo);
 
-
-
-
-        LottieAnimationView lottieAnimationView = root.findViewById(R.id.app_start_animation);
-
-        lottieAnimationView.addAnimatorListener(new AnimatorListenerAdapter() {
+        /*set a time to display splash screen*/
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onAnimationEnd(Animator animation) {
-
+            public void run() {
                 if(isAllPermissionsGranted(mAppCompatActivity, PERMISSIONS)){
 
                     loadInitialFragment();
@@ -80,7 +82,28 @@ public class LauncherFragment extends Fragment {
                             REQUEST_PERMISSION_APP_START);
                 }
             }
-        });
+        }, splashScreenTime);
+
+
+
+
+
+//        LottieAnimationView lottieAnimationView = root.findViewById(R.id.app_start_animation);
+//
+//        lottieAnimationView.addAnimatorListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//
+//                if(isAllPermissionsGranted(mAppCompatActivity, PERMISSIONS)){
+//
+//                    loadInitialFragment();
+//                }else{
+//                    ActivityCompat.requestPermissions(mAppCompatActivity,
+//                            PERMISSIONS,
+//                            REQUEST_PERMISSION_APP_START);
+//                }
+//            }
+//        });
 
         return root;
     }
@@ -121,10 +144,20 @@ public class LauncherFragment extends Fragment {
 
 
     private void loadInitialFragment(){
+        OverviewFragment overviewFragment = new OverviewFragment();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            overviewFragment.setSharedElementEnterTransition(new DetailsTransition());
+            overviewFragment.setEnterTransition(new Fade());
+            setExitTransition(new Fade());
+            overviewFragment.setSharedElementReturnTransition(new DetailsTransition());
+        }
+
+
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_top, R.anim.exit_to_bottom)
-                .replace(R.id.fragment_base, new OverviewFragment(),Constant.FRAG_NAME_OVERVIEW)
+                .addSharedElement(mLogo, "app_start_transition")
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_bottom)
+                .replace(R.id.fragment_base, overviewFragment,Constant.FRAG_NAME_OVERVIEW)
                 .commit();
 
     }

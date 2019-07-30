@@ -58,6 +58,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private GsonHelper mGsonHelper;
 
+    private String mLastFrag;
+
 
     public SettingMain() {
         // Required empty public constructor
@@ -196,6 +198,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
         switch (id){
             case android.R.id.home:
                 mAppCompatActivity.getSupportFragmentManager().popBackStack();
+//                mGeneralViewModel.setmCurrentScreen(mLastFrag);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -301,6 +304,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
     private void setupViewModel() {
 
         mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        mLastFrag = mGeneralViewModel.getCurrentScreen().getValue();
+
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_SETTING);
 
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);

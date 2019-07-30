@@ -329,12 +329,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case android.R.id.home:
-                if (isInActionModel) {
-                    toolbarActionToOriginMode();
-                } else if (!mIsInBaseFragment) {
+
+                if (!mIsInBaseFragment) {
                     Log.d("test_test", "home : ");
                     getSupportFragmentManager().popBackStack();
                 }
+                toolbarActionToOriginMode();
+
 
                 break;
 
@@ -361,12 +362,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
-        if (isInActionModel) {
-            toolbarActionToOriginMode();
-        } else if (!mIsInBaseFragment) {
+        if (!mIsInBaseFragment) {
             Log.d("test_test", "onBackPressed: ");
             getSupportFragmentManager().popBackStack();
         } else {
@@ -374,6 +372,9 @@ public class MainActivity extends AppCompatActivity {
                 super.onBackPressed();
             }
         }
+
+        toolbarActionToOriginMode();
+
 
     }
 
@@ -403,7 +404,8 @@ public class MainActivity extends AppCompatActivity {
         toolBar = findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolBar);
         //todo, change to app Logo
-        toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
+        toolBar.setNavigationIcon(R.drawable.ic_logo);
+
         textViewOnToolBar = findViewById(R.id.toolbar_textview);
 
 
@@ -430,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
         mGeneralViewModel.getmIsSwitchViewPager().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
+                if (aBoolean) {
 
                     toolbarActionToOriginMode();
                     mGeneralViewModel.setmIsSwitchViewPager(false);
@@ -441,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
         mGeneralViewModel.getmCurrentLedger().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                mVisibleLedger =s ;
+                mVisibleLedger = s;
             }
         });
 
@@ -507,8 +509,6 @@ public class MainActivity extends AppCompatActivity {
         mDb = TransactionDB.getInstance(this);
 
 
-
-
         mAdapterActionViewModel = ViewModelProviders.of(this).get(AdapterNActionBarViewModel.class);
 
 
@@ -541,8 +541,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         mAdapterActionViewModel.getmClickedEntryID().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
@@ -559,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    switchFragmentsOnBottomNavigationBar(new LedgerFragment(),Constant.FRAG_NAME_LEDGER);
+                    switchFragmentsOnBottomNavigationBar(new LedgerFragment(), Constant.FRAG_NAME_LEDGER);
 
                     mSettingsViewModel.setmRefreshLedgerFragmentTrigger(false);
                 }
@@ -594,7 +592,6 @@ public class MainActivity extends AppCompatActivity {
 //                }
 
 
-
             }
         });
 
@@ -607,10 +604,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void runAppStartingFragment() {
         selectedFragment = new LauncherFragment();
-        switchFragmentsOnBottomNavigationBar(selectedFragment,"launcher");
+        switchFragmentsOnBottomNavigationBar(selectedFragment, "launcher");
     }
-
-
 
 
     private void openAddNEditTransactionFragment() {
@@ -645,7 +640,7 @@ public class MainActivity extends AppCompatActivity {
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.app_name);
         toolBar.inflateMenu(R.menu.toolbar_normal_mode);
-        toolBar.setNavigationIcon(R.drawable.ic_toolbar_nagivation);
+        toolBar.setNavigationIcon(R.drawable.ic_logo);
         textViewOnToolBar.setVisibility(View.GONE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mAdapterActionViewModel.emptySelectedItems();
@@ -732,9 +727,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onChanged(List<TransactionEntry> transactionEntryList) {
 
-                        RepositoryDB.getInstance().deleteSelectedTransactions(
-                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
-                        );
+                    RepositoryDB.getInstance().deleteSelectedTransactions(
+                            mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
+                    );
                     toolbarActionToOriginMode();
                 }
             });
@@ -1007,18 +1002,18 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
 
-                    switchFragmentsOnBottomNavigationBar(selectedFragment,tag);
+                    switchFragmentsOnBottomNavigationBar(selectedFragment, tag);
 
                     return true;
                 }
             };
 
-    private void switchFragmentsOnBottomNavigationBar(Fragment input,String tag) {
+    private void switchFragmentsOnBottomNavigationBar(Fragment input, String tag) {
 
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_top, R.anim.exit_to_bottom)
-                .replace(R.id.fragment_base, input,tag)
+                .replace(R.id.fragment_base, input, tag)
                 .commit();
     }
 

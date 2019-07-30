@@ -8,6 +8,7 @@
     android:layout_height="@dimen/toolbar_height_larger_screen_phone"
     android:minHeight="?attr/actionBarSize"
 
+
     android:background="@color/colorPrimary"
     app:titleTextColor="@color/color_white">
     <RelativeLayout
