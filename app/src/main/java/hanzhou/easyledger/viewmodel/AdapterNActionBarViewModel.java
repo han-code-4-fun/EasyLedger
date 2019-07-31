@@ -276,9 +276,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         return mEditAnEntryTrigger;
     }
 
-    public void setmEditAnEntryTrigger(Boolean input) {
-        this.mEditAnEntryTrigger.setValue(input);
-    }
+//    public void setmEditAnEntryTrigger(Boolean input) {
+//        this.mEditAnEntryTrigger.setValue(input);
+//    }
 
     public MutableLiveData<Boolean> getmCategorizeItemsToOthersTrigger() {
         return mCategorizeItemsToOthersTrigger;

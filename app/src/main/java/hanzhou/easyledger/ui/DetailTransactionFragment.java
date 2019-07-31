@@ -268,18 +268,19 @@ public class DetailTransactionFragment extends Fragment {
         });
 
 
+//todo, edited here
 
-        mAdapterActionViewModel.getmEditAnEntryTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-
-                    mAdapterActionViewModel.setmClickedEntryID(mAdapter.getOneSelectedEntryID());
-
-                    mAdapterActionViewModel.setmEditAnEntryTrigger(false);
-                }
-            }
-        });
+//        mAdapterActionViewModel.getmEditAnEntryTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+//            @Override
+//            public void onChanged(Boolean aBoolean) {
+//                if (aBoolean) {
+//
+//                    mAdapterActionViewModel.setmClickedEntryID(mAdapter.getOneSelectedEntryID());
+//
+//                    mAdapterActionViewModel.setmEditAnEntryTrigger(false);
+//                }
+//            }
+//        });
 
         mAdapterActionViewModel.getmCategorizeItemsToOthersTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override

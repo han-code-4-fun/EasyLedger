@@ -131,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences mSharedPreference;
     private GsonHelper mGsonHelper;
 
+
+    private List<TransactionEntry> mVisibleListEntry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -585,8 +588,31 @@ public class MainActivity extends AppCompatActivity {
                     5. press mIgnoreBtn (automatically mark all transaciton in category others)
                  */
                 isInActionModel = aBoolean;
+
                 if (isInActionModel) {
+
                     toolbarActionToActionMode();
+
+                    if (mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)) {
+                        mTransactionViewModel.getUntaggedTransactions().observe(MainActivity.this, new Observer<List<TransactionEntry>>() {
+                            @Override
+                            public void onChanged(List<TransactionEntry> transactionEntryList) {
+
+                                mVisibleListEntry = transactionEntryList;
+                            }
+                        });
+                    } else {
+                        mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
+
+
+                        mTransactionViewModel.getTransactionsByLedger().observe(MainActivity.this, new Observer<List<TransactionEntry>>() {
+                            @Override
+                            public void onChanged(List<TransactionEntry> transactionEntryList) {
+
+                                mVisibleListEntry = transactionEntryList;
+                            }
+                        });
+                    }
                 }
             }
 
@@ -757,9 +783,8 @@ public class MainActivity extends AppCompatActivity {
     private void toolbarActionEditSelectedTransaction() {
 
         if (mNumberOfSelection == 1) {
-            mAdapterActionViewModel.setmEditAnEntryTrigger(true);
-        } else {
-            Log.d(TAG, "toolbarActionEditSelectedTransaction: unknow error causing mNumberOfSelect != 1 while edit btn shows");
+            int id = mVisibleListEntry.get(mAdapterActionViewModel.getFirstSelectedItems()).getId();
+            mAdapterActionViewModel.setmClickedEntryID(id);
         }
     }
 
@@ -770,92 +795,40 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
 
-            if (mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)) {
-                mTransactionViewModel.getUntaggedTransactions().observe(this, new Observer<List<TransactionEntry>>() {
-                    @Override
-                    public void onChanged(List<TransactionEntry> transactionEntryList) {
-                        RepositoryDB.getInstance().deleteSelectedTransactions(
-                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
-                        );
-                        toolbarActionToOriginMode();
-                    }
-                });
-            } else {
-                mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
 
 
-                mTransactionViewModel.getTransactionsByLedger().observe(this, new Observer<List<TransactionEntry>>() {
-                    @Override
-                    public void onChanged(List<TransactionEntry> transactionEntryList) {
-
-                        RepositoryDB.getInstance().deleteSelectedTransactions(
-                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
-                        );
-                        toolbarActionToOriginMode();
-                    }
-                });
-            }
+                    RepositoryDB.getInstance().deleteSelectedTransactions(
+                            mAdapterActionViewModel.getSelectedTransactions(mVisibleListEntry)
+                    );
+                    toolbarActionToOriginMode();
 
 
-//            mAdapterActionViewModel.getmDeleteItemTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-//                @Override
-//                public void onChanged(Boolean aBoolean) {
-//                    if (aBoolean) {
-//
-//                        List<TransactionEntry> list;
-//                        if(mVisibleLedger.equals(Constant.UNTAGGED)){
-//                            list = RepositoryDB.getInstance().getUntaggedTransaction().getValue();
-//                        }else{
-//                            if(mVisibleLedger.equals("OVERALL")){
-//                                list = RepositoryDB.getInstance().getAllTransactions().getValue();
-//                            }else{
-//                                list = RepositoryDB.getInstance().getTransactionByLedger(mVisibleLedger).getValue();
-//                                Log.d("test_test", "updateTransactionOnUserInput:   ledger name -> "+list.size());
-//                            }
-//
-//                        }
-//
-//
-//                        list=  mAdapterActionViewModel.getSelectedTransactions(list);
-//                        RepositoryDB.getInstance().deleteSelectedTransactions(list);
-//
-//
+//            if (mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)) {
+//                mTransactionViewModel.getUntaggedTransactions().observe(this, new Observer<List<TransactionEntry>>() {
+//                    @Override
+//                    public void onChanged(List<TransactionEntry> transactionEntryList) {
+//                        RepositoryDB.getInstance().deleteSelectedTransactions(
+//                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
+//                        );
+//                        toolbarActionToOriginMode();
 //                    }
-//                }
-//            });
+//                });
+//            } else {
+//                mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
+//
+//
+//                mTransactionViewModel.getTransactionsByLedger().observe(this, new Observer<List<TransactionEntry>>() {
+//                    @Override
+//                    public void onChanged(List<TransactionEntry> transactionEntryList) {
+//
+//                        RepositoryDB.getInstance().deleteSelectedTransactions(
+//                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
+//                        );
+//                        toolbarActionToOriginMode();
+//                    }
+//                });
+//            }
 
-//<<<<<<< HEAD
-//            final List<TransactionEntry> entries;
-////            if (mAdapterActionViewModel.getParentFragment().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
-////                entries = mOverviewViewModel.getUntaggedTransactions().getValue();
-////                Log.d("test_delete", "toolbarActionDeleteSelectedRecords:   from untagged transactions");
-////            } else {
-////                entries = mTransactionViewModel.getAllTransactions().getValue();
-////                Log.d("test_delete", "toolbarActionDeleteSelectedRecords:   from all transactions ");
-////
-////            }
-//            entries = mTransactionViewModel.getTransactionsByLedger().getValue();
-//
-//            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                    mDb.transactionDAO().deleteListOfTransactions(
-//                            mAdapterActionViewModel.getSelectedTransactions(entries)
-//                    );
-//                }
-//            });
-//
-////            mAdapterActionViewModel.setmDeleteItemTrigger(true);
-////            Toast.makeText(this,
-////                    getResources().getString(R.string.msg_deleting_complete),
-////                    Toast.LENGTH_LONG).show();
-//=======
-//            mAdapterActionViewModel.setmDeleteItemTrigger(true);
-//            Toast.makeText(this,
-//                    getResources().getString(R.string.msg_deleting_complete),
-//                    Toast.LENGTH_LONG).show();
-//>>>>>>> extendRestructure
 
         }
     }
@@ -993,6 +966,10 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
+
+
+
+
     }
 
 
