@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <integer name="animation_fragment_transition_time">2000</integer>
+    <integer name="animation_fragment_transition_time_exit">700</integer>
+    <integer name="animation_fragment_transition_time_enter">800</integer>
 
-    
+
 </resources>

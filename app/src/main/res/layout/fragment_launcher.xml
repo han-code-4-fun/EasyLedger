@@ -9,18 +9,6 @@
     android:background="@color/color_white"
     tools:context=".ui.LauncherFragment">
 
-    <!--<com.airbnb.lottie.LottieAnimationView-->
-        <!--android:id="@+id/app_start_animation"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-
-        <!--android:layout_marginStart="8dp"-->
-
-        <!--android:layout_marginLeft="8dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--app:lottie_autoPlay="true"-->
-
-        <!--app:lottie_rawRes="@raw/test_login_logo" />-->
     <ImageView
         android:id="@+id/app_start_logo"
         android:layout_width="200dp"
@@ -35,7 +23,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:transitionName="app_start_transition"
 
         app:srcCompat="@drawable/ic_logo_app_start"
         />

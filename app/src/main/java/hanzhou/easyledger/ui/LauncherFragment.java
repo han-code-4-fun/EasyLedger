@@ -2,30 +2,23 @@ package hanzhou.easyledger.ui;
 
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Handler;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.airbnb.lottie.LottieAnimationView;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.ui.animation.DetailsTransition;
@@ -155,8 +148,7 @@ public class LauncherFragment extends Fragment {
 
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
-                .addSharedElement(mLogo, "app_start_transition")
-                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_bottom)
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top)
                 .replace(R.id.fragment_base, overviewFragment,Constant.FRAG_NAME_OVERVIEW)
                 .commit();
 

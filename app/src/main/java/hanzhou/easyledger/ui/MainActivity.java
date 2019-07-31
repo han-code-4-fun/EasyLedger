@@ -2,7 +2,6 @@ package hanzhou.easyledger.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
@@ -334,6 +333,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("test_test", "home : ");
                     getSupportFragmentManager().popBackStack();
                 }
+
+                Log.d("test_logo", " user clicked home, will set logo: ");
                 toolbarActionToOriginMode();
 
 
@@ -352,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.toolbar_ignore:
                 mAdapterActionViewModel.setmCategorizeItemsToOthersTrigger(true);
+                Log.d("test_logo", " user clicked ignore, will set logo: ");
                 toolbarActionToOriginMode();
                 break;
 
@@ -364,16 +366,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!mIsInBaseFragment) {
-            Log.d("test_test", "onBackPressed: ");
+        if (isInActionModel) {
+            Log.d("test_logo", " user clicked back , will set logo: ");
+
+            toolbarActionToOriginMode();
+        } else if (!mIsInBaseFragment) {
+
             getSupportFragmentManager().popBackStack();
+            Log.d("test_logo", " user clicked back in child fragment, will set logo: ");
+
+            toolbarActionToOriginMode();
         } else {
+
             if (BackPressHandler.isUserPressedTwice(this)) {
                 super.onBackPressed();
             }
         }
-
-        toolbarActionToOriginMode();
 
 
     }
@@ -406,8 +414,10 @@ public class MainActivity extends AppCompatActivity {
         //todo, change to app Logo
         toolBar.setNavigationIcon(R.drawable.ic_logo);
 
-        textViewOnToolBar = findViewById(R.id.toolbar_textview);
 
+
+        textViewOnToolBar = findViewById(R.id.toolbar_textview);
+        textViewOnToolBar.setVisibility(View.GONE);
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
@@ -611,17 +621,6 @@ public class MainActivity extends AppCompatActivity {
     private void openAddNEditTransactionFragment() {
         selectedFragment = new AddNEditTransactionFragment();
 
-//        Fragment currentRecyclerViewFragment;
-//        if(mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)){
-//            currentRecyclerViewFragment = getSupportFragmentManager().findFragmentByTag(Constant.FRAG_NAME_OVERVIEW);
-//        }else{
-//            currentRecyclerViewFragment = getSupportFragmentManager().findFragmentByTag(Constant.FRAG_NAME_LEDGER);
-//
-//        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-        }
         addBaseFragmentToBack(selectedFragment);
     }
 
@@ -629,7 +628,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_top, R.anim.exit_to_bottom)
+                .setCustomAnimations(R.anim.enter_from_top, R.anim.exit_to_bottom, R.anim.enter_from_bottom, R.anim.exit_to_top)
                 .replace(R.id.fragment_base, input)
                 .addToBackStack(null)
                 .commit();
@@ -637,12 +636,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void toolbarActionToOriginMode() {
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        toolBar.setNavigationIcon(R.drawable.ic_logo);
         toolBar.getMenu().clear();
         toolBar.setTitle(R.string.app_name);
         toolBar.inflateMenu(R.menu.toolbar_normal_mode);
-        toolBar.setNavigationIcon(R.drawable.ic_logo);
+
         textViewOnToolBar.setVisibility(View.GONE);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         mAdapterActionViewModel.emptySelectedItems();
         mAdapterActionViewModel.setmTransactionSelectedNumber();
         mAdapterActionViewModel.setActionModeState(false);
@@ -879,14 +879,23 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case Constant.FRAG_NAME_OVERVIEW:
                 toolBar.setVisibility(View.VISIBLE);
-                toolbarActionToOriginMode();
+                Log.d("test_logo", " switch base frag , will set logo: ");
+                if(isInActionModel){
+
+                    toolbarActionToOriginMode();
+                }
                 btnFA.show();
                 btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
                 btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
                 bottomNavigation.setVisibility(View.VISIBLE);
                 break;
             case Constant.FRAG_NAME_LEDGER:
-                toolbarActionToOriginMode();
+                Log.d("test_logo", " switch base frag , will set logo: ");
+
+                if(isInActionModel){
+
+                    toolbarActionToOriginMode();
+                }
                 btnFA.show();
                 btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
                 btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
@@ -894,7 +903,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case Constant.FRAG_NAME_CHART:
-                toolbarActionToOriginMode();
+                Log.d("test_logo", " switch base frag , will set logo: ");
+
+                if(isInActionModel){
+
+                    toolbarActionToOriginMode();
+                }
                 btnFA.show();
                 btnFA.setImageResource(R.drawable.ic_chart_setting);
                 btnFA.setOnClickListener(fabOnClickListenerOpenSettingDialog);
@@ -1010,11 +1024,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void switchFragmentsOnBottomNavigationBar(Fragment input, String tag) {
 
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_top, R.anim.exit_to_bottom)
+                .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top)
                 .replace(R.id.fragment_base, input, tag)
                 .commit();
+
+
     }
 
 

@@ -31,8 +31,8 @@ public class GeneralViewModel extends AndroidViewModel {
 
     public void setmCurrentScreen(String name) {
         mCurrentScreen.setValue(name);
-        if (name.equals(Constant.FRAG_NAME_CHART) ||
-                name.equals(Constant.FRAG_NAME_OVERVIEW) ||
+        if (name.equals(Constant.FRAG_NAME_CHART) |
+                name.equals(Constant.FRAG_NAME_OVERVIEW) |
                 name.equals(Constant.FRAG_NAME_LEDGER)) {
             mIsInBaseFragment.setValue(true);
         }else{

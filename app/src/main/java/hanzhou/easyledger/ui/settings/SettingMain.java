@@ -89,6 +89,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
         addPreferencesFromResource(R.xml.setting_main);
         mSharedPreferences = getPreferenceScreen().getSharedPreferences();
 
+        toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
+
         mOverviewCategory = findPreference(getString(R.string.setting_category_overview_key));
         seekBarPreference = findPreference(getString(R.string.setting_overview_custom_range_seekbar_key));
 
@@ -184,27 +186,13 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
-        toolbar.setTitle(getString(R.string.title_settings_fragment));
+
         toolbar.getMenu().clear();
         inflater.inflate(R.menu.toolbar_empty, menu);
+        toolbar.setTitle(getString(R.string.title_settings_fragment));
         mAppCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id){
-            case android.R.id.home:
-                mAppCompatActivity.getSupportFragmentManager().popBackStack();
-//                mGeneralViewModel.setmCurrentScreen(mLastFrag);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        return true;
-    }
 
     @Override
     public void onResume() {
