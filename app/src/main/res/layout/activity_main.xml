@@ -31,12 +31,11 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
 
         android:id="@+id/btn_floating_aciton"
-        android:layout_width="@dimen/floatingactionbtn_width_height_larger_screen_phone"
-        android:layout_height="@dimen/floatingactionbtn_width_height_larger_screen_phone"
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="normal"
         android:layout_margin="@dimen/floatingactionbtn_margin_larger_screen_phone"
-
-        android:tint="@color/color_white"
+        android:foregroundGravity="center"
         app:srcCompat="@drawable/icon_floating_action_btn_add"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_layout"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -53,8 +52,10 @@
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_navigation_view_height_larger_screen_phone"
+
             android:layout_gravity="bottom"
             android:background="@drawable/background_round_corner_top_white"
+
             app:layout_insetEdge="bottom"
 
             app:menu="@menu/menu_bottom_navigation" />
