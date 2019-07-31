@@ -18,10 +18,12 @@ public class BackPressHandler {
     private static int numOfTimesBackPressed =0;
 
     private static  Handler handlerBackPress;
-    private static Runnable countDownTwoSecond;
+    private static Runnable minusOneNumBackPressed;
 
     public static boolean isUserPressedTwice(Context context){
+
         numOfTimesBackPressed += 1;
+
 
         if(numOfTimesBackPressed <= 1)
         {
@@ -31,7 +33,7 @@ public class BackPressHandler {
                     Toast.LENGTH_SHORT).show();
 
             handlerBackPress = new Handler();
-            countDownTwoSecond= new Runnable() {
+            minusOneNumBackPressed = new Runnable() {
                 @Override
                 public void run() {
                     numOfTimesBackPressed -= 1;
@@ -39,12 +41,10 @@ public class BackPressHandler {
 
             };
             //int numOfTimesBackPressed-- for every 2seconds
-            handlerBackPress.postDelayed(countDownTwoSecond, 2000);
+            handlerBackPress.postDelayed(minusOneNumBackPressed, 2000);
             return false;
         }else{
-            Log.d("flow", "user clicked 2 times");
-            handlerBackPress = null;
-            countDownTwoSecond=null;
+            handlerBackPress.removeCallbacks(minusOneNumBackPressed);
             numOfTimesBackPressed = 0;
             return true;
         }

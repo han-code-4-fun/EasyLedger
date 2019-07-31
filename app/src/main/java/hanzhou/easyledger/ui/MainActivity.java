@@ -2,6 +2,7 @@ package hanzhou.easyledger.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -378,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
             toolbarActionToOriginMode();
         } else {
 
-            if (BackPressHandler.isUserPressedTwice(this)) {
+            if (BackPressHandler.isUserPressedTwice(getApplicationContext())) {
                 super.onBackPressed();
             }
         }
@@ -415,7 +418,6 @@ public class MainActivity extends AppCompatActivity {
         toolBar.setNavigationIcon(R.drawable.ic_logo);
 
 
-
         textViewOnToolBar = findViewById(R.id.toolbar_textview);
         textViewOnToolBar.setVisibility(View.GONE);
 
@@ -423,6 +425,20 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
 
         btnFA = findViewById(R.id.btn_floating_aciton);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = this.getWindow();
+
+            // clear FLAG_TRANSLUCENT_STATUS flag:
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+            // finally change the color
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
 
 
     }
@@ -880,7 +896,7 @@ public class MainActivity extends AppCompatActivity {
             case Constant.FRAG_NAME_OVERVIEW:
                 toolBar.setVisibility(View.VISIBLE);
                 Log.d("test_logo", " switch base frag , will set logo: ");
-                if(isInActionModel){
+                if (isInActionModel) {
 
                     toolbarActionToOriginMode();
                 }
@@ -892,7 +908,7 @@ public class MainActivity extends AppCompatActivity {
             case Constant.FRAG_NAME_LEDGER:
                 Log.d("test_logo", " switch base frag , will set logo: ");
 
-                if(isInActionModel){
+                if (isInActionModel) {
 
                     toolbarActionToOriginMode();
                 }
@@ -905,7 +921,7 @@ public class MainActivity extends AppCompatActivity {
             case Constant.FRAG_NAME_CHART:
                 Log.d("test_logo", " switch base frag , will set logo: ");
 
-                if(isInActionModel){
+                if (isInActionModel) {
 
                     toolbarActionToOriginMode();
                 }
