@@ -31,7 +31,7 @@
 
     <dimen name="margin_overview_total_balance_title">8dp</dimen>
 
-    <dimen name="textsize_smaller_screen_title">15sp</dimen>
+    <dimen name="textsize_smaller_screen_title">12sp</dimen>
     <dimen name="textsize_smaller_screen_moneyflow">12sp</dimen>
 
     <dimen name="textsize_larger_screen_title">20sp</dimen>

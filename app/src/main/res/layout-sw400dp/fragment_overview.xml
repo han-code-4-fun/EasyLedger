@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+
+    <TextView
+        android:id="@+id/overview_total_balance_title"
+        style="@style/standard_margin_all_around"
+        android:layout_marginBottom="0dp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/overview_totalbalance_title"
+        android:textSize="@dimen/textsize_larger_screen_title"
+        app:layout_constraintBottom_toTopOf="@+id/breif_section"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/overview_total_balance_amount"
+        style="@style/standard_margin_all_around"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:gravity="end"
+        android:textSize="@dimen/textsize_larger_screen_title"
+        app:layout_constraintBottom_toBottomOf="@+id/overview_total_balance_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/overview_total_balance_title"
+        app:layout_constraintTop_toTopOf="@+id/overview_total_balance_title"
+        tools:text="$23432.54" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/breif_section"
+        style="@style/standard_margin_all_around"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/background_while"
+        android:elevation="10dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overview_total_balance_title"
+        app:layout_constraintVertical_weight="3">
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <TextView
+            android:id="@+id/overview_tv_moneyin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|end"
+            android:text="@string/add_edit_transaction_money_in"
+            android:textSize="@dimen/textsize_larger_screen_moneyflow"
+            app:layout_constraintBottom_toTopOf="@+id/guideline4"
+            app:layout_constraintEnd_toEndOf="@+id/overview_tv_moneyout"
+            app:layout_constraintTop_toTopOf="@+id/overview_total_balance_barchart" />
+
+        <TextView
+            android:id="@+id/overview_tv_moneyout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="@dimen/margin_overview_total_balance_title"
+
+            android:layout_marginRight="@dimen/margin_overview_total_balance_title"
+            android:gravity="center|end"
+            android:text="@string/add_edit_transaction_money_out"
+            android:textSize="@dimen/textsize_larger_screen_moneyflow"
+            app:layout_constraintBottom_toBottomOf="@+id/overview_total_balance_barchart"
+            app:layout_constraintEnd_toStartOf="@+id/overview_total_balance_barchart"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/overview_total_balance_barchart"
+            style="@style/inner_element_margin_all_around"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintStart_toEndOf="@+id/overview_tv_moneyout"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="3">
+
+        </com.github.mikephil.charting.charts.HorizontalBarChart>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/standard_margin_left_right"
+        android:layout_marginTop="0dp"
+        android:layout_width="match_parent"
+        android:textStyle="bold"
+
+
+        android:layout_height="wrap_content"
+
+        android:background="@color/background_light_grey_1"
+        android:text="@string/overview_transaction_tag_textview_title"
+        android:textSize="@dimen/textsize_larger_screen_title"
+        app:layout_constraintBottom_toTopOf="@+id/overview_recyclerview_for_untagged_transactions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/breif_section" />
+
+
+    <FrameLayout
+        android:id="@+id/overview_recyclerview_for_untagged_transactions"
+        style="@style/standard_margin_all_around"
+        android:layout_width="match_parent"
+
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_weight="6"
+
+
+        />
+
+    <TextView
+        android:id="@+id/launch_logo_transition_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->

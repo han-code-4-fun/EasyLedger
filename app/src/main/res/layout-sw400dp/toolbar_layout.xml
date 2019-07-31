@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_height_smaller_screen_phone"
+    android:layout_height="@dimen/toolbar_height_larger_screen_phone"
     android:minHeight="?attr/actionBarSize"
 
 
@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/toolbar_textview"
             android:textColor="@color/color_white"
+            android:textSize="18sp"
             tools:text="12340 selected"
 
             />

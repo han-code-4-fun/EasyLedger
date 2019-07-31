@@ -736,19 +736,33 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
 
-            mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
+            if(mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)){
+                mTransactionViewModel.getUntaggedTransactions().observe(this, new Observer<List<TransactionEntry>>() {
+                    @Override
+                    public void onChanged(List<TransactionEntry> transactionEntryList) {
+                        RepositoryDB.getInstance().deleteSelectedTransactions(
+                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
+                        );
+                        toolbarActionToOriginMode();
+                    }
+                });
+            }else{
+                mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
 
 
-            mTransactionViewModel.getTransactionsByLedger().observe(this, new Observer<List<TransactionEntry>>() {
-                @Override
-                public void onChanged(List<TransactionEntry> transactionEntryList) {
+                mTransactionViewModel.getTransactionsByLedger().observe(this, new Observer<List<TransactionEntry>>() {
+                    @Override
+                    public void onChanged(List<TransactionEntry> transactionEntryList) {
 
-                    RepositoryDB.getInstance().deleteSelectedTransactions(
-                            mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
-                    );
-                    toolbarActionToOriginMode();
-                }
-            });
+                        RepositoryDB.getInstance().deleteSelectedTransactions(
+                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
+                        );
+                        toolbarActionToOriginMode();
+                    }
+                });
+            }
+
+
 
 //            mAdapterActionViewModel.getmDeleteItemTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
 //                @Override

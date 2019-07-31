@@ -206,8 +206,13 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         return output;
     }
 
-    public SparseBooleanArray getTheSelectionArray(){
-        return selectedBooleanArrayViewMode;
+    public String getTheSelectionArray(){
+        String temp="";
+        for (int i = 0; i < selectedBooleanArrayViewMode.size(); i++) {
+            temp += "pos "+selectedBooleanArrayViewMode.keyAt(i)+", ";
+        }
+
+        return temp;
     }
 
     public void emptySelectedItems() {

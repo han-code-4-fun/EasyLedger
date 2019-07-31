@@ -78,7 +78,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             mAdapterNActionBarViewModel.setmIsAllSelected(false);
         }
         Log.d("test_delete", "updateSelectedItemsArray: "+
-                mAdapterNActionBarViewModel.getTheSelectionArray().toString());
+                mAdapterNActionBarViewModel.getTheSelectionArray());
         this.notifyItemChanged(position);
     }
 
@@ -90,6 +90,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
 
     public void selectAll() {
+
         for(int i =0;i<mTransactionEntryList.size(); i++){
             if(!mAdapterNActionBarViewModel.getAValueFromSelectedItems(i)){
                 mAdapterNActionBarViewModel.putAValueIntoSelectedItems(i,true);
@@ -106,9 +107,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public void deselectAll() {
-//        mAdapterNActionBarViewModel.emptySelectedItems();
-//        mAdapterNActionBarViewModel.setmTransactionSelectedNumber();
-//        mAdapterNActionBarViewModel.setmIsAllSelected(false);
+        mAdapterNActionBarViewModel.emptySelectedItems();
+        mAdapterNActionBarViewModel.setmTransactionSelectedNumber();
+        mAdapterNActionBarViewModel.setmIsAllSelected(false);
         this.notifyDataSetChanged();
     }
 
