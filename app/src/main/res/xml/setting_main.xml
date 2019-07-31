@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/preferencescreen_id"
+    >
     <PreferenceCategory
         app:key="@string/setting_category_overview_key"
         app:title="@string/setting_category_overview_title">
@@ -51,6 +54,7 @@
             app:title = "@string/setting_auto_tagger_title"
             app:summaryOn="@string/auto_tagger_text_on"
             app:summaryOff="@string/auto_tagger_text_off"
+
             app:defaultValue="true"
             />
         <CheckBoxPreference

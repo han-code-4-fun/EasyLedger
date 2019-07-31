@@ -76,6 +76,7 @@
 
 
     <string name="setting_add_entry_title">Add a new one</string>
+    <string name="setting_add_entry_hint">enter here</string>
 
     <string name="setting_auto_tagger_key" translatable="false">setting_auto_tagger_key</string>
     <string name="setting_auto_tagger_title">Auto Tagger</string>

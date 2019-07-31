@@ -10,7 +10,13 @@
     <color name="background_light_grey_1">#f6f9fa</color>
     <color name="background_light_grey_2">#e5eef9</color>
 
-    <color name="color_main">#0ebfe5</color>
+    <color name="text_black">#000000</color>
+    <color name="text_black_light">#747474</color>
+
+
+
+
+<color name="color_main">#0ebfe5</color>
 
 
     <color name="color_white">#FFFFFF</color>

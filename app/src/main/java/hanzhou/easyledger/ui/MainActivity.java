@@ -947,6 +947,7 @@ public class MainActivity extends AppCompatActivity {
 
                     toolbarActionToOriginMode();
                 }
+                btnFA.hide();
                 btnFA.show();
                 btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
                 btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
@@ -959,6 +960,7 @@ public class MainActivity extends AppCompatActivity {
 
                     toolbarActionToOriginMode();
                 }
+                btnFA.hide();
                 btnFA.show();
                 btnFA.setImageResource(R.drawable.icon_floating_action_btn_add);
                 btnFA.setOnClickListener(fabOnClickListenerOpenFragment);
@@ -972,6 +974,7 @@ public class MainActivity extends AppCompatActivity {
 
                     toolbarActionToOriginMode();
                 }
+                btnFA.hide();
                 btnFA.show();
                 btnFA.setImageResource(R.drawable.ic_chart_setting);
                 btnFA.setOnClickListener(fabOnClickListenerOpenSettingDialog);
