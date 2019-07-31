@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/toolbar_height_smaller_screen_phone"
     android:minHeight="?attr/actionBarSize"
+    app:popupTheme="@style/menu_smaller_screen_size"
 
 
     android:background="@color/colorPrimary"

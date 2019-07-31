@@ -78,6 +78,10 @@
 
     </style>
 
+    <style name="menu_smaller_screen_size">
+        <item name="android:textSize">12sp</item>
+    </style>
+
 
 
 
