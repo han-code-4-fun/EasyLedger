@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Handler;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,9 +68,11 @@ public class LauncherFragment extends Fragment {
             @Override
             public void run() {
                 if(isAllPermissionsGranted(mAppCompatActivity, PERMISSIONS)){
+                    Log.d("test_start", " have permission, 3 seconds to enter ");
 
                     loadInitialFragment();
                 }else{
+                    Log.d("test_start", " ask permission ");
                     ActivityCompat.requestPermissions(mAppCompatActivity,
                             PERMISSIONS,
                             REQUEST_PERMISSION_APP_START);
@@ -112,32 +115,49 @@ public class LauncherFragment extends Fragment {
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("test_start", " now is the request result ");
+
         if(requestCode == REQUEST_PERMISSION_APP_START) {
 //            if (grantResults.length > 0
 //                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                Log.d(TAG, "onRequestPermissionsResult: Granted");
 //                loadInitialFragment();
 //            }
+            Log.d("test_start", " request result 2, requestcode  is APP_START");
+
             if(isAllPermissionsGranted(mAppCompatActivity,permissions)){
+                Log.d("test_start", " request result 3, end , show start overview frag");
+
                 loadInitialFragment();
             }
         }
     }
 
     private boolean isAllPermissionsGranted(Context context, String... permissions) {
+        Log.d("test_start", " request result 2___1 , rstart to check if all permissions granted");
+
         if (context != null && permissions != null) {
+            Log.d("test_start", " request result 2___2 , is context & permissino not null");
+
             for (String permission : permissions) {
+                Log.d("test_start", " request result 2___3 , check each permission");
+
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    Log.d("test_start", " request result 2___3___1 , a permission NOT GRANTED");
+
                     return false;
                 }
             }
         }
+        Log.d("test_start", " request result 2___4 , alll good!!!!");
+
         return true;
     }
 
 
     private void loadInitialFragment(){
         OverviewFragment overviewFragment = new OverviewFragment();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             overviewFragment.setSharedElementEnterTransition(new DetailsTransition());
             overviewFragment.setEnterTransition(new Fade());

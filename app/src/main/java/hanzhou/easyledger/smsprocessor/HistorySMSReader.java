@@ -10,45 +10,52 @@ import java.util.ArrayList;
 public class HistorySMSReader {
 
     public static void readHistorySMS(Context context, String[] projection, String selection, String[] selectionArg,String order) {
-        Cursor cursor = context.getContentResolver().query(
-                Uri.parse("content://sms/inbox"),
-                projection,
-                selection,
-                selectionArg,
-                order);
+        try{
 
-        ArrayList<ArrayList<String>> results= new ArrayList<>();
+            Cursor cursor = context.getContentResolver().query(
+                    Uri.parse("content://sms/inbox"),
+                    projection,
+                    selection,
+                    selectionArg,
+                    order);
 
-        if (cursor != null) {
+            ArrayList<ArrayList<String>> results= new ArrayList<>();
 
-            if (cursor.moveToFirst()) { // must check the result to prevent exception
-                do {
-                   ArrayList<String> currentMSGData = new ArrayList<>();
-                    for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                        /*add address, date, and body info of a MSG*/
-                        currentMSGData.add(cursor.getString(idx));
-                    }
+            if (cursor != null) {
 
-                    results.add(currentMSGData);
-                } while (cursor.moveToNext());
+                if (cursor.moveToFirst()) { // must check the result to prevent exception
+                    do {
+                        ArrayList<String> currentMSGData = new ArrayList<>();
+                        for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+                            /*add address, date, and body info of a MSG*/
+                            currentMSGData.add(cursor.getString(idx));
+                        }
 
-            } else {
-                // empty box, no SMS
+                        results.add(currentMSGData);
+                    } while (cursor.moveToNext());
+
+                } else {
+                    // empty box, no SMS
+                }
+
+                /*immediately close cursor if not in use*/
+                cursor.close();
+                String address="";
+                String msgBody = "";
+
+                for (int i = 0; i < results.size(); i++) {
+                    //todo, extract each sms in background
+                    address = results.get(i).get(0);
+                    msgBody = results.get(i).get(1);
+                    SMSProcessor.processExtraction(context, address,msgBody);
+
+                }
+
             }
-
-            /*immediately close cursor if not in use*/
-            cursor.close();
-            String address="";
-            String msgBody = "";
-
-            for (int i = 0; i < results.size(); i++) {
-                //todo, extract each sms in background
-                address = results.get(i).get(0);
-                msgBody = results.get(i).get(1);
-                SMSProcessor.processExtraction(context, address,msgBody);
-
-            }
-
+        }catch (SecurityException e){
+            e.printStackTrace();
         }
+
+
     }
 }
