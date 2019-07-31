@@ -3,6 +3,8 @@
     
     <string name="app_slogan">Ease your money flow!</string>
 
+    <string name="permission_not_granted_msg">This app need these permissions to work.</string>
+
     <string name="actionbar_title">test title</string>
 
     <string name="navigation_title_overview">Overview</string>

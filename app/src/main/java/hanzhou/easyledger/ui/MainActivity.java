@@ -2,6 +2,7 @@ package hanzhou.easyledger.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -31,6 +32,7 @@ import hanzhou.easyledger.smsprocessor.HistorySMSReader;
 import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
 import hanzhou.easyledger.ui.settings.SettingMain;
 import hanzhou.easyledger.utility.GsonHelper;
+import hanzhou.easyledger.utility.PermissionUtil;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
@@ -147,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
         runAppStartingFragment();
     }
+
 
     private void initializeSharedPreference() {
 
@@ -384,6 +387,37 @@ public class MainActivity extends AppCompatActivity {
             if (BackPressHandler.isUserPressedTwice(getApplicationContext())) {
                 super.onBackPressed();
             }
+        }
+
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        Log.d("test_start", " now is the request result ");
+
+        if (requestCode == LauncherFragment.REQUEST_PERMISSION_APP_START) {
+            Log.d("test_start", " request result 2, requestcode  is APP_START");
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && PermissionUtil.isAllPermissionsGranted(this, permissions)) {
+
+                Log.d("test_start", " request result 3, end , show start overview frag");
+
+                switchFragmentsOnBottomNavigationBar(new OverviewFragment(), Constant.FRAG_NAME_OVERVIEW);
+            } else {
+                Log.d("test_start", " show warning msg");
+
+                Toast.makeText(
+                        this,
+                        getString(R.string.permission_not_granted_msg),
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+
         }
 
 
@@ -736,7 +770,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         } else {
 
-            if(mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)){
+            if (mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)) {
                 mTransactionViewModel.getUntaggedTransactions().observe(this, new Observer<List<TransactionEntry>>() {
                     @Override
                     public void onChanged(List<TransactionEntry> transactionEntryList) {
@@ -746,7 +780,7 @@ public class MainActivity extends AppCompatActivity {
                         toolbarActionToOriginMode();
                     }
                 });
-            }else{
+            } else {
                 mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
 
 
@@ -761,7 +795,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-
 
 
 //            mAdapterActionViewModel.getmDeleteItemTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -1089,5 +1122,17 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    Thread finishActivityAfterToastMSG = new Thread() {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(Toast.LENGTH_LONG);
+                finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
 }

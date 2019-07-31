@@ -20,10 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.ui.animation.DetailsTransition;
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.utility.PermissionUtil;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 
 /**
@@ -38,7 +40,7 @@ public class LauncherFragment extends Fragment {
 
     private static final long splashScreenTime = 3000L;
 
-    private String[] PERMISSIONS = {
+    public static String[] PERMISSIONS = {
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.READ_SMS,
             Manifest.permission.INTERNET,
@@ -63,25 +65,26 @@ public class LauncherFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_launcher, container, false);
         mLogo = root.findViewById(R.id.app_start_logo);
 
+        Log.d("test_start", " view created ");
+
+
         /*set a time to display splash screen*/
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(isAllPermissionsGranted(mAppCompatActivity, PERMISSIONS)){
+                if (PermissionUtil.isAllPermissionsGranted(mAppCompatActivity, PERMISSIONS)) {
                     Log.d("test_start", " have permission, 3 seconds to enter ");
 
                     loadInitialFragment();
-                }else{
+                } else {
                     Log.d("test_start", " ask permission ");
-                    ActivityCompat.requestPermissions(mAppCompatActivity,
-                            PERMISSIONS,
-                            REQUEST_PERMISSION_APP_START);
+                    PermissionUtil.askPermission(mAppCompatActivity,PERMISSIONS,REQUEST_PERMISSION_APP_START);
+//                    ActivityCompat.requestPermissions(mAppCompatActivity,
+//                            PERMISSIONS,
+//                            REQUEST_PERMISSION_APP_START);
                 }
             }
         }, splashScreenTime);
-
-
-
 
 
 //        LottieAnimationView lottieAnimationView = root.findViewById(R.id.app_start_animation);
@@ -110,52 +113,42 @@ public class LauncherFragment extends Fragment {
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_LAUNCHER);
     }
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d("test_start", " now is the request result ");
+//    @Override
+//    public boolean shouldShowRequestPermissionRationale(@NonNull String permission) {
+//
+//    }
 
-        if(requestCode == REQUEST_PERMISSION_APP_START) {
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Log.d(TAG, "onRequestPermissionsResult: Granted");
-//                loadInitialFragment();
+
+
+
+
+
+//    private boolean isAllPermissionsGranted(Context context, String... permissions) {
+//        Log.d("test_start", " request result 2___1 , rstart to check if all permissions granted");
+//
+//        if (context != null && permissions != null) {
+//            Log.d("test_start", " request result 2___2 , is context & permissino not null");
+//
+//            for (String permission : permissions) {
+//                Log.d("test_start", " request result 2___3 , check each permission");
+//
+//                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+//                    Log.d("test_start", " request result 2___3___1 , a permission NOT GRANTED");
+//
+//
+//
+//
+//                    return false;
+//                }
 //            }
-            Log.d("test_start", " request result 2, requestcode  is APP_START");
-
-            if(isAllPermissionsGranted(mAppCompatActivity,permissions)){
-                Log.d("test_start", " request result 3, end , show start overview frag");
-
-                loadInitialFragment();
-            }
-        }
-    }
-
-    private boolean isAllPermissionsGranted(Context context, String... permissions) {
-        Log.d("test_start", " request result 2___1 , rstart to check if all permissions granted");
-
-        if (context != null && permissions != null) {
-            Log.d("test_start", " request result 2___2 , is context & permissino not null");
-
-            for (String permission : permissions) {
-                Log.d("test_start", " request result 2___3 , check each permission");
-
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    Log.d("test_start", " request result 2___3___1 , a permission NOT GRANTED");
-
-                    return false;
-                }
-            }
-        }
-        Log.d("test_start", " request result 2___4 , alll good!!!!");
-
-        return true;
-    }
+//        }
+//        Log.d("test_start", " request result 2___4 , alll good!!!!");
+//
+//        return true;
+//    }
 
 
-    private void loadInitialFragment(){
+    private void loadInitialFragment() {
         OverviewFragment overviewFragment = new OverviewFragment();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -169,7 +162,7 @@ public class LauncherFragment extends Fragment {
         mAppCompatActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top)
-                .replace(R.id.fragment_base, overviewFragment,Constant.FRAG_NAME_OVERVIEW)
+                .replace(R.id.fragment_base, overviewFragment, Constant.FRAG_NAME_OVERVIEW)
                 .commit();
 
     }
