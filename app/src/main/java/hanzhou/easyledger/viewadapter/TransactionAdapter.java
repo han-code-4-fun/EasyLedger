@@ -146,6 +146,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         float amount = currentRecord.getAmount();
 
         holder.time.setText(UnitUtil.getTimeIntInMoreReadableFormat(currentRecord.getTime()));
+
         holder.amount.setText(UnitUtil.formatMoney(amount));
         if(amount>=0){
             holder.amount.setTextColor(ContextCompat.getColor(mContext,R.color.color_money_in));
