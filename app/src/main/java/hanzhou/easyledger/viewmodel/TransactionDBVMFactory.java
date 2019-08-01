@@ -21,7 +21,6 @@ public class TransactionDBVMFactory extends ViewModelProvider.NewInstanceFactory
 //    @NonNull
 //    @Override
 //    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-//        Log.d("test_test_", "start to  create: from TransactionDBVMFactory");
 //        return (T) new TransactionDBViewModel(transactionDB, inputTag);
 //    }
 }

@@ -49,36 +49,6 @@ public class MonthValueFormatter extends ValueFormatter
         return UnitUtil.fromJodaTimeLocalDateToMonthLabel(displayDate);
 
 
-//        try {
-//            Log.d("test_ff7", "formatter    getFormattedValue: " + value);
-//
-//            /*set first value as a starting point for counting the x-axis labels*/
-//            if (mInitialValue == -1000) {
-//                mInitialValue = (int) value;
-//                mStartingDate = LocalDate.parse("" + (int)value, DateTimeFormat.forPattern("YYYYMM"));
-//            }
-//
-//            int difference = (int) value - mInitialValue;
-//            Log.d("test_ff7", "formatter    mInitialValue: " + mInitialValue);
-//
-//            Log.d("test_ff7", "formatter    difference: " + difference);
-//
-//
-//            return UnitUtil.fromJodaTimeLocalDateToMonthLabel(mStartingDate.plusMonths(difference));
-//
-//        }catch(IllegalFieldValueException e){
-//            Log.d("test_ff7", "formatter    catch exception: " + value);
-//
-//            /*set first value as a starting point for counting the x-axis labels*/
-//            if (mInitialValue == -1000) {
-//                mInitialValue = (int) value;
-//                mStartingDate = LocalDate.parse("" + value, DateTimeFormat.forPattern("YYYYMM"));
-//            }
-//
-//
-//            return ""+value;
-//        }
-
     }
 
 

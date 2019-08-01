@@ -263,7 +263,6 @@ public class AddNEditTransactionFragment extends Fragment
         mAdapterActionViewModel.getmClickedEntryID().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                Log.d("test_flow11", "getmClickedEntryID observer onChanged: " + integer);
                 mAdapterActionViewModel.getmClickedEntryID().removeObservers(getViewLifecycleOwner());
                 if (integer != null) {
                     /*  edit an existing transaction*/
@@ -299,12 +298,13 @@ public class AddNEditTransactionFragment extends Fragment
             }
         });
 
+
+
 //
 //        mMoneyIn.setOnClickListener(moneyInBtnListener);
 //
 //        mMoneyOut.setOnClickListener(moneyOutBtnListener);
 
-        Log.d("flow_test4", "onActivityCreated:  new fragment");
     }
 
 
@@ -375,7 +375,6 @@ public class AddNEditTransactionFragment extends Fragment
 //    private Button.OnClickListener moneyInBtnListener = new View.OnClickListener() {
 //        @Override
 //        public void onClick(View view) {
-////            Log.d("test_flow7", "onclick, money in is " + mMoneyIn.isChecked());
 ////            if (mMoneyIn.isChecked()) {
 //            if(!mIsMoneyInChecked){
 //                setMoneyInActive();
@@ -390,7 +389,6 @@ public class AddNEditTransactionFragment extends Fragment
 //    private Button.OnClickListener moneyOutBtnListener = new View.OnClickListener() {
 //        @Override
 //        public void onClick(View view) {
-////            Log.d("test_flow7", "onclick, money out is " + mMoneyOut.isChecked());
 ////            if (mMoneyOut.isChecked()) {
 //            if(mIsMoneyInChecked){
 //                setMoneyOutActive();
@@ -427,7 +425,6 @@ public class AddNEditTransactionFragment extends Fragment
                 month = Integer.parseInt(tempDate.substring(2, 4)) - 1;
                 day = Integer.parseInt(tempDate.substring(4, 6));
 
-                Log.d("test_flow12", "onClick: y+m+d" + year + " " + month + " " + day);
                 DatePickerDialog dialog = new DatePickerDialog(
                         mAppCompatActivity,
                         AddNEditTransactionFragment.this,
@@ -447,7 +444,6 @@ public class AddNEditTransactionFragment extends Fragment
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
         mDateNum = UnitUtil.setDatePickerDateIntoAppIntDate(i, i1, i2);
-        Log.d("test_flow12", "onDateSet: " + mDateNum);
         mTVDate.setText(UnitUtil.getTimeIntInMoreReadableFormat(mDateNum));
 
     }
@@ -459,7 +455,6 @@ public class AddNEditTransactionFragment extends Fragment
             if (checkIfUserEnteredNecessaryDate()) {
                 //String ledger, int time, Float amount, String category, String remark
                 float tempAmount = Float.parseFloat(mEditTextAmount.getText().toString());
-//                if (mMoneyOut.isChecked()) {
                 if (!mIsMoneyInChecked) {
 
                     tempAmount = 0 - tempAmount;
@@ -473,7 +468,6 @@ public class AddNEditTransactionFragment extends Fragment
                         remark
 
                 );
-
 
                 /*update HistoryRemark for auto-tagging */
                HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
@@ -494,15 +488,18 @@ public class AddNEditTransactionFragment extends Fragment
                             /*update existing records*/
                             entry.setId(mTransactionId);
                             mDB.transactionDAO().updateTransaction(entry);
-
                         }
 
-                        mAppCompatActivity.getSupportFragmentManager().popBackStack();
+
+                        mGeneralViewModel.setmBackButtonPressTrigger(true);
+
+//                        mAppCompatActivity.getSupportFragmentManager().popBackStack();
+
+//                        toolbar.getMenu().performIdentifierAction(android.R.id.home,0);
                     }
                 });
 
             }
-
         }
     };
 

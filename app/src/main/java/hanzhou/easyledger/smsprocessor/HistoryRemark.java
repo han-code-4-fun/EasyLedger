@@ -81,7 +81,6 @@ public class HistoryRemark {
     public void synchronizeUserTaggingBehaviour(String remark, String category, GsonHelper gsonHelper){
 
         if(addToRemarks(remark,category)){
-            Log.d("test_tagger", " after saving tagg -> \n ------->"+mRemarks.keySet()+"\n------->"+mRemarks.values() );
             saveToFile(gsonHelper);
             applyUpdateToExistingUntaggedTransaction(remark, category);
         }

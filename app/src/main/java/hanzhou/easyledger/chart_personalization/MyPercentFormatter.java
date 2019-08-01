@@ -34,7 +34,6 @@ public class MyPercentFormatter extends ValueFormatter {
 
     @Override
     public String getFormattedValue(float value) {
-        Log.d("test_flow120", "(getFormattedValue) pie value value: "+value);
 
         if(value == 0f){
             return "";
@@ -45,7 +44,6 @@ public class MyPercentFormatter extends ValueFormatter {
 
     @Override
     public String getPieLabel(float value, PieEntry pieEntry) {
-        Log.d("test_flow120", "(getPieLabel) pie value value: "+value);
         if(value == 0f){
             return "";
         }

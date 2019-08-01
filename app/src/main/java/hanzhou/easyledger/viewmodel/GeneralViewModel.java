@@ -23,6 +23,9 @@ public class GeneralViewModel extends AndroidViewModel {
 
     private MutableLiveData<Boolean> mIsInBaseFragment = new MutableLiveData<>();
 
+    private MutableLiveData<Boolean> mBackButtonPressTrigger = new MutableLiveData<>();
+
+
 
     public GeneralViewModel(@NonNull Application application) {
         super(application);
@@ -62,5 +65,13 @@ public class GeneralViewModel extends AndroidViewModel {
 
     public void setmCurrentLedger(String input) {
         this.mCurrentLedger.setValue(input);
+    }
+
+    public LiveData<Boolean> getmBackButtonPressTrigger() {
+        return mBackButtonPressTrigger;
+    }
+
+    public void setmBackButtonPressTrigger(boolean input) {
+        this.mBackButtonPressTrigger.postValue(input);
     }
 }

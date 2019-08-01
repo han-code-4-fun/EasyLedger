@@ -25,7 +25,6 @@ public class WeekValueFormatter extends ValueFormatter {
     @Override
     public String getFormattedValue(float value) {
 
-        Log.d("test_flow555", "getFormattedValue: " + value);
 
 //        String date = String.valueOf((int)value);
 //        LocalDate past = LocalDate.parse(date, DateTimeFormat.forPattern("YYYYMMdd"));

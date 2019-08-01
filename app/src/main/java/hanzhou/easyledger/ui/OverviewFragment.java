@@ -149,7 +149,6 @@ public class OverviewFragment extends Fragment{
     public void onDetach() {
         super.onDetach();
         mAppCompatActivity = null;
-        Log.d("test_flow2", "overview onDetach now!!!! ");
     }
 
 
@@ -286,7 +285,6 @@ public class OverviewFragment extends Fragment{
         mOverviewFragmentViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                Log.d("test_flow3", "main_activity, should be called one mOverviewDateStartTime");
                 calculateSpendingNRevenueSum(transactionEntryList);
             }
         });

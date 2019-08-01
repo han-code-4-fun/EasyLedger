@@ -70,8 +70,6 @@ public class DetailTransactionFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
-
-        Log.d("test_frag", "onAttach: ");
     }
 
 
@@ -82,7 +80,6 @@ public class DetailTransactionFragment extends Fragment {
         if (getArguments() != null) {
             mLedgerName = getArguments().getString(INPUT);
         }
-        Log.d("test_frag", "onCreate: " );
     }
 
     @Override
@@ -94,7 +91,6 @@ public class DetailTransactionFragment extends Fragment {
 //            mInput = getArguments().getString(INPUT);
 //
 //        }
-        Log.d("test_frag", "onCreateView: " );
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
@@ -113,33 +109,6 @@ public class DetailTransactionFragment extends Fragment {
         return rootView;
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-//        setupViewModelObserver();
-        Log.d("test_frag", "onActivityCreated: " );
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("test_frag", "onStop: ");
-
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d("test_frag", "onDestroyView: ");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("test_frag", "onDestroy: " );
-    }
 
     private void setupViewModelObserver() {
         final TransactionDBViewModel mTransactionViewModel =

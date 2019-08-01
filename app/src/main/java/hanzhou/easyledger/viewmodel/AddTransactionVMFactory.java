@@ -13,7 +13,6 @@ public class AddTransactionVMFactory extends ViewModelProvider.NewInstanceFactor
     private final int mTransactionID;
 
     public AddTransactionVMFactory(TransactionDB mDB, int mTransactionID) {
-        Log.d("test_flow11", "AddTransactionVMFactory: id is "+mTransactionID);
         this.mDB = mDB;
         this.mTransactionID = mTransactionID;
     }

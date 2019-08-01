@@ -54,7 +54,6 @@ public class TransactionDBViewModel extends AndroidViewModel {
             if(input.equals("OVERALL")){
                 transactionsByLedger = mRepository.getAllTransactions();
             }else{
-                Log.d("test_test", "updateTransactionOnUserInput:   ledger name -> "+input);
                 transactionsByLedger = mRepository.getTransactionByLedger(input);
             }
 
@@ -71,7 +70,6 @@ public class TransactionDBViewModel extends AndroidViewModel {
     public void setTransactionListFromInputLedgerName(String input) {
 
 //       if (input.equals(Constant.LEDGER_OVERALL)) {
-//            Log.d("test_frag", "-----------------> data for OVERALL transaction ------------>");
 //
 //            testLedger.removeSource(mRepository.getTransactionByLedger(input));
 //            testLedger.addSource(mRepository.getAllTransactions(), new Observer<List<TransactionEntry>>() {
@@ -83,7 +81,6 @@ public class TransactionDBViewModel extends AndroidViewModel {
 //
 //        }else{
 //
-//            Log.d("test_frag", "-----------------> data for "+input+" transaction ------------>");
 //
 //
 //            testLedger.addSource(mRepository.getTransactionByLedger(input), new Observer<List<TransactionEntry>>() {

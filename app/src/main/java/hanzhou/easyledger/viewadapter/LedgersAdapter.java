@@ -55,11 +55,9 @@ public class LedgersAdapter extends FragmentPagerAdapter {
 
 //        if(!mLedgers.get(position).equals(mCurrentVisiblePage)){
 //            mCurrentVisiblePage = mLedgers.get(position);
-//            Log.d("test_frag", " ***%%%%%%  Adapter %%%%%%%*** setPrimaryItem:   name ->"+mCurrentVisiblePage);
 //            if(mLedgerViewModel!= null){
 //
 //                mLedgerViewModel.setmLedgerName(mCurrentVisiblePage);
-//                Log.d("test_frag", " ***%%%%%%% Adapter %%%%%%%*** setPrimaryItem:   viewmodel will update name ->"+mCurrentVisiblePage);
 //
 //            }
 //        }
@@ -71,7 +69,6 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-//        Log.d("test_frag", " ***Adapter*** getItem:   name ->"+mLedgers.get(position));
 //        return DetailTransactionFragment.newInstance(Constant.FRAG_NAME_LEDGER);
 //        mTransactionDBViewModel.setLedgerName(mLedgers.get(position));
         return DetailTransactionFragment.newInstance(mLedgers.get(position));

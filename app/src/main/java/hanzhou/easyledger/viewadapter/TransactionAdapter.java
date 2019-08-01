@@ -48,14 +48,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public void setAdapterData(List<TransactionEntry> inputEntries) {
         mTransactionEntryList = inputEntries;
-        Log.d("test_open", "setAdapterData:  now mTransactionEntryList size -> "+ mTransactionEntryList.size());
         mAdapterNActionBarViewModel.emptySelectedItems();
         notifyDataSetChanged();
 
     }
 
     public List<TransactionEntry> getAdateperData(){
-        Log.d("test_open", "getAdateperData: "+mTransactionEntryList.toString());
         return  mTransactionEntryList;
     }
 
@@ -77,15 +75,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }else{
             mAdapterNActionBarViewModel.setmIsAllSelected(false);
         }
-        Log.d("test_open", "updateSelectedItemsArray: "+
-                mAdapterNActionBarViewModel.getTheSelectionArray());
         this.notifyItemChanged(position);
     }
 
 
 //    public int getOneSelectedEntryID(){
 //        int position = mAdapterNActionBarViewModel.getFirstSelectedItems();
-//        Log.d("test_open", " getOneSelectedEntryID  -> "+position);
 //
 //        return mTransactionEntryList.get(position).getId();
 //    }
@@ -140,7 +135,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, final int position) {
 
-        Log.d("flow", "onBindViewHolder: update THIS data");
         TransactionEntry currentRecord = mTransactionEntryList.get(position);
 
         float amount = currentRecord.getAmount();

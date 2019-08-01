@@ -21,14 +21,13 @@ public abstract class TransactionDB extends RoomDatabase {
     public static TransactionDB getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                Log.d(LOG_TAG, "Creating new database instance");
+
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         TransactionDB.class, TransactionDB.DATABASE_NAME)
                         .fallbackToDestructiveMigration()//this means if we change DB schema, ROOM will delete original and make new
                         .build();
             }
         }
-        Log.d(LOG_TAG, "Getting the database instance");
         return sInstance;
     }
 

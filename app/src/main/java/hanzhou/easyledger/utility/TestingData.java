@@ -264,7 +264,6 @@ public class TestingData {
         ArrayList<String>ledger= gsonHelper.getLedgers(Constant.LEDGERS);
         ledger.remove("OVERALL");
         String output = ledger.get((int) (Math.random() * ledger.size()));
-        Log.d("test_flow9", "getRandomLedger: "+ output);
         return output;
     }
 

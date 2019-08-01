@@ -95,7 +95,6 @@ public class RepositoryDB {
             @Override
             public void run() {
 
-                Log.d("test_delete", "run deletion size ->" +input.size());
                 mTransactionDB.transactionDAO().deleteListOfTransactions(input);
             }
         });

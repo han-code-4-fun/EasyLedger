@@ -339,11 +339,8 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
 
                 if (!mIsInBaseFragment) {
-                    Log.d("test_test", "home : ");
                     getSupportFragmentManager().popBackStack();
                 }
-
-                Log.d("test_logo", " user clicked home, will set logo: ");
                 toolbarActionToOriginMode();
 
 
@@ -362,7 +359,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.toolbar_ignore:
                 mAdapterActionViewModel.setmCategorizeItemsToOthersTrigger(true);
-                Log.d("test_logo", " user clicked ignore, will set logo: ");
                 toolbarActionToOriginMode();
                 break;
 
@@ -376,13 +372,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (isInActionModel) {
-            Log.d("test_logo", " user clicked back , will set logo: ");
 
             toolbarActionToOriginMode();
         } else if (!mIsInBaseFragment) {
 
             getSupportFragmentManager().popBackStack();
-            Log.d("test_logo", " user clicked back in child fragment, will set logo: ");
 
             toolbarActionToOriginMode();
         } else {
@@ -400,19 +394,14 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        Log.d("test_start", " now is the request result ");
-
         if (requestCode == LauncherFragment.REQUEST_PERMISSION_APP_START) {
-            Log.d("test_start", " request result 2, requestcode  is APP_START");
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && PermissionUtil.isAllPermissionsGranted(this, permissions)) {
 
-                Log.d("test_start", " request result 3, end , show start overview frag");
 
                 switchFragmentsOnBottomNavigationBar(new OverviewFragment(), Constant.FRAG_NAME_OVERVIEW);
             } else {
-                Log.d("test_start", " show warning msg");
 
                 Toast.makeText(
                         this,
@@ -487,7 +476,6 @@ public class MainActivity extends AppCompatActivity {
         mGeneralViewModel.getCurrentScreen().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                Log.d("test_screen_change", "onChanged: current -> " + s);
                 mCurrentScreen = s;
                 uiActionsOnScreenChange(s);
             }
@@ -510,6 +498,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mGeneralViewModel.getmBackButtonPressTrigger().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    getSupportFragmentManager().popBackStack();
+                    toolbarActionToOriginMode();
+
+                    mGeneralViewModel.setmBackButtonPressTrigger(false);
+                }
+            }
+        });
+
 
         SPViewModelFactory spFactory = new SPViewModelFactory(mSharedPreference);
         mSharedPreferenceViewModel = ViewModelProviders.of(this, spFactory).get(SPViewModel.class
@@ -519,7 +519,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Integer integer) {
                 mOverviewDateRange = integer;
-                Log.d("test_overview", " date range " + mOverviewDateRange);
 
                 if (isOverviewCustomRange) {
                     mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(mOverviewDateRange);
@@ -630,7 +629,6 @@ public class MainActivity extends AppCompatActivity {
         mAdapterActionViewModel.getmClickedEntryID().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                Log.d("test_flow11", "main activity getmClickedEntryID onChanged: " + integer);
                 //start the fragment
                 if (integer != null) {
                     openAddNEditTransactionFragment();
@@ -710,7 +708,7 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void toolbarActionToOriginMode() {
+    public void toolbarActionToOriginMode() {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         toolBar.setNavigationIcon(R.drawable.ic_logo);
@@ -910,12 +908,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case Constant.FRAG_NAME_ADD_EDIT_TRANSACTION:
+                if (isInActionModel) {
+                    toolbarActionToOriginMode();
+                }
                 btnFA.hide();
                 bottomNavigation.setVisibility(View.GONE);
                 break;
             case Constant.FRAG_NAME_OVERVIEW:
                 toolBar.setVisibility(View.VISIBLE);
-                Log.d("test_logo", " switch base frag , will set logo: ");
                 if (isInActionModel) {
 
                     toolbarActionToOriginMode();
@@ -927,7 +927,6 @@ public class MainActivity extends AppCompatActivity {
                 bottomNavigation.setVisibility(View.VISIBLE);
                 break;
             case Constant.FRAG_NAME_LEDGER:
-                Log.d("test_logo", " switch base frag , will set logo: ");
 
                 if (isInActionModel) {
 
@@ -941,7 +940,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case Constant.FRAG_NAME_CHART:
-                Log.d("test_logo", " switch base frag , will set logo: ");
 
                 if (isInActionModel) {
 

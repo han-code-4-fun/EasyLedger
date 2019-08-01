@@ -162,7 +162,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     */
     public List<TransactionEntry> getSelectedTransactions(List<TransactionEntry> inputList) {
 
-        Log.d("test_delete", "getSelectedTransactions: inputlist size "+ inputList.size() );
 
         int[] selectedNumbers = getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires();
 
@@ -179,11 +178,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
         int[] selectedNumbers = new int[selectedBooleanArrayViewMode.size()];
 
-        Log.d("test_delete", "selectedBooleanArrayViewMode   size(): "+selectedBooleanArrayViewMode.size());
         for (int i = 0; i < selectedBooleanArrayViewMode.size(); i++) {
             selectedNumbers[i] = selectedBooleanArrayViewMode.keyAt(i);
         }
-        Log.d("test_delete", "return selected number: "+selectedNumbers.length);
         return selectedNumbers;
     }
 

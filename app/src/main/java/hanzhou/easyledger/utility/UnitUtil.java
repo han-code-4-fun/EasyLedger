@@ -47,7 +47,6 @@ public class UnitUtil {
     public static int formatTime(Date inputDate){
         SimpleDateFormat formatterDBTime = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         String output = formatterDBTime.format(inputDate);
-        Log.d(TAG, "formatTime: half year ago is "+ output);
         return Integer.valueOf(output);
     }
 
@@ -80,7 +79,6 @@ public class UnitUtil {
 //        int dayBeginOfWeek = (now.getDayOfMonth()) - daysPastCurrentWeek +1;
 
         int startingDate =fromJodaTimeLocalDateToAppDateInteger(now.dayOfWeek().withMinimumValue());
-        Log.d("test_flow13", "setRevenueDateCurrentWeek: "+ startingDate);
 
         return startingDate;
     }
@@ -91,14 +89,12 @@ public class UnitUtil {
 
 //        int startingDate =year*10000+month*100+1;
         int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.dayOfMonth().withMinimumValue());
-        Log.d("test_flow13", "setRevenueDateCurrentMonth: "+ startingDate);
 
         return startingDate;
     }
 
     public static int getStartingDateCurrentYear() {
         int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.dayOfYear().withMinimumValue());
-        Log.d("test_flow_teststartyear", "getStartingDateCurrentYear: "+ startingDate);
 
         return startingDate;
 
@@ -107,7 +103,6 @@ public class UnitUtil {
     public static int getStartingDateCurrentCustom(int customDays) {
 
         int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.minusDays(customDays));
-        Log.d("test_f_custom_dates", "getStartingDateCurrentCustom: "+ startingDate);
 
         return startingDate;
     }

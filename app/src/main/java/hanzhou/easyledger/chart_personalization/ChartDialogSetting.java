@@ -138,7 +138,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
 
         loadPreferenceSetting();
 
-        Log.d("test_dialog", "onCreateDialog: ");
 
 
         //todo, use string
@@ -158,7 +157,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
 
 
     private void loadPreferenceSetting() {
-        Log.d(TAG, "loadPreferenceSetting: ");
 
         int temp;
 
@@ -190,7 +188,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 Constant.SETTING_CHART_CURRENT_CHART_PERIOD_DEFAULT_VAL
         );
 
-        Log.d("test_year_bug", "dialogsetting, load current_chart-period_key "+temp);
         mRGroupCurrentPeriodType.check(temp);
 
         mNumberDays = mAppPreferences.getInt(
@@ -198,7 +195,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_DEFAULT_VAL
         );
 
-        Log.d(TAG, "loadPreferenceSetting: numberDays -> " + mNumberDays);
 
 //        mSBNumberOfDaysBefore.setText(String.valueOf(mNumberDays));
         mSBNumberOfDaysBefore.setProgress(mNumberDays);
@@ -239,8 +235,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 Constant.SETTING_CHART_CURRENT_CHART_PERIOD_KEY,
                 mRGroupCurrentPeriodType.getCheckedRadioButtonId()
         );
-        Log.d("test_year_bug", "dialogsetting, save current_chart-period_key checked ->"+
-                mRGroupCurrentPeriodType.getCheckedRadioButtonId());
 
 
         if (mRGroupCurrentPeriodType.getCheckedRadioButtonId() == R.id.radioButton_current_period_type_custom) {
@@ -248,7 +242,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                     Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_KEY,
                     mNumberDays
             );
-            Log.d("test_year_bug", "dialogsetting  custom  number  of days is  " + mNumberDays);
         }
 
         editor.putBoolean(
@@ -332,10 +325,8 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
 
-            Log.d(TAG, "onClick: saveBTN   ");
             if (mIsSettingChanged) {
 
-                Log.d(TAG, "onClick: mIsSettingChanged");
                 //todo, here
                 Toast.makeText(mAppCompatActivity, getString(R.string.dialog_toast_saved), Toast.LENGTH_LONG).show();
                 savePreferenceSetting();
@@ -347,7 +338,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
                 bottomNavigationView.setSelectedItemId(R.id.navigation_charts);*/
 
             } else {
-                Log.d(TAG, "onClick: mIssetting   not changed");
                 Toast.makeText(mAppCompatActivity, getString(R.string.dialog_toast_setting_not_change), Toast.LENGTH_LONG).show();
 
             }

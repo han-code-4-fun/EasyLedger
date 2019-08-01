@@ -223,7 +223,6 @@ public class ChartFragment extends Fragment implements
         if (mAppCompatActivity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
-        Log.d("test_dimension", "getIdealScreenHeight:  actionbar ->"+actionBarHeight);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         mAppCompatActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -231,28 +230,14 @@ public class ChartFragment extends Fragment implements
 
         int screenWidth = displayMetrics.widthPixels;
 
-        Log.d("test_dimension", "getIdealScreenHeight:   screenwidth is ****** "+ screenWidth);
-
-        Log.d("test_dimension", "getIdealScreenHeight:  screenHeight ->"+screenHeight);
-
-//        int bottomNavigationViewHeight = Math.round(getResources().getDimension(R.dimen.bottom_navigation_view_height_larger_screen_phone));
 
         int bottomNavigationViewHeight = mAppCompatActivity.findViewById(R.id.bottom_navigation).getMeasuredHeight();
-
-        Log.d("test_dimension", "getIdealScreenHeight:  bottomNavigationViewHeight ->"+bottomNavigationViewHeight);
 
         /*after getting the real display size by removing actionbar
          and bottomNavigationView, make height times 0.9 */
         screenHeight = screenHeight - bottomNavigationViewHeight - actionBarHeight;
 
-        Log.d("test_dimension", "screenHeight  after remove actionbar and bottomnavigationview ->"+screenHeight);
-
-
         screenHeight = (int) Math.round(screenHeight * 0.9);
-
-
-        Log.d("test_dimension", "screenHeight  after * 0.9 ->"+screenHeight);
-
 
         return screenHeight;
     }
@@ -379,9 +364,7 @@ public class ChartFragment extends Fragment implements
         ArrayList<BarEntry> mRevenuesBarEntries = new ArrayList<>();
         ArrayList<BarEntry> mExpensesBarEntries = new ArrayList<>();
 
-        Log.d("test_tt", "bar entries before fill data" + mRevenuesBarEntries.toString() + "  ()()()  " + mExpensesBarEntries.toString());
         convertTwoSumListIntoBarEntriesList(mRevenuesBarEntries, mExpensesBarEntries, chartDataRevenueSums, chartDataExpenseSums);
-        Log.d("test_tt", "bar entries after fill data" + mRevenuesBarEntries.toString() + "  ()()()  " + mExpensesBarEntries.toString());
 
 
         BarDataSet barDataSetR, barDataSetE;
@@ -416,7 +399,6 @@ public class ChartFragment extends Fragment implements
 //                    DateTimeFormat.forPattern("YYYYMM").print(
 //                            LocalDate.now().minusMonths(mNumberOfPeriodsToCompare)));
 //            //todo   THIS IS AFTER FORMATER
-//            Log.d("test_ff7", " month starting point  " + barChartXAxisStartTime);
 //            xAxisFormatter.setStartDate(LocalDate.now().minusMonths(mNumberOfPeriodsToCompare));
 //            xAxis.setValueFormatter(xAxisFormatter);
 //
@@ -426,7 +408,6 @@ public class ChartFragment extends Fragment implements
 //            xAxis.setValueFormatter(xAxisFormatter);
 //
 //            barChartXAxisStartTime = 0;
-//            Log.d("test_flow555", " week  starting point  " + barChartXAxisStartTime);
 //
 //        }
 //
@@ -472,7 +453,6 @@ public class ChartFragment extends Fragment implements
                     DateTimeFormat.forPattern("YYYYMM").print(
                             LocalDate.now().minusMonths(mNumberOfPeriodsToCompare)));
             //todo   THIS IS AFTER FORMATER
-            Log.d("test_ff7", " month starting point  " + barChartXAxisStartTime);
             xAxisFormatter.setStartDate(LocalDate.now().minusMonths(mNumberOfPeriodsToCompare));
             xAxis.setValueFormatter(xAxisFormatter);
 
@@ -482,7 +462,6 @@ public class ChartFragment extends Fragment implements
             xAxis.setValueFormatter(xAxisFormatter);
 
             barChartXAxisStartTime = 0;
-            Log.d("test_flow555", " week  starting point  " + barChartXAxisStartTime);
 
         }
 
@@ -525,12 +504,9 @@ public class ChartFragment extends Fragment implements
                 float currentMonth = Integer.parseInt(
                         DateTimeFormat.forPattern("YYYYMM").print(
                                 LocalDate.now().minusMonths(mNumberOfPeriodsToCompare - i)));
-                Log.d("test_ff7", "currentMonth is : " + currentMonth);
                 mRevenuesBarEntries.add(new BarEntry(currentMonth, revenueSumList.get(i)));
                 mExpensesBarEntries.add(new BarEntry(currentMonth, expenseSumList.get(i)));
             } else {
-                Log.d("test_ff7", "currentweek is : " + i);
-
                 //display by week-period data whic x-axis value will be displayed by number of weeks
                 mRevenuesBarEntries.add(new BarEntry(i, revenueSumList.get(i)));
                 mExpensesBarEntries.add(new BarEntry(i, expenseSumList.get(i)));
@@ -557,15 +533,21 @@ public class ChartFragment extends Fragment implements
                 Toast.makeText(getActivity(), "time excess today", Toast.LENGTH_LONG).show();
                 return;
             }
+            //todo, fix this
+            try{
 
-            while (entry.getTime() > mDateListForEachPeriod.get(pointerForDates)) {
-                revenues.add(tempRevenueSum);
-                tempRevenueSum = 0;
-                expenses.add(tempExpenseSum);
-                tempExpenseSum = 0;
-                pointerForDates += 2;
+                while (entry.getTime() > mDateListForEachPeriod.get(pointerForDates)) {
+                    revenues.add(tempRevenueSum);
+                    tempRevenueSum = 0;
+                    expenses.add(tempExpenseSum);
+                    tempExpenseSum = 0;
+                    pointerForDates += 2;
 
+                }
+            }catch (IndexOutOfBoundsException e){
+                e.printStackTrace();
             }
+
 
             if (entry.getAmount() >= 0) {
                 //add to revenue
@@ -991,7 +973,6 @@ public class ChartFragment extends Fragment implements
                 Constant.SETTING_CHART_HISTORY_PERIOD_NUMBER_DEFAULT
         );
 
-        Log.d("test_ff7", "mNumberOfPeriodsToCompare  is assign : " + mNumberOfPeriodsToCompare);
 
         mCurrentChartType = mAppPreferences.getInt(
                 Constant.SETTING_CHART_CURRENT_CHART_TYPE_KEY,
@@ -1083,7 +1064,6 @@ public class ChartFragment extends Fragment implements
 //                getString(R.string.setting_chart_dialog_history_period_number_key),
 //                getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));*/
 //
-//        Log.d("test_ff7", "mNumberOfPeriodsToCompare  is assign : " + mNumberOfPeriodsToCompare);
 //
 //      /*  int mCurrentChartType = mAppPreferences.getInt(
 //                Constant.SETTING_CHART_CURRENT_CHART_TYPE_KEY,
@@ -1328,7 +1308,6 @@ public class ChartFragment extends Fragment implements
         mChartDataViewModel.getmHistoryListEntryPeriod().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
-                Log.d("test_new", "  chartFragment  observer");
 
                 setDataHistoryBarChart(transactionEntryList);
             }

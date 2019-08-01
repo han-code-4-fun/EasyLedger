@@ -83,7 +83,6 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
 //                mList) {
 //            temp +=x;
 //        }
-//        Log.d("test_setting", "after swapPosition: "+ temp);
     }
 
     public String remove(int position) {

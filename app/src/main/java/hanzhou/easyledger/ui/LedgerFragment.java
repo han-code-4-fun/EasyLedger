@@ -97,7 +97,6 @@ public class LedgerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("test_life", "onCreate: ______________ledger frag");
     }
 
 
@@ -118,7 +117,6 @@ public class LedgerFragment extends Fragment {
 //
 //        }else{
 
-        Log.d("test_life", "onCreateView: ________________________ledger frag");
 
 
         TabLayout tabLayout = rootView.findViewById(R.id.transaction_tablayout);
@@ -161,7 +159,6 @@ public class LedgerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("test_life", "onActivityCreated: ____________ledger frag");
         setupViewModel();
 //        viewPager.setCurrentItem(0);
         String temp = "";
@@ -170,7 +167,6 @@ public class LedgerFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("test_life", "onDestroyView: ____________Ledger Frag");
     }
 
     @Override
@@ -190,7 +186,6 @@ public class LedgerFragment extends Fragment {
 //            public void onChanged(String s) {
 //                if(!mCurrentVisiblePage.equals(s)){
 //                    mCurrentVisiblePage =s;
-//                    Log.d("test_frag1", " mCurrentVisiblePage is now  ______ "+mCurrentVisiblePage);
 //
 //
 //                    mTransactionDBViewModel.setLedgerName(s);
