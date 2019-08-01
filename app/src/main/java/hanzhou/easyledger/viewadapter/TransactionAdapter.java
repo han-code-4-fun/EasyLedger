@@ -28,7 +28,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private static final String TAG = TransactionAdapter.class.getSimpleName();
 
-//    private CustomListItemClickListener mOnClickListener;
     private List<TransactionEntry> mTransactionEntryList;
     private AdapterNActionBarViewModel mAdapterNActionBarViewModel;
 
@@ -38,7 +37,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public TransactionAdapter(AdapterNActionBarViewModel inputVM, Context context) {
 
-//        mOnClickListener = listener;
         mAdapterNActionBarViewModel = inputVM;
         mAdapterNActionBarViewModel.emptySelectedItems();
         mContext = context;
@@ -108,10 +106,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         mAdapterNActionBarViewModel.setmTransactionSelectedNumber();
         mAdapterNActionBarViewModel.setmIsAllSelected(false);
         this.notifyDataSetChanged();
-    }
-
-    public boolean isInActionMode() {
-        return isInActionMode;
     }
 
     public void setInActionMode(boolean inActionMode) {

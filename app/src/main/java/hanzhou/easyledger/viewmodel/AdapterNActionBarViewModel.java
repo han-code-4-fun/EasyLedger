@@ -8,48 +8,40 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import hanzhou.easyledger.data.TransactionEntry;
+import hanzhou.easyledger.ui.MainActivity;
 import hanzhou.easyledger.utility.Constant;
 
 public class AdapterNActionBarViewModel extends AndroidViewModel {
 
-    //store the state of toolbar
+    /*store the state of toolbar*/
     private MutableLiveData<Boolean> mIsActionMode;
 
     private MutableLiveData<Boolean> mIsAllSelected;
 
-    //record the number of entries that is seleced by user
+    /*record the number of entries that is seleced by user*/
     private MutableLiveData<Integer> mTransactionSelectedNumber;
 
-    //two triggers that from MainActivity to RecyclerView to do select/deselect all entries
+    /*two triggers that from MainActivity to tell adapter to select/deselect all entries*/
     private MutableLiveData<Boolean> mSelectAllTrigger;
     private MutableLiveData<Boolean> mDeselectAllTrigger;
 
 
 
-    private MutableLiveData<Boolean> mDeleteItemTrigger;
-    private MutableLiveData<Boolean> mEditAnEntryTrigger;
     private MutableLiveData<Boolean> mCategorizeItemsToOthersTrigger;
 
 
-    //keep track of user selection
+    /*keep track of user selection*/
     private SparseBooleanArray selectedBooleanArrayViewMode;
 
     private MutableLiveData<Integer> mClickedEntryID;
 
     private MutableLiveData<String> mSelectedCategory;
-
-
-
-    private MutableLiveData<Boolean> mIsInBaseFragment;
-
-    private MutableLiveData<Boolean> mShowBottomNavigationBar;
-    private MutableLiveData<Boolean> mShowFloatingActionBtn;
-
 
 
 
@@ -85,20 +77,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         mSelectedCategory = new MutableLiveData<>();
         mSelectedCategory.setValue("");
 
-        mShowBottomNavigationBar = new MutableLiveData<>();
-        mShowBottomNavigationBar.setValue(true);
-
-        mShowFloatingActionBtn = new MutableLiveData<>();
-        mShowFloatingActionBtn.setValue(true);
-
-        mIsInBaseFragment = new MutableLiveData<>();
-        mIsInBaseFragment.setValue(true);
-
-        mDeleteItemTrigger = new MutableLiveData<>();
-        mDeleteItemTrigger.setValue(false);
-
-        mEditAnEntryTrigger = new MutableLiveData<>();
-        mEditAnEntryTrigger.setValue(false);
 
         mCategorizeItemsToOthersTrigger = new MutableLiveData<>();
         mCategorizeItemsToOthersTrigger.setValue(false);
@@ -203,14 +181,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         return output;
     }
 
-    public String getTheSelectionArray(){
-        String temp="";
-        for (int i = 0; i < selectedBooleanArrayViewMode.size(); i++) {
-            temp += "pos "+selectedBooleanArrayViewMode.keyAt(i)+", ";
-        }
-
-        return temp;
-    }
 
     public void emptySelectedItems() {
         selectedBooleanArrayViewMode.clear();
@@ -259,23 +229,6 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.mSelectedCategory.setValue(input);
     }
 
-
-    /*a one way trigger called from MainActivity (actionbar) to inform DetailTransacitonFragment to delete selected items*/
-    public void setmDeleteItemTrigger(boolean input){
-        mDeleteItemTrigger.setValue(input);
-    }
-
-    public MutableLiveData<Boolean> getmDeleteItemTrigger() {
-        return mDeleteItemTrigger;
-    }
-
-    public MutableLiveData<Boolean> getmEditAnEntryTrigger() {
-        return mEditAnEntryTrigger;
-    }
-
-//    public void setmEditAnEntryTrigger(Boolean input) {
-//        this.mEditAnEntryTrigger.setValue(input);
-//    }
 
     public MutableLiveData<Boolean> getmCategorizeItemsToOthersTrigger() {
         return mCategorizeItemsToOthersTrigger;

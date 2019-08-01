@@ -10,7 +10,6 @@ import hanzhou.easyledger.utility.Constant;
 public class SPViewModel extends ViewModel {
 
     private MutableLiveData<SharedPreferences> sharedPreferences;
-//    private MutableLiveData<Integer> mChartNumberOfHistoryPeriodSelectedByUser;
 
     private SPIntLiveData mChartNumberOfHistoryPeriodSelectedByUser;
     private SPIntLiveData mChartHistoryPeriodType;
@@ -30,28 +29,7 @@ public class SPViewModel extends ViewModel {
 
 
 
-
-
-//    public SPViewModel(SharedPreferences inputSP , String inputKey, int inputVal) {
-//       /* sharedPreferences = new MutableLiveData<>();
-//        sharedPreferences.setValue(inputSP);
-//        mChartNumberOfHistoryPeriodSelectedByUser = new MutableLiveData<>();*/
-//
-//       testInteger = new SPIntLiveData(inputSP,inputKey,inputVal);
-//
-//    }
-
-    /* public MutableLiveData<Integer> getHistoryPeriod(){
-         return mChartNumberOfHistoryPeriodSelectedByUser;
-     }
-
-     private void updateHistoryPeriod(int input){
-         mChartNumberOfHistoryPeriodSelectedByUser.setValue(input);
-     }*/
     public SPViewModel(SharedPreferences inputSP) {
-       /* sharedPreferences = new MutableLiveData<>();
-        sharedPreferences.setValue(inputSP);
-        mChartNumberOfHistoryPeriodSelectedByUser = new MutableLiveData<>();*/
 
         mChartNumberOfHistoryPeriodSelectedByUser = new SPIntLiveData(
                 inputSP,

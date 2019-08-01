@@ -13,18 +13,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 
 import hanzhou.easyledger.ui.DetailTransactionFragment;
-import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.viewmodel.LedgerViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 public class LedgersAdapter extends FragmentPagerAdapter {
 
     private String mCurrentVisiblePage;
 
-//    private Fragment fragment;
-
-    //todo  the 'numberOfLedgers' has relationship with ledger in database
-    private static int numberOfLedgers = 0;
 
     private static LedgersAdapter sAdapterInstance;
 
@@ -53,15 +47,6 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         super.setPrimaryItem(container, position, object);
 
-//        if(!mLedgers.get(position).equals(mCurrentVisiblePage)){
-//            mCurrentVisiblePage = mLedgers.get(position);
-//            if(mLedgerViewModel!= null){
-//
-//                mLedgerViewModel.setmLedgerName(mCurrentVisiblePage);
-//
-//            }
-//        }
-
     }
 
 
@@ -69,8 +54,6 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-//        return DetailTransactionFragment.newInstance(Constant.FRAG_NAME_LEDGER);
-//        mTransactionDBViewModel.setLedgerName(mLedgers.get(position));
         return DetailTransactionFragment.newInstance(mLedgers.get(position));
 
     }

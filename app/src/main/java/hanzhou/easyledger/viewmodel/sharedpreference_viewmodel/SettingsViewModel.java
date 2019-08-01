@@ -11,9 +11,6 @@ import hanzhou.easyledger.data.RepositoryDB;
 public class SettingsViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> mCategoryToEdit;
-//
-//    private MutableLiveData<ArrayList<String>> mCategoryExpense;
-//    private MutableLiveData<ArrayList<String>> mCategoryRevenue;
 
     private MutableLiveData<Boolean> mRefreshLedgerFragmentTrigger;
 

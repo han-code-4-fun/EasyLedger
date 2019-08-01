@@ -15,15 +15,9 @@ public class Constant {
 
     public static final String UNTAGGED = "n/a";
 
-    public static final String FRAG_CALL_FROM_OVERVIEW = "this_recyclerview_open_from_overview_fragment";
-    public static final String FRAG_CALL_FROM_LEDGER = "this_recyclerview_open_from_ledger_fragment";
-
-    public static final String TESTFLOW = "test_";
-
     public static final String PREFERENCE_TIME_LEFT_APP = "preferece_time_left_app";
     public static final String PREFERENCE_TIME_BACK_TO_APP = "preferece_time_back_to_app";
 
-//    public static final String APP_PREFERENCE = "sharedPreferences";
 
     public static final String LEDGERS = "sharedPreference_ledgers";
 
@@ -35,7 +29,6 @@ public class Constant {
 
     public static final String CATEGORY_TYPE_EXPENSE = "expense_categories";
 
-    public static final String SHARED_PREF_INITIAL = "shared_preference_initialization";
 
     public static final String SETTING_CHART_HISTORY_PERIOD_NUMBER_KEY = "history_period_number";
     public static final int SETTING_CHART_HISTORY_PERIOD_NUMBER_DEFAULT = 6;

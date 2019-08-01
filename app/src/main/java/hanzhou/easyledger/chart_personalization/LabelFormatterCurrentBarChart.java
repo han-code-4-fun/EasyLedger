@@ -9,20 +9,12 @@ public class LabelFormatterCurrentBarChart extends ValueFormatter {
     private int mValueCount = 0;
 
 
-    public LabelFormatterCurrentBarChart() {
-    }
-
 
     public LabelFormatterCurrentBarChart(String[] valueOfEntryLabels) {
         if (valueOfEntryLabels != null)
             setValues(valueOfEntryLabels);
     }
 
-
-    public LabelFormatterCurrentBarChart(Collection<String> valueOfEntryLabels) {
-        if (valueOfEntryLabels != null)
-            setValues(valueOfEntryLabels.toArray(new String[valueOfEntryLabels.size()]));
-    }
 
     @Override
     public String getFormattedValue(float value) {
@@ -37,10 +29,7 @@ public class LabelFormatterCurrentBarChart extends ValueFormatter {
         return mValues[index];
     }
 
-    public String[] getValues()
-    {
-        return mValues;
-    }
+
 
     public void setValues(String[] values)
     {

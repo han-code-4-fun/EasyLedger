@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.GsonHelper;
@@ -160,7 +161,6 @@ public class ChartFragment extends Fragment implements
         mGsonHelper = GsonHelper.getInstance();
         mGsonHelper.setmSharedPreferences(mAppPreferences);
 
-//        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
 
         loadPreferenceSetting();
 
@@ -196,12 +196,6 @@ public class ChartFragment extends Fragment implements
         initializeHistoryBarChart();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mAdapterActionViewModel.setmIsInBaseFragment(true);
-
-    }
 
     /*
         everything is in the NestedScrollView.
@@ -280,17 +274,6 @@ public class ChartFragment extends Fragment implements
 
         setupChartDataViewModelObserver(mChartDataViewModel);
 
-
-//        ChartDataInitialViewModelFactory factory = new ChartDataInitialViewModelFactory(mCurrentChartStartingDate, mHistoryChartStartDate, mHistoryChartEndDate, mDb);
-//        //this view model only works for the fragment itself
-//        ChartDataViewModel mChartDataViewModel = ViewModelProviders.of(this, factory).get(ChartDataViewModel.class);
-
-        //this view model only works for the fragment itself
-//        ChartDataViewModel mChartDataViewModel = ViewModelProviders.of(mAppCompatActivity).get(ChartDataViewModel.class);
-
-//        mChartDataViewModel.setmChartSettingChanged(false);
-
-
     }
 
 
@@ -311,9 +294,9 @@ public class ChartFragment extends Fragment implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view);
-            // For bounds control
+            /*For bounds control*/
             mv.setChartView(mHistoryBarChart);
-            // Set the marker to the mHistoryBarChart
+            /*Set the marker to the mHistoryBarChart*/
             mHistoryBarChart.setMarker(mv);
         }
 
@@ -380,61 +363,12 @@ public class ChartFragment extends Fragment implements
 
         mHistoryBarChart.setData(data);
 
-        // specify the width each bar should have
+        /*specify the width each bar should have*/
         mHistoryBarChart.getBarData().setBarWidth(barWidth);
 
 
         setAxisRangeNUpdateChart();
 
-//
-//        int barChartXAxisStartTime;
-//
-//        XAxis xAxis = mHistoryBarChart.getXAxis();
-//
-//        if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
-//            MonthValueFormatter xAxisFormatter = new MonthValueFormatter();
-//
-//
-//            barChartXAxisStartTime = Integer.parseInt(
-//                    DateTimeFormat.forPattern("YYYYMM").print(
-//                            LocalDate.now().minusMonths(mNumberOfPeriodsToCompare)));
-//            //todo   THIS IS AFTER FORMATER
-//            xAxisFormatter.setStartDate(LocalDate.now().minusMonths(mNumberOfPeriodsToCompare));
-//            xAxis.setValueFormatter(xAxisFormatter);
-//
-//        } else {
-//            WeekValueFormatter xAxisFormatter = new WeekValueFormatter(mHistoryBarChart);
-//            xAxisFormatter.setMaxPeriod(mNumberOfPeriodsToCompare);
-//            xAxis.setValueFormatter(xAxisFormatter);
-//
-//            barChartXAxisStartTime = 0;
-//
-//        }
-//
-//
-//        xAxis.setGranularity(1f);
-//        xAxis.setCenterAxisLabels(true);
-//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//        xAxis.setAxisMinimum(barChartXAxisStartTime);
-//        xAxis.setAxisMaximum(barChartXAxisStartTime + mHistoryBarChart.getBarData().getGroupWidth(groupSpace, barSpace) * mNumberOfPeriodsToCompare);
-//
-//        if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
-//            //todo, problems here
-//
-//
-//        } else {
-//
-//
-//        }
-//
-//
-//        xAxis.setAxisMinimum(barChartXAxisStartTime);
-//        xAxis.setAxisMaximum(barChartXAxisStartTime + mHistoryBarChart.getBarData().getGroupWidth(groupSpace, barSpace) * mNumberOfPeriodsToCompare);
-//
-//
-//        mHistoryBarChart.groupBars(barChartXAxisStartTime, groupSpace, barSpace);
-//
-//        mHistoryBarChart.invalidate();
 
     }
 
@@ -452,7 +386,6 @@ public class ChartFragment extends Fragment implements
             barChartXAxisStartTime = Integer.parseInt(
                     DateTimeFormat.forPattern("YYYYMM").print(
                             LocalDate.now().minusMonths(mNumberOfPeriodsToCompare)));
-            //todo   THIS IS AFTER FORMATER
             xAxisFormatter.setStartDate(LocalDate.now().minusMonths(mNumberOfPeriodsToCompare));
             xAxis.setValueFormatter(xAxisFormatter);
 
@@ -472,15 +405,6 @@ public class ChartFragment extends Fragment implements
         xAxis.setAxisMinimum(barChartXAxisStartTime);
         xAxis.setAxisMaximum(barChartXAxisStartTime + mHistoryBarChart.getBarData().getGroupWidth(groupSpace, barSpace) * mNumberOfPeriodsToCompare);
 
-        if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
-            //todo, problems here
-
-
-        } else {
-
-
-        }
-
 
         xAxis.setAxisMinimum(barChartXAxisStartTime);
         xAxis.setAxisMaximum(barChartXAxisStartTime + mHistoryBarChart.getBarData().getGroupWidth(groupSpace, barSpace) * mNumberOfPeriodsToCompare);
@@ -499,7 +423,7 @@ public class ChartFragment extends Fragment implements
         for (int i = 0; i < mNumberOfPeriodsToCompare && i < revenueSumList.size(); i++) {
 
             if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
-                //display by month-period data where x-axis value will be displayed on YYYYMM
+                /*display by month-period data where x-axis value will be displayed on YYYYMM*/
 
                 float currentMonth = Integer.parseInt(
                         DateTimeFormat.forPattern("YYYYMM").print(
@@ -507,7 +431,7 @@ public class ChartFragment extends Fragment implements
                 mRevenuesBarEntries.add(new BarEntry(currentMonth, revenueSumList.get(i)));
                 mExpensesBarEntries.add(new BarEntry(currentMonth, expenseSumList.get(i)));
             } else {
-                //display by week-period data whic x-axis value will be displayed by number of weeks
+                /*display by week-period data whic x-axis value will be displayed by number of weeks*/
                 mRevenuesBarEntries.add(new BarEntry(i, revenueSumList.get(i)));
                 mExpensesBarEntries.add(new BarEntry(i, expenseSumList.get(i)));
             }
@@ -586,11 +510,11 @@ public class ChartFragment extends Fragment implements
             enableCurrentBarChart();
 
             if (type.equals(CHART_EXPENSE)) {
-                //populate CHART_EXPENSE chart
+                /*populate CHART_EXPENSE chart*/
                 initializeCurrentBarChart(mCurrentBarChartExpense);
                 setCurrentBarChartData(mCurrentBarChartExpense, mCategoryExpense, CHART_EXPENSE);
             } else {
-                //populate CHART_REVENUE chart
+                /*populate CHART_REVENUE chart*/
                 initializeCurrentBarChart(mCurrentBarChartRevenue);
                 setCurrentBarChartData(mCurrentBarChartRevenue, mCategoryRevenue, CHART_REVENUE);
 
@@ -647,7 +571,7 @@ public class ChartFragment extends Fragment implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             MyMarkerView mv = new MyMarkerView(getContext(), R.layout.barchart_marker_view, categoriesArray);
-            // For bounds control
+            /*For bounds control*/
             mv.setChartView(barChart);
 
             barChart.setMarker(mv);
@@ -726,16 +650,12 @@ public class ChartFragment extends Fragment implements
     private void initializePieChart(PieChart chart, String chartType) {
 
 
-        //todo enabled percentage
-        //enable percentage
         if (mIsPieChartShowPercentage) {
             chart.setUsePercentValues(true);
         } else {
             chart.setUsePercentValues(false);
         }
         chart.getDescription().setEnabled(false);
-
-        //chart.setExtraOffsets(5, 10, 5, 5);
 
         chart.setDragDecelerationFrictionCoef(0.9f);
 
@@ -777,7 +697,6 @@ public class ChartFragment extends Fragment implements
     }
 
     private void setPieChartData(PieChart chart, HashMap<String, Float> categoryHashMap, String chartType) {
-        //PieEntry entry = new PieEntry(float, String(name));
         ArrayList<PieEntry> entries = fromHashMapToArrayListOfPieEntry(categoryHashMap);
 
         PieDataSet pieDataSet = new PieDataSet(entries, "Categories");
@@ -829,7 +748,7 @@ public class ChartFragment extends Fragment implements
 
         chart.setCenterText(charCenterTxt);
 
-        // undo all highlights
+        /* undo all highlights*/
         chart.highlightValues(null);
         chart.invalidate();
     }
@@ -953,7 +872,6 @@ public class ChartFragment extends Fragment implements
                     s.length() - (11 + lengthTotalCategory + 1),
                     0);
 
-
         }
 
 
@@ -1041,133 +959,15 @@ public class ChartFragment extends Fragment implements
 
         mHistoryChartStartDate = mDateListForEachPeriod.get(0);
 
-        //get the last value in the mDateListForEachPeriod;
+       /*get the last value in the mDateListForEachPeriod;*/
         mHistoryChartEndDate = mDateListForEachPeriod.get(mDateListForEachPeriod.size() - 1);
 
     }
 
 
-//    private void loadPreferenceSetting() {
-//
-//        int mNumOfCustomDays = 0;
-//
-////        mHistoryPeriodType = mAppPreferences.getInt(
-////
-////                Constant.SETTING_CHART_HISTORY_PERIOD_TYPE_KEY,
-////                R.id.dialog_history_period_by_month);
-//
-//
-//        //todo, test let fragment gettting data from VM
-//
-//
-//       /* mNumberOfPeriodsToCompare = mAppPreferences.getInt(
-//                getString(R.string.setting_chart_dialog_history_period_number_key),
-//                getResources().getInteger(R.integer.setting_chart_dialog_default_history_period_number));*/
-//
-//
-//      /*  int mCurrentChartType = mAppPreferences.getInt(
-//                Constant.SETTING_CHART_CURRENT_CHART_TYPE_KEY,
-//                R.id.radioButton_current_period_type_piechart
-//        );
-//        if (mCurrentChartType == R.id.radioButton_current_period_type_piechart) {
-//            mUserSelection = CATEGORY_PIECHART;
-//        } else {
-//            mUserSelection = CATEGORY_BARCHART;
-//        }*/
-//
-////        mCurrentPeriodType = mAppPreferences.getInt(
-////                Constant.SETTING_CHART_CURRENT_CHART_PERIOD_KEY,
-////                R.id.radioButton_current_period_type_month
-////        );
-////
-////        if (mCurrentPeriodType == R.id.radioButton_current_period_type_custom) {
-////            mIsCustomCurrentPeriod = true;
-////            mNumOfCustomDays = mAppPreferences.getInt(
-////                    Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_KEY,
-////                    Constant.SETTING_CHART_CURRENT_CHART_PERIOD_CUSTOM_DEFAULT_VAL
-////            );
-////        }
-////
-////        mIsPieChartShowPercentage = mAppPreferences.getBoolean(
-////                Constant.SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_KEY,
-////                Constant.SETTING_CHART_PIECHART_PERCENTAGE_AMOUNT_DEFAULT_VAL
-////        );
-//
-//
-////        setDataCurrentPeriod(mNumOfCustomDays);
-//
-//
-//        //todo, test VM
-//
-//        /*setPeriodForHistoryChartOnPeriodType();*/
-//    }
-//
-//    //    private void setDataCurrentPeriod(int customDays) {
-////        if (mCurrentPeriodType == R.id.radioButton_current_period_type_month) {
-////
-////            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentMonth();
-////
-////        } else if (mCurrentPeriodType == R.id.radioButton_current_period_type_week) {
-////
-////            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentWeek();
-////
-////        } else if (mCurrentPeriodType == R.id.radioButton_current_period_type_year) {
-////
-////            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentYear();
-////
-////        } else {
-////            /*it's custom period*/
-////            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentCustom(customDays);
-////
-////        }
-////    }
-//    private void setDataCurrentPeriod() {
-//        if (mCurrentPeriodType == R.id.radioButton_current_period_type_month) {
-//
-//            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentMonth();
-//
-//        } else if (mCurrentPeriodType == R.id.radioButton_current_period_type_week) {
-//
-//            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentWeek();
-//
-//        } else if (mCurrentPeriodType == R.id.radioButton_current_period_type_year) {
-//
-//            mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentYear();
-//
-//        }
-//    }
-//
-//    private void setDataCurrentCustomPeriod(int customDays) {
-//
-//
-//        mCurrentChartStartingDate = UnitUtil.getStartingDateCurrentCustom(customDays);
-//
-//
-//    }
-//
-//    private void setPeriodForHistoryChartOnPeriodType() {
-//
-//        if (mHistoryPeriodType == R.id.dialog_history_period_by_month) {
-//
-//            mDateListForEachPeriod =
-//                    UnitUtil.getArrayOfStartEndDatesOnNumberOfCompareMonths(mNumberOfPeriodsToCompare);
-//        } else {
-//
-//            mDateListForEachPeriod =
-//                    UnitUtil.getArrayOfStartEndDatesOnNumberOfCompareWeeks(mNumberOfPeriodsToCompare);
-//        }
-//
-//        mHistoryChartStartDate = mDateListForEachPeriod.get(0);
-//
-//        //get the last value in the mDateListForEachPeriod;
-//        mHistoryChartEndDate = mDateListForEachPeriod.get(mDateListForEachPeriod.size() - 1);
-//
-//    }
-
-
-
 
     private void setupSharedPreferenceViewModelObserverForChartDisplay(SPViewModel sharedPreferenceViewModel) {
+
         sharedPreferenceViewModel.getNumberOfHistoryPeriodSelectedByUserOnChartFrag().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {

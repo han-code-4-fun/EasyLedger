@@ -77,8 +77,6 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 
     private boolean isAtLeastOneSmsExtractorFromSettingIsOn(Context context){
 
-
-
         boolean isRBCOn = mSharedPreferences.getBoolean(
                 context.getResources().getString(R.string.setting_others_msg_tracker_rbc_default_key),true);
 

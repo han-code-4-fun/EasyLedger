@@ -40,6 +40,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
@@ -108,7 +109,6 @@ public class AddNEditTransactionFragment extends Fragment
     private SharedPreferences mSharedPreference;
     private GsonHelper mGsonHelper;
 
-//    private boolean mIsNewTransaction;
 
     private int mTransactionId = DEFAULT_TASK_ID;
 
@@ -205,7 +205,7 @@ public class AddNEditTransactionFragment extends Fragment
 
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
-        //setup recyclerview
+
         RecyclerView.LayoutManager layoutManager =
                 new GridLayoutManager(getContext(), 3, RecyclerView.VERTICAL, false);
         mCategoryRecyclerView.setLayoutManager(layoutManager);
@@ -216,7 +216,6 @@ public class AddNEditTransactionFragment extends Fragment
         mCategoryRecyclerView.setAdapter(mCategoryAdapter);
 
 
-        //setup Spinner
         mSpinnerLedgerAdapter = new ArrayAdapter<String>(
                 mAppCompatActivity,
                 android.R.layout.simple_spinner_item,
@@ -231,7 +230,7 @@ public class AddNEditTransactionFragment extends Fragment
 
     private void setupUIListenerForClosingSoftKeyboard(View rootView) {
 
-        // Set up touch listener for non-text box views to hide keyboard.
+       /*Set up touch listener for non-text box views to hide keyboard.*/
         if (!(rootView instanceof EditText)) {
             rootView.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
@@ -241,7 +240,7 @@ public class AddNEditTransactionFragment extends Fragment
             });
         }
 
-        //If a layout container, iterate over children and seed recursion.
+        /*If a layout container, iterate over children and seed recursion.*/
         if (rootView instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) rootView).getChildCount(); i++) {
                 View innerView = ((ViewGroup) rootView).getChildAt(i);
@@ -310,12 +309,6 @@ public class AddNEditTransactionFragment extends Fragment
             }
         });
 
-
-//
-//        mMoneyIn.setOnClickListener(moneyInBtnListener);
-//
-//        mMoneyOut.setOnClickListener(moneyOutBtnListener);
-
     }
 
 
@@ -331,21 +324,6 @@ public class AddNEditTransactionFragment extends Fragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(INSTANCE_TASK_ID, mTransactionId);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mAdapterActionViewModel.setmIsInBaseFragment(false);
-
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //todo, change viewmodel
-
-//        mAdapterActionViewModel.setmIsInAddNEditFragment(false);
     }
 
     private void setMoneyInActive() {
@@ -381,34 +359,6 @@ public class AddNEditTransactionFragment extends Fragment
 
     }
 
-
-//    private Button.OnClickListener moneyInBtnListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-////            if (mMoneyIn.isChecked()) {
-//            if(!mIsMoneyInChecked){
-//                setMoneyInActive();
-//
-//            } else {
-//
-//                setMoneyOutActive();
-//            }
-//        }
-//    };
-//
-//    private Button.OnClickListener moneyOutBtnListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-////            if (mMoneyOut.isChecked()) {
-//            if(mIsMoneyInChecked){
-//                setMoneyOutActive();
-//
-//            } else {
-//
-//                setMoneyInActive();
-//            }
-//        }
-//    };
 
     private TextView.OnClickListener txtViewDateClickListener = new View.OnClickListener() {
         @Override
@@ -481,12 +431,11 @@ public class AddNEditTransactionFragment extends Fragment
 
 
                 if (mIsAutotaggerOn) {
+                    /*
+                        update HistoryRemark for auto-tagging
+                        and apply Updates To Existing UntaggedTransaction
 
-
-                /*
-                update HistoryRemark for auto-tagging
-                and apply Updates To Existing UntaggedTransaction
-                */
+                    */
                     HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
                             remark,
                             mCategoryAdapter.getClickedCategory(),
@@ -509,12 +458,7 @@ public class AddNEditTransactionFragment extends Fragment
                             mDB.transactionDAO().updateTransaction(entry);
                         }
 
-
                         mGeneralViewModel.setmBackButtonPressTrigger(true);
-
-//                        mAppCompatActivity.getSupportFragmentManager().popBackStack();
-
-//                        toolbar.getMenu().performIdentifierAction(android.R.id.home,0);
                     }
                 });
 
@@ -528,25 +472,19 @@ public class AddNEditTransactionFragment extends Fragment
             return;
         }
         if (transactionEntry.getAmount() >= 0) {
-            //this transaction is revenue, need to active the money In btn
             setMoneyInActive();
-
         } else {
-            //this transaction is expense, need to active the money out btn
-
             setMoneyOutActive();
         }
 
 
         mMoneyNum = transactionEntry.getAmount();
 
-        //set amount
         mEditTextAmount.setText(UnitUtil.displayPositiveMoney(mMoneyNum));
 
-        //set remark
         mEditTextRemark.setText(transactionEntry.getRemark());
 
-        //set category
+        //todo, check here
         if (mMoneyNum >= 0) {
         } else {
             mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
@@ -556,17 +494,15 @@ public class AddNEditTransactionFragment extends Fragment
         mTVCategory.setText(mCurrentTransactionCategory);
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
 
-        //select spinner
+       /*select spinner for ledger*/
         mPositionInSpinner = mSpinnerLedgerAdapter.getPosition(transactionEntry.getLedger());
         if (mPositionInSpinner != -1) {
             mSpinner.setSelection(mPositionInSpinner);
         }
 
-        //set date
         mDateNum = transactionEntry.getTime();
         String date = UnitUtil.getTimeIntInMoreReadableFormat(transactionEntry.getTime());
         mTVDate.setText(date);
-
 
     }
 

@@ -18,28 +18,21 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
 
 
     private LiveData<List<TransactionEntry>> untaggedTransactions;
-//    private LiveData<List<TransactionEntry>> listOfTransactionsOfCertainDaysChooseByUser;
-
-//    private MediatorLiveData<List<TransactionEntry>> untaggedTransactions = new MediatorLiveData<>();
     private MediatorLiveData<List<TransactionEntry>>
             listOfTransactionsOfCertainDaysChooseByUser = new MediatorLiveData<>();
 
     private MutableLiveData<Float> revenue;
     private MutableLiveData<Float> spend;
 
-//    private TransactionDB mDB;
-
     private RepositoryDB mDBRepository;
 
     public OverviewFragmentViewModel(@NonNull Application application) {
         super(application);
 
-
         mDBRepository = RepositoryDB.getInstance();
         mDBRepository.initializeRepository(application);
 
         untaggedTransactions = mDBRepository.getUntaggedTransaction();
-
 
         revenue =new MutableLiveData<>();
         revenue.setValue(0.0f);
@@ -65,12 +58,6 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
     public LiveData<List<TransactionEntry>> getlistOfTransactionsInTimeRange(){
         return listOfTransactionsOfCertainDaysChooseByUser;
     }
-
-
-    public LiveData<List<TransactionEntry>> getUntaggedTransactions() {
-        return untaggedTransactions;
-    }
-
 
     public void setRevenue(Float input){
         revenue.setValue(input);

@@ -44,7 +44,7 @@ public class HistorySMSReader {
                 String msgBody = "";
 
                 for (int i = 0; i < results.size(); i++) {
-                    //todo, extract each sms in background
+
                     address = results.get(i).get(0);
                     msgBody = results.get(i).get(1);
                     SMSProcessor.processExtraction(context, address,msgBody);

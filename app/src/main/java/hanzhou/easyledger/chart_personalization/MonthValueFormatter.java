@@ -8,7 +8,6 @@ import org.joda.time.format.DateTimeFormat;
 import hanzhou.easyledger.utility.UnitUtil;
 
 
-//public class MonthValueFormatter extends IndexAxisValueFormatter
 public class MonthValueFormatter extends ValueFormatter
 
 {

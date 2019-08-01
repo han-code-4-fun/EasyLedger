@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 /* A Helper class that
 *   1. handling diskio operations, in current version, interact with DB
 *   2. can be further developer for handling network data
-*   3. add an abstraction layout
+*
 * */
 
 public class AppExecutors {

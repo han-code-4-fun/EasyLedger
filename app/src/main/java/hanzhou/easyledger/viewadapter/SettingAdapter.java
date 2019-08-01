@@ -77,12 +77,6 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
     public void swapPosition(int positionFrom, int positionTo){
         Collections.swap(mList, positionFrom, positionTo);
         notifyItemMoved(positionFrom, positionTo);
-
-//        String temp = "";
-//        for (String x :
-//                mList) {
-//            temp +=x;
-//        }
     }
 
     public String remove(int position) {

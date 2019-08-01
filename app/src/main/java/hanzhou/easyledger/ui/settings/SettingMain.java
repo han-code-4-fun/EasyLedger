@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
@@ -40,7 +41,7 @@ import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel
  * A simple {@link Fragment} subclass.
  */
 public class SettingMain extends PreferenceFragmentCompat implements
-        SharedPreferences.OnSharedPreferenceChangeListener, SeekBar.OnSeekBarChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private AppCompatActivity mAppCompatActivity;
 
@@ -91,9 +92,6 @@ public class SettingMain extends PreferenceFragmentCompat implements
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.setting_main);
 
-        /* apply custom theme  */
-//        mAppCompatActivity.getTheme().applyStyle(R.style.my_preference_screen, true);
-
         mSharedPreferences = getPreferenceScreen().getSharedPreferences();
 
         toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
@@ -106,8 +104,10 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
 
 
-        //initially hide seekbar if not the right selesction
+        /*initially hide seekbar if not the right selesction*/
         mCurrentOverviewDatesRange = mSharedPreferences.getString(mListOfDayRanges.getKey(), getString(R.string.empty_string));
+
+
         if(!mCurrentOverviewDatesRange.equals(getString(R.string.setting_overview_date_range_custom_range_key))){
             mOverviewCategory.removePreference(seekBarPreference);
         }
@@ -176,10 +176,6 @@ public class SettingMain extends PreferenceFragmentCompat implements
             });
         }
 
-//        Preference checkboxRBC = (CheckBoxPreference)findPreference(getString(R.string.setting_others_msg_tracker_rbc_default_key));
-//        ((CheckBoxPreference) checkboxRBC).isChecked()
-//
-
     }
 
 
@@ -202,16 +198,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-//        mAdapterActionViewModel.setmIsInBaseFragment(false);
-    }
-
-
-
-    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        // Figure out which preference was changed
+        /* Figure out which preference was changed */
         Preference preference = findPreference(s);
         if (preference != null) {
 
@@ -255,26 +243,12 @@ public class SettingMain extends PreferenceFragmentCompat implements
                                     Toast.LENGTH_LONG).show();
                         }
                     }
-//                    else{
-//                        Toast.makeText(mAppCompatActivity, "NOT checked!", Toast.LENGTH_LONG).show();
-//
-//                    }
-
                 }
             }
-
         }
     }
 
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //todo, change viewmodel
-
-//        mAdapterActionViewModel.setmIsInSettingsFragment(false);
-    }
 
     @Override
     public void onDestroy() {
@@ -285,11 +259,11 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private void setPreferenceSummary(Preference preference, String value) {
         if (preference instanceof ListPreference) {
-            // For list preferences, figure out the label of the selected value
+             /*For list preferences, figure out the label of the selected value*/
             ListPreference listPreference = (ListPreference) preference;
             int prefIndex = listPreference.findIndexOfValue(value);
             if (prefIndex >= 0) {
-                // Set the summary to that label
+                /*Set the summary to that label*/
                 listPreference.setSummary(listPreference.getEntries()[prefIndex]);
             }
         }
@@ -306,21 +280,6 @@ public class SettingMain extends PreferenceFragmentCompat implements
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
     }
 
 

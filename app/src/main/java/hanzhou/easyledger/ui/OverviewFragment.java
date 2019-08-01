@@ -63,10 +63,6 @@ public class OverviewFragment extends Fragment{
 
     private TextView mTotalAmount;
 
-//    /*two variable are boolean triggers that only update UI when both data updated*/
-//    private boolean mReceivedRevenueData;
-//    private boolean mReceivedExpenseData;
-
     private float mRevenueFloatingPoint;
     private float mExpenseFloatingPoint;
 
@@ -80,38 +76,15 @@ public class OverviewFragment extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
-//        mReceivedRevenueData =false;
-//        mReceivedExpenseData = false;
-
-
 
         mExpenseFloatingPoint = 0f;
         mRevenueFloatingPoint = 0f;
 
-        //todo, they should retrieve data from savedinstance
         mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
-//        mAppPreferences = mAppCompatActivity.getSharedPreferences(Constant.APP_PREFERENCE, Context.MODE_PRIVATE);
         mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
-        loadPreference();
-    }
-
-    private void loadPreference() {
-
     }
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mAdapterActionViewModel.setmIsInBaseFragment(true);
-
-    }
 
     @Nullable
     @Override
@@ -155,10 +128,8 @@ public class OverviewFragment extends Fragment{
 
     private void initiazlizeBarChart() {
 
-        //set barchar style,
         setChartStyle();
 
-        //Set bar entries
         setChartData();
 
 
@@ -167,7 +138,6 @@ public class OverviewFragment extends Fragment{
     /*make chart to display only*/
     private void setChartStyle(){
 
-//        mBarChart.setDrawBarShadow(false);
         mBarChart.setDescription(null);
         mBarChart.getLegend().setEnabled(false);
         mBarChart.setDrawValueAboveBar(false);
@@ -195,27 +165,12 @@ public class OverviewFragment extends Fragment{
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         xAxis.setEnabled(false);
-//        xAxis.setXOffset(5f);
 
         xAxis.setDrawGridLinesBehindData(true);
         xAxis.setDrawLimitLinesBehindData(true);
         xAxis.setTextSize(10f);
 
         xAxis.setDrawAxisLine(false);
-
-        //only display revenue and spend
-//        xAxis.setLabelCount(2);
-
-//        String[] balanceTitle = {
-//
-//                getString(R.string.overview_balance_spend),
-//                getString(R.string.overview_balance_revenue)
-//        };
-//
-//        xAxis.setValueFormatter(new OverViewBalanceXAxisValueFormatter(balanceTitle));
-/* getString(R.string.overview_balance_spend),
-                getString(R.string.overview_balance_revenue)*/
-
 
     }
 
@@ -235,8 +190,7 @@ public class OverviewFragment extends Fragment{
 
     private void setChartData() {
 
-        /*use the data come from viewmodel*/
-        //place revenue on top of spend in barchart
+        /*place revenue on top of spend in barchart*/
         BarEntry revenue = new BarEntry(1f, mRevenueFloatingPoint);
         BarEntry spend = new BarEntry(0f, mExpenseFloatingPoint);
 
@@ -247,9 +201,9 @@ public class OverviewFragment extends Fragment{
         barDataSet = new BarDataSet(entries, "Bar data test");
 
         barDataSet.setColors(
-                //set upper chart (revenue) color
+                /*set upper chart (revenue) color*/
                 ContextCompat.getColor(mBarChart.getContext(), R.color.color_money_in),
-                //set lower chart (spend) color
+                /*set lower chart (spend) color*/
                 ContextCompat.getColor(mBarChart.getContext(), R.color.color_money_out));
         //todo, important
         barDataSet.setBarShadowColor(
@@ -266,9 +220,7 @@ public class OverviewFragment extends Fragment{
 
         mBarChart.setData(barData);
 
-
-
-        //refresh barchart
+        /*refresh barchart*/
         mBarChart.invalidate();
     }
 
@@ -294,7 +246,6 @@ public class OverviewFragment extends Fragment{
             @Override
             public void onChanged(Float aDouble) {
                 mRevenueFloatingPoint = aDouble;
-//                mReceivedRevenueData = true;
                 synchronizeBalanceData();
             }
         });
@@ -303,7 +254,6 @@ public class OverviewFragment extends Fragment{
             @Override
             public void onChanged(Float aDouble) {
                 mExpenseFloatingPoint = Math.abs(aDouble);
-//                mReceivedExpenseData = true;
                 synchronizeBalanceData();
 
             }
@@ -315,17 +265,9 @@ public class OverviewFragment extends Fragment{
     }
 
     private void synchronizeBalanceData(){
-        //only update UI when two values are received
-//        if(mReceivedRevenueData && mReceivedExpenseData){
             mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
             setYLeftAxis();
             setChartData();
-
-//            //after update UI, set back to false to be prepared to next update
-//            mReceivedRevenueData = false;
-//            mReceivedExpenseData = false;
-//        }
-
     }
 
     @SuppressLint("SetTextI18n")

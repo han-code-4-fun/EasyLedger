@@ -72,39 +72,26 @@ public class UnitUtil {
     }
 
     public static int getStartingDateCurrentWeek(){
-//        int daysPastCurrentWeek = now.getDayOfWeek();
-//
-//        int year = (now.getYear())-2000;
-//        int month = now.getMonthOfYear();
-//        int dayBeginOfWeek = (now.getDayOfMonth()) - daysPastCurrentWeek +1;
 
-        int startingDate =fromJodaTimeLocalDateToAppDateInteger(now.dayOfWeek().withMinimumValue());
-
-        return startingDate;
+        return fromJodaTimeLocalDateToAppDateInteger(now.dayOfWeek().withMinimumValue());
     }
 
     public static int getStartingDateCurrentMonth(){
         int year = (now.getYear())-2000;
         int month = now.getMonthOfYear();
 
-//        int startingDate =year*10000+month*100+1;
-        int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.dayOfMonth().withMinimumValue());
-
-        return startingDate;
+        return fromJodaTimeLocalDateToAppDateInteger(now.dayOfMonth().withMinimumValue());
     }
 
     public static int getStartingDateCurrentYear() {
-        int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.dayOfYear().withMinimumValue());
 
-        return startingDate;
+        return fromJodaTimeLocalDateToAppDateInteger(now.dayOfYear().withMinimumValue());
 
     }
 
     public static int getStartingDateCurrentCustom(int customDays) {
 
-        int startingDate = fromJodaTimeLocalDateToAppDateInteger(now.minusDays(customDays));
-
-        return startingDate;
+        return fromJodaTimeLocalDateToAppDateInteger(now.minusDays(customDays));
     }
 
     public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareMonths(int numberOfMonths){

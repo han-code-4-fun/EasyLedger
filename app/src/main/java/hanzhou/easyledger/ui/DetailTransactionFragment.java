@@ -86,11 +86,6 @@ public class DetailTransactionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-
-//        if (getArguments() != null) {
-//            mInput = getArguments().getString(INPUT);
-//
-//        }
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
@@ -123,7 +118,6 @@ public class DetailTransactionFragment extends Fragment {
             }
         });
 
-//        mAdapterActionViewModel.setParentFragment(mParentFragment);
 
         mTransactionViewModel.updateTransactionOnUserInput(mLedgerName);
 
@@ -136,85 +130,22 @@ public class DetailTransactionFragment extends Fragment {
         });
 
 
-//        mGeneralViewModel.getCurrentScreen().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(String s) {
-//                mLedgerName =s;
-//                if(mLedgerName.equals(Constant.FRAG_NAME_OVERVIEW)){
-//                    mTransactionViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-//                        @Override
-//                        public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                            mAdapter.setAdapterData(transactionEntryList);
-//
-//                        }
-//                    });
-//                }else if(mLedgerName.equals(Constant.FRAG_NAME_LEDGER)){
-//
-//
-//
-//                    mTransactionViewModel.getListEntriesByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-//                        @Override
-//                        public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                            mAdapter.setAdapterData(transactionEntryList);
-//
-//                        }
-//                    });
-//                }
-
-//            }
-//        });
-
-
-//        if(mLedgerName.equals(Constant.FRAG_NAME_OVERVIEW)){
-//            mTransactionViewModel.getUntaggedTransactions().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-//                @Override
-//                public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                    mAdapter.setAdapterData(transactionEntryList);
-//
-//                }
-//            });
-//        }else {
-//
-//
-//            mTransactionViewModel.getListEntriesByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-//                @Override
-//                public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                    mAdapter.setAdapterData(transactionEntryList);
-//
-//                }
-//            });
-//        }
-
-
-
-////        mTransactionViewModel.setTransactionListFromInputLedgerName(mInput);
-////todo, in ledger frag and in overview fragm
-//
-//        mTransactionViewModel.getTransactionsByLedger().observe(getViewLifecycleOwner(), new Observer<List<TransactionEntry>>() {
-//            @Override
-//            public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                mAdapter.setAdapterData(transactionEntryList);
-//
-//            }
-//        });
-
 
         mAdapterActionViewModel.getActionModeState().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 mAdapter.setInActionMode(aBoolean);
-                //set to default style when the 'false' state is updated from user's input of action bar
+                /*set to default style when the 'false' state is updated from user's interactino with toolbar*/
                 if (!aBoolean) {
                     mAdapter.deselectAll();
                 } else {
-                    //todo, check if error
                     mAdapter.notifyDataSetChanged();
                 }
             }
         });
 
 
-        //trigger that react to user's click from the action bar
+        /*trigger that react to user's click from the action bar*/
         mAdapterActionViewModel.getmDeselectAllTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -225,7 +156,7 @@ public class DetailTransactionFragment extends Fragment {
             }
         });
 
-        //trigger that react to user's click from the action bar
+        /*trigger that react to user's click from the action bar*/
         mAdapterActionViewModel.getmSelectAllTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -237,19 +168,6 @@ public class DetailTransactionFragment extends Fragment {
         });
 
 
-//todo, edited here
-
-//        mAdapterActionViewModel.getmEditAnEntryTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-//            @Override
-//            public void onChanged(Boolean aBoolean) {
-//                if (aBoolean) {
-//
-//                    mAdapterActionViewModel.setmClickedEntryID(mAdapter.getOneSelectedEntryID());
-//
-//                    mAdapterActionViewModel.setmEditAnEntryTrigger(false);
-//                }
-//            }
-//        });
 
         mAdapterActionViewModel.getmCategorizeItemsToOthersTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override

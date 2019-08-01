@@ -59,7 +59,6 @@ public class QuestionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView =inflater.inflate(R.layout.fragment_question, container, false);
 
         String dateString = UnitUtil.getMonthDayToday();
@@ -67,7 +66,7 @@ public class QuestionFragment extends Fragment {
 
         uiInitialization(rootView);
 
-        //make a joke on April 1st
+        /*make a joke on April 1st*/
         if (dateString.equals("04-01")) {btnJoke.setVisibility(View.VISIBLE);}
 
         setOnClickListenerForAllButton();
@@ -90,23 +89,10 @@ public class QuestionFragment extends Fragment {
         mAppCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mAdapterActionViewModel.setmIsInBaseFragment(false);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        //todo, change viewmodel
-
-//        mAdapterActionViewModel.setmIsInQuestionFragment(false);
-    }
-
 
 
     private void uiInitialization(View rootView) {
+
         btnFriend = rootView.findViewById(R.id.button_question_friendly_answer);
 
         btnJoke = rootView.findViewById(R.id.button_question_bad_joke);

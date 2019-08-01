@@ -60,7 +60,6 @@ public class LauncherFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         View root = inflater.inflate(R.layout.fragment_launcher, container, false);
         mLogo = root.findViewById(R.id.app_start_logo);
@@ -76,30 +75,10 @@ public class LauncherFragment extends Fragment {
                     loadInitialFragment();
                 } else {
                     PermissionUtil.askPermission(mAppCompatActivity,PERMISSIONS,REQUEST_PERMISSION_APP_START);
-//                    ActivityCompat.requestPermissions(mAppCompatActivity,
-//                            PERMISSIONS,
-//                            REQUEST_PERMISSION_APP_START);
                 }
             }
         }, splashScreenTime);
 
-
-//        LottieAnimationView lottieAnimationView = root.findViewById(R.id.app_start_animation);
-//
-//        lottieAnimationView.addAnimatorListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//
-//                if(isAllPermissionsGranted(mAppCompatActivity, PERMISSIONS)){
-//
-//                    loadInitialFragment();
-//                }else{
-//                    ActivityCompat.requestPermissions(mAppCompatActivity,
-//                            PERMISSIONS,
-//                            REQUEST_PERMISSION_APP_START);
-//                }
-//            }
-//        });
 
         return root;
     }
@@ -110,31 +89,9 @@ public class LauncherFragment extends Fragment {
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_LAUNCHER);
     }
 
-//    @Override
-//    public boolean shouldShowRequestPermissionRationale(@NonNull String permission) {
-//
-//    }
 
 
 
-
-
-
-//    private boolean isAllPermissionsGranted(Context context, String... permissions) {
-//
-//        if (context != null && permissions != null) {
-//
-//            for (String permission : permissions) {
-//
-//                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-//
-//                    return false;
-//                }
-//            }
-//        }
-//
-//        return true;
-//    }
 
 
     private void loadInitialFragment() {

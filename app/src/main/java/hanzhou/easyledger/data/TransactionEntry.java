@@ -88,51 +88,6 @@ public class TransactionEntry {
         this.remark = remark;
     }
 
-    //    }
-//        this.tagged = tagged;
-//    public void setTagged(int tagged) {
-//
-//    }
-//        return tagged;
-//    public int getTagged() {
-//    }
-//        this.mRecordTime = mRecordTime;
-//    public void setmRecordTime(long mRecordTime) {
-//
-//    }
-//        return mRecordTime;
-//    public long getmRecordTime() {
-//
-    /*    public TransactionEntry(int id, int mTime, double mAmount, String mCatogory, String mRemark, String mLedger) {
-            this.id = id;
-            this.mTime = mTime;
-            this.mAmount = mAmount;
-            this.mCatogory = mCatogory;
-            this.mRemark = mRemark;
-            this.mLedgerName = mLedger;
-    //        this.mRecordTime = currentTime;
-        }*/
-//    private int tagged;
-//    @ColumnInfo(name = "is_tagged")
-//     */
-//     *   UNTAGGED transactions marked as 0, tagged will be 1
-//     *   tracks whether a transaction is tagged or not
-//    /*
-    /*
-        mLedgerName == "n/a" means it's an UNTAGGED transaction
-        that need to be tagged by user
-    */
-//    /*
-//       this app will use only one table, so a transaction will
-//       not have a timeStamp until user "tag" it. And it will
-//       be used for sorting purpose (instead of the 'id' in table)
-//       as this best fits user's memory
-//
-//       e.g. a user may received a msg from bank about a transaction,
-//            but the user may not open the app to tag it,
-//     */
-//    @ColumnInfo(name = "timestamp_in_table")
-//    private long mRecordTime;
 
 }
 

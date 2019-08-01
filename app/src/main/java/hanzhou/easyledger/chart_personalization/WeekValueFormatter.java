@@ -25,14 +25,6 @@ public class WeekValueFormatter extends ValueFormatter {
     @Override
     public String getFormattedValue(float value) {
 
-
-//        String date = String.valueOf((int)value);
-//        LocalDate past = LocalDate.parse(date, DateTimeFormat.forPattern("YYYYMMdd"));
-//
-//        int weekFromNow = Weeks.weeksBetween(past, now).getWeeks();
-
-//        return weekFromNow+" weeks ago";
-
         int x = mMaxPeriod - (int) value;
         if(x <= 1) return "last week";
         return x + " weeks";

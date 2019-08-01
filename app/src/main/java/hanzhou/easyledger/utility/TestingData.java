@@ -16,10 +16,6 @@ import hanzhou.easyledger.data.TransactionEntry;
 public class TestingData {
     public static String[] month = {"Jan", "Feb", "Mar", "Apr", "May",
             "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",  "Dec"};
-//
-//    public static String[] ledger = {
-//            "RBC", "Cash"
-//    };
 
     private static int mCurrentMonth = 1;
 
@@ -38,17 +34,6 @@ public class TestingData {
         return output;
     }
 
-//    private static String[] categoryRevenue = {
-//            Constant.UNTAGGED, "Salary", "Commission", "Investment", "Interest",
-//            "Rental Income", "Pension", "RRSP", "Business Income",
-//            "Capital gains", "Debt Collection", "Lottery", "Others"};
-//
-//    private static String[] categorySpending = {
-//            Constant.UNTAGGED, "Travel", "Supermarket", "Restaurant", "Shopping",
-//            "Commuting", "Auto", "Education", "Children",
-//            "Medical", "Personal Care", "House",
-//            "Credit Card Payment", "Others"};
-
 
     private static String[] remarks = {
             "Shoppers Drug Mart",
@@ -65,54 +50,6 @@ public class TestingData {
             "BC Hydro"
     };
 
-//    public static List<String> getLedgers() {
-//        List<String> output = new ArrayList<>();
-//        output.add("RBC");
-//        output.add("Cash");
-//
-//        return output;
-//    }
-
-
-    //todo, make "others" undeletable
-//    public static List<String> getRevenueCategory() {
-//        List<String> output = new ArrayList<>();
-//
-//        output.add("Salary");
-//        output.add("Commission");
-//        output.add("Investment");
-//        output.add("Interest");
-//        output.add("Rental Income");
-//        output.add("Pension");
-//        output.add("RRSP");
-//        output.add("Business Income");
-//        output.add("Capital gains");
-//        output.add("Debt Collection");
-//        output.add("Lottery");
-//        output.add("Others");
-//
-//        return output;
-//    }
-
-//    public static List<String> getExpenseCategory() {
-//        List<String> output = new ArrayList<>();
-//
-//        output.add("Travel");
-//        output.add("Supermarket");
-//        output.add("Restaurant");
-//        output.add("Shopping");
-//        output.add("Commuting");
-//        output.add("Auto");
-//        output.add("Education");
-//        output.add("Children");
-//        output.add("Medical");
-//        output.add("Personal Care");
-//        output.add("House");
-//        output.add("Credit Card Payment");
-//        output.add("Others");
-//
-//        return output;
-//    }
 
 
 
@@ -271,12 +208,10 @@ public class TestingData {
         ArrayList<String>ledger;
         String output;
         if (amount >= 0) {
-//            return categoryRevenue[(int) (Math.random() * categoryRevenue.length)];
             ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE);
             ledger.add(Constant.UNTAGGED);
             output = ledger.get((int) (Math.random() * ledger.size()));
         } else {
-//            return categorySpending[(int) (Math.random() * categorySpending.length)];
             ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE);
             ledger.add(Constant.UNTAGGED);
             output = ledger.get((int) (Math.random() * ledger.size()));
@@ -298,35 +233,6 @@ public class TestingData {
     }
 
     private static int getRandomMonthNDate() {
-//        String[] year = {"18","19"};
-//        int selectYear = Integer.parseInt(year[(int) (Math.random() * year.length)]);
-//
-//        String output = String.valueOf(selectYear);
-//        int temp;
-//        if(selectYear == 19){
-//            temp = (int)(Math.random() * (mCurrentMonth) + 1);
-//        }else{
-//
-//            temp = (int) (Math.random() * 12 + 1);
-//
-//        }
-//
-//        if (temp < 10) {
-//            output += ("0" + temp);
-//        } else {
-//            output += temp;
-//        }
-//        if(selectYear == 19 && temp == 07){
-//
-//        }else{
-//            temp = (int) (Math.random() * 31 + 1);
-//        }
-//
-//        if (temp < 10) {
-//            output += "0" + temp;
-//        } else {
-//            output += temp;
-//        }
 
         int tempPastDays = (int)(Math.random()*400);
 

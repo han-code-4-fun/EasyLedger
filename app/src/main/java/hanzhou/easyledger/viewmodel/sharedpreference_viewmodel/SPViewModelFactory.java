@@ -10,19 +10,14 @@ import androidx.lifecycle.ViewModelProvider;
 public class SPViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final SharedPreferences sharedPreferences;
-//    private final String key;
-//    private final int defaultVal;
 
 
     public SPViewModelFactory(SharedPreferences inputSharedPreferences) {
 
         sharedPreferences = inputSharedPreferences;
-//        key = inputKey;
-//        defaultVal = inputVal;
     }
 
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-//        return (T) new SPViewModel(sharedPreferences, key,defaultVal);
         return (T) new SPViewModel(sharedPreferences);
 
     }

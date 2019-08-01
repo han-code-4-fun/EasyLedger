@@ -21,27 +21,16 @@ import hanzhou.easyledger.utility.Constant;
 
 public class TransactionDBViewModel extends AndroidViewModel {
 
-    //LiveData that comes from ROOM
     private LiveData<List<TransactionEntry>> transactionsByLedger;
-    private LiveData<List<TransactionEntry>> allTransactions;
     private LiveData<List<TransactionEntry>> untaggedTransactions;
 
-
-    private MediatorLiveData<List<TransactionEntry>> testLedger = new MediatorLiveData<>();
-
-    private TransactionDB mDB;
 
     private RepositoryDB mRepository;
 
     public TransactionDBViewModel(@NonNull Application application) {
         super(application);
-        mDB = TransactionDB.getInstance(this.getApplication());
 
         mRepository = RepositoryDB.getInstance();
-
-        //for future development, e.g. user creates multiple ledger
-//        transactionsByLedger = mDB.transactionDAO().loadTransactionByLedger(Constant.UNTAGGED);
-        allTransactions = mDB.transactionDAO().loadAllTransactions();
         untaggedTransactions = mRepository.getUntaggedTransaction();
     }
 
@@ -67,75 +56,12 @@ public class TransactionDBViewModel extends AndroidViewModel {
     }
 
 
-    public void setTransactionListFromInputLedgerName(String input) {
-
-//       if (input.equals(Constant.LEDGER_OVERALL)) {
-//
-//            testLedger.removeSource(mRepository.getTransactionByLedger(input));
-//            testLedger.addSource(mRepository.getAllTransactions(), new Observer<List<TransactionEntry>>() {
-//                @Override
-//                public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                    testLedger.setValue(transactionEntryList);
-//                }
-//            });
-//
-//        }else{
-//
-//
-//
-//            testLedger.addSource(mRepository.getTransactionByLedger(input), new Observer<List<TransactionEntry>>() {
-//                @Override
-//                public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                    testLedger.setValue(transactionEntryList);
-//                }
-//            });
-//        }
-
-
-
-
-    }
-
-//    public LiveData<List<TransactionEntry>>getTransactionsByLedger(){
-//        return testLedger;
-//    }
-
-//    public LiveData<List<TransactionEntry>> getTransactionsByLedger() {
-//        return transactionsByLedger;
-//    }
-
     public LiveData<List<TransactionEntry>> getUntaggedTransactions() {
         return untaggedTransactions;
     }
 
-    public LiveData<List<TransactionEntry>> getAllTransactions() {
-        return allTransactions;
-    }
 
 
-    //todo  switchmap works too
-//    private MutableLiveData<String> ledgerName = new MutableLiveData<>();
-//    private LiveData<List<TransactionEntry>> listEntries = Transformations.switchMap(ledgerName,
-//            new Function<String, LiveData<List<TransactionEntry>>>() {
-//
-//        @Override
-//        public LiveData<List<TransactionEntry>> apply(String input) {
-//            if(input.equals(Constant.LEDGER_OVERALL)){
-//                return mRepository.getAllTransactions();
-//            }else{
-//
-//                return mRepository.getTransactionByLedger(input);
-//            }
-//        }
-//    });
-//
-//    public void setLedgerName(String index) {
-//        ledgerName.setValue(index);
-//    }
-//
-//    public LiveData<List<TransactionEntry>> getListEntriesByLedger() {
-//        return listEntries;
-//    }
 
 
 }

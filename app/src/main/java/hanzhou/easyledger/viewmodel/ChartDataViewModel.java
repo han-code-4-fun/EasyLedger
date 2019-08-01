@@ -16,7 +16,6 @@ import hanzhou.easyledger.data.TransactionEntry;
 
 public class ChartDataViewModel extends AndroidViewModel {
 
-    private AppExecutors mAppexecutor;
 
     private final RepositoryDB mDBRepository;
 

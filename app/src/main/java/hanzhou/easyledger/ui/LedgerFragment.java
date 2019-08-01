@@ -33,7 +33,6 @@ import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.LedgersAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
-import hanzhou.easyledger.viewmodel.LedgerViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
@@ -60,9 +59,6 @@ public class LedgerFragment extends Fragment {
     private GsonHelper mGsonHelper;
     private LedgersAdapter mLedgersAdapter;
 
-
-//    private Toolbar toolBar;
-//    private TextView textViewOnToolBar;
 
     private ArrayList<String> mLedgersList;
 
@@ -104,19 +100,6 @@ public class LedgerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ledger, container, false);
-//        mGsonHelper.setmSharedPreferences(mSharedPreferences);
-        /*
-            refresh the whole LedgerFragment to avoid strange viewpager title and data mismatch
-            behaviour after crazily add/delete ledgers
-            this will trigger the viewmodel in MainActivity to refresh current LedgerFragment
-        */
-//        if (!mLedgersList.equals(mGsonHelper.getLedgers(Constant.LEDGERS))) {
-//            mLedgersList = mGsonHelper.getLedgers(Constant.LEDGERS);
-//            final SettingsViewModel settingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
-//            settingsViewModel.setmRefreshLedgerFragmentTrigger(true);
-//
-//        }else{
-
 
 
         TabLayout tabLayout = rootView.findViewById(R.id.transaction_tablayout);
@@ -125,12 +108,6 @@ public class LedgerFragment extends Fragment {
 
         mLedgersAdapter = new LedgersAdapter(getChildFragmentManager(), mLedgersList);
 
-//        if(mLedgersList.size()>0){
-//
-//            mCurrentVisiblePage = mLedgersList.get(0);
-//        }else{
-//            mCurrentVisiblePage = "";
-//        }
 
         viewPager.setAdapter(mLedgersAdapter);
 
@@ -139,8 +116,6 @@ public class LedgerFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-
-//        }
 
         return rootView;
 
@@ -160,20 +135,9 @@ public class LedgerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupViewModel();
-//        viewPager.setCurrentItem(0);
-        String temp = "";
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        mAdapterActionViewModel.setmIsInBaseFragment(true);
-    }
 
     private void setupViewModel() {
 
@@ -181,17 +145,6 @@ public class LedgerFragment extends Fragment {
 
         mLedgersAdapter.setViewModel(mTransactionDBViewModel);
 
-//        mLedgerViewModel.getmLedgerName().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(String s) {
-//                if(!mCurrentVisiblePage.equals(s)){
-//                    mCurrentVisiblePage =s;
-//
-//
-//                    mTransactionDBViewModel.setLedgerName(s);
-//                }
-//            }
-//        });
 
         mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_LEDGER);
@@ -211,7 +164,6 @@ public class LedgerFragment extends Fragment {
                 ArrayList<String> temp = mGsonHelper.convertJsonToArrayListString(s);
                 if (!mLedgersList.equals(temp)) {
                     mLedgersList = temp;
-//                    mLedgersAdapter.setmLedgers(mLedgersList);
                     final SettingsViewModel settingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
                     settingsViewModel.setmRefreshLedgerFragmentTrigger(true);
 

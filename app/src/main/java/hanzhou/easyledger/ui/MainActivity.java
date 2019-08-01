@@ -116,10 +116,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isInActionModel;
     private boolean isAllSelected;
 
-//    private boolean isInQuestionFragment;
-//    private boolean isInSettingsFragment;
-//    private boolean isInAddNEditFragment;
-//    private boolean isInEditLedgerFragment;
 
 
     private boolean mIsInBaseFragment;
@@ -455,16 +451,17 @@ public class MainActivity extends AppCompatActivity {
         btnFA = findViewById(R.id.btn_floating_aciton);
 
 
+        /*change status bar color, 3 steps is official method*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = this.getWindow();
 
-            // clear FLAG_TRANSLUCENT_STATUS flag:
+            /* clear FLAG_TRANSLUCENT_STATUS flag:*/
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+            /* add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window*/
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-            // finally change the color
+            /* finally change the color*/
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
 
@@ -649,7 +646,6 @@ public class MainActivity extends AppCompatActivity {
         mAdapterActionViewModel.getmClickedEntryID().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                //start the fragment
                 if (integer != null) {
                     openAddNEditTransactionFragment();
                 }
@@ -669,8 +665,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //done
-
         mAdapterActionViewModel.getTransactionSelectedNumberLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
@@ -685,17 +679,6 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
 
                 mIsInBaseFragment = aBoolean;
-//                if (aBoolean) {
-//                    btnFA.show();
-//                    bottomNavigation.setVisibility(View.VISIBLE);
-//                    toolbarActionToOriginMode();
-//                } else {
-//                    btnFA.hide();
-//                    bottomNavigation.setVisibility(View.GONE);
-//                    toolbarActionToOriginMode();
-//                }
-
-
             }
         });
 
@@ -821,31 +804,6 @@ public class MainActivity extends AppCompatActivity {
                     toolbarActionToOriginMode();
 
 
-//            if (mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)) {
-//                mTransactionViewModel.getUntaggedTransactions().observe(this, new Observer<List<TransactionEntry>>() {
-//                    @Override
-//                    public void onChanged(List<TransactionEntry> transactionEntryList) {
-//                        RepositoryDB.getInstance().deleteSelectedTransactions(
-//                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
-//                        );
-//                        toolbarActionToOriginMode();
-//                    }
-//                });
-//            } else {
-//                mTransactionViewModel.updateTransactionOnUserInput(mVisibleLedger);
-//
-//
-//                mTransactionViewModel.getTransactionsByLedger().observe(this, new Observer<List<TransactionEntry>>() {
-//                    @Override
-//                    public void onChanged(List<TransactionEntry> transactionEntryList) {
-//
-//                        RepositoryDB.getInstance().deleteSelectedTransactions(
-//                                mAdapterActionViewModel.getSelectedTransactions(transactionEntryList)
-//                        );
-//                        toolbarActionToOriginMode();
-//                    }
-//                });
-//            }
 
 
         }
@@ -867,24 +825,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //todo, test this,
-//    private void categorizeSelectedItemsToOthers() {
-//        final List<TransactionEntry> entries = mOverviewViewModel.getUntaggedTransactions().getValue();
-//
-//        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                mDb.transactionDAO().updateListOfTransactions(
-//                        mAdapterActionViewModel.categorizeSelectedItemsToOthers(entries)
-//                );
-//            }
-//        });
-//
-//    }
-
-    //todo,  done
-    //todo,
-    //todo,
 
 
     private void showNumberOfSelectedTransactionOnToolbar(int integer) {
@@ -1001,7 +941,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (isInActionModel) {
             if (mEditBtn != null && mIgnoreBtn != null) {
-//                if (mAdapterActionViewModel.getParentFragment().equals(Constant.FRAG_CALL_FROM_OVERVIEW)) {
                 if (mCurrentScreen.equals(Constant.FRAG_NAME_OVERVIEW)) {
 
                     toolbarActionsIfCalledFromOverViewFragment(integer);
@@ -1025,7 +964,7 @@ public class MainActivity extends AppCompatActivity {
             mIgnoreBtn.setVisible(true);
             mEditBtn.setVisible(true);
         } else {
-            //more than 1 items is selected
+            /*more than 1 items is selected*/
             mIgnoreBtn.setVisible(true);
             mEditBtn.setVisible(false);
         }
@@ -1121,16 +1060,5 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    Thread finishActivityAfterToastMSG = new Thread() {
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(Toast.LENGTH_LONG);
-                finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
 }

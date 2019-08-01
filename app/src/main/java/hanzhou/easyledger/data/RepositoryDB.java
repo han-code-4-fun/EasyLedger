@@ -59,6 +59,10 @@ public class RepositoryDB {
         return mTransactionDB.transactionDAO().loadAllTransactions();
     }
 
+    public LiveData<TransactionEntry> getTransactionByID(int id) {
+        return  mTransactionDB.transactionDAO().loadTransactionByID(id);
+    }
+
 
 
     public void renameHistoryLedger(final String inputString, final String deletedLedgerName){
