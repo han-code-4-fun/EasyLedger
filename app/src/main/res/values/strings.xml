@@ -201,6 +201,7 @@
     <string name="overview_bar_data_label">Bar data</string>
     <string name="april_first">04-01</string>
     <string name="app_exit_notice">Tap one more time to exit app.</string>
+    <string name="demo">Demo</string>
 
 
 </resources>
