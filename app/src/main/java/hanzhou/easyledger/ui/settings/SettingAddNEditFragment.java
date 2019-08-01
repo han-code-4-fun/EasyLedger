@@ -182,6 +182,7 @@ public class SettingAddNEditFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setupViewModel();
         mListDeletedData = new ArrayList<>();
+        showInitialInfoDialogHowToAddEditDelete();
     }
 
     @Override
@@ -318,6 +319,7 @@ public class SettingAddNEditFragment extends Fragment {
     private FloatingActionButton.OnClickListener onClickFAB = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
             AddEntryDialog dialog = new AddEntryDialog();
             Bundle args = new Bundle();
             args.putStringArrayList(Constant.SETTING_BUNDLE_LIST_OF_NAMES, mListData);
@@ -330,6 +332,19 @@ public class SettingAddNEditFragment extends Fragment {
             dialog.show(mAppCompatActivity.getSupportFragmentManager(), null);
         }
     };
+
+
+    private void showInitialInfoDialogHowToAddEditDelete(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mAppCompatActivity);
+        builder.setTitle(getString(R.string.setting_info_dialog_title));
+        builder.setMessage(getString(R.string.setting_info_dialog_msg_body));
+
+        builder.setPositiveButton("OK", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 
 }

@@ -74,6 +74,13 @@
 
     <string name="setting_warning_neutral_btn_title">OK</string>
 
+    <string name="setting_info_dialog_title">How to</string>
+    <string name="setting_info_dialog_msg_body">
+        Drag and drop to change position.\n
+        Swipe to delete.\n
+        Press the bottom right button to add.
+    </string>
+
 
     <string name="setting_add_entry_title">Add a new one</string>
     <string name="setting_add_entry_hint">enter here</string>
