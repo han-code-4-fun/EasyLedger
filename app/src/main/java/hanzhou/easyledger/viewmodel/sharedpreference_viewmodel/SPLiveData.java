@@ -5,17 +5,17 @@ import android.content.SharedPreferences;
 import androidx.lifecycle.LiveData;
 
 /*
-* original @author Idish
-* https://stackoverflow.com/users/1203043/idish
-*
-* which was posted on stackoverflow by another one
-* https://stackoverflow.com/questions/50649014/livedata-with-shared-preferences
-*
-*
-* modified by Han Zhou
-*
-*
-* */
+ * original @author Idish
+ * https://stackoverflow.com/users/1203043/idish
+ *
+ * which was posted on stackoverflow by another one
+ * https://stackoverflow.com/questions/50649014/livedata-with-shared-preferences
+ *
+ *
+ * modified by Han Zhou
+ *
+ *
+ * */
 
 public abstract class SPLiveData<T> extends LiveData<T> {
     SharedPreferences sharedPrefs;

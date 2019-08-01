@@ -1,25 +1,25 @@
 package hanzhou.easyledger.chart_personalization;
 
-import android.util.Log;
-
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.text.DecimalFormat;
 
+import hanzhou.easyledger.utility.Constant;
+
 /*
-*   @author Michael P.
-*
-*
-*   modified by Han Zhou
-*
-*
-* */
+ *   @author Michael P.
+ *
+ *
+ *   modified by Han Zhou
+ *
+ *
+ * */
 
 public class MyPercentFormatter extends ValueFormatter {
 
-    public DecimalFormat mFormat;
+    private DecimalFormat mFormat;
     private PieChart pieChart;
 
     public MyPercentFormatter() {
@@ -35,7 +35,7 @@ public class MyPercentFormatter extends ValueFormatter {
     @Override
     public String getFormattedValue(float value) {
 
-        if(value == 0f){
+        if (value == 0f) {
             return "";
         }
 
@@ -44,7 +44,7 @@ public class MyPercentFormatter extends ValueFormatter {
 
     @Override
     public String getPieLabel(float value, PieEntry pieEntry) {
-        if(value == 0f){
+        if (value == 0f) {
             return "";
         }
         if (pieChart != null && pieChart.isUsePercentValuesEnabled()) {
@@ -52,7 +52,7 @@ public class MyPercentFormatter extends ValueFormatter {
             return getFormattedValue(value);
         } else {
             // raw value, skip percent sign
-            return "$"+mFormat.format(value);
+            return Constant.DOLLOR_SIGN + mFormat.format(value);
         }
     }
 

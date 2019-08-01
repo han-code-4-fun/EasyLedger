@@ -1,33 +1,36 @@
 package hanzhou.easyledger.utility;
 
-import android.util.Log;
-
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import hanzhou.easyledger.data.TransactionEntry;
 
+
+/*
+ *
+ *   Testing data class that generate testing datas
+ *
+ * */
+
 public class TestingData {
     public static String[] month = {"Jan", "Feb", "Mar", "Apr", "May",
-            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",  "Dec"};
+            "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
     private static int mCurrentMonth = 1;
 
-    private static void synchronizeCurrentMonth(){
-        mCurrentMonth = UnitUtil.getTodayInAppTimeFormat()/100 - 1900;
+    private static void synchronizeCurrentMonth() {
+        mCurrentMonth = UnitUtil.getTodayInAppTimeFormat() / 100 - 1900;
     }
 
-    public static ArrayList<String> testgetString(){
+    public static ArrayList<String> testgetString() {
         ArrayList<String> output = new ArrayList<>();
 
-        for (int i = 1  ; i < 11; i++) {
-            output.add(""+i);
+        for (int i = 1; i < 11; i++) {
+            output.add("" + i);
         }
 
 
@@ -49,8 +52,6 @@ public class TestingData {
             "Fido",
             "BC Hydro"
     };
-
-
 
 
     public static List<TransactionEntry> create10kTransactions() {
@@ -76,7 +77,7 @@ public class TestingData {
                 getRandomLedger(gsonHelper),
                 getRandomMonthNDateWithThisWeek(),
                 amountTemp,
-                getRandomCategory(amountTemp,gsonHelper),
+                getRandomCategory(amountTemp, gsonHelper),
                 getRandomRemark()
         );
     }
@@ -103,7 +104,7 @@ public class TestingData {
                 getRandomLedger(gsonHelper),
                 getRandomMonthNDateWithThisMonth(),
                 amountTemp,
-                getRandomCategory(amountTemp,gsonHelper),
+                getRandomCategory(amountTemp, gsonHelper),
                 getRandomRemark()
         );
     }
@@ -114,13 +115,13 @@ public class TestingData {
     }
 
 
-    public static List<TransactionEntry> create10DesignateTestingDataInCertaindays(int daysBackFromToday,GsonHelper gsonHelper) {
+    public static List<TransactionEntry> create10DesignateTestingDataInCertaindays(int daysBackFromToday, GsonHelper gsonHelper) {
         synchronizeCurrentMonth();
 
         List<TransactionEntry> transactionEntryList = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            transactionEntryList.add(getAnEntryRevenueWithinXdays(daysBackFromToday,gsonHelper));
+            transactionEntryList.add(getAnEntryRevenueWithinXdays(daysBackFromToday, gsonHelper));
         }
 
         return transactionEntryList;
@@ -198,21 +199,21 @@ public class TestingData {
     }
 
     private static String getRandomLedger(GsonHelper gsonHelper) {
-        ArrayList<String>ledger= gsonHelper.getLedgers(Constant.LEDGERS);
+        ArrayList<String> ledger = gsonHelper.getLedgers(Constant.LEDGERS);
         ledger.remove("OVERALL");
         String output = ledger.get((int) (Math.random() * ledger.size()));
         return output;
     }
 
     private static String getRandomCategory(float amount, GsonHelper gsonHelper) {
-        ArrayList<String>ledger;
+        ArrayList<String> ledger;
         String output;
         if (amount >= 0) {
-            ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE);
+            ledger = gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE);
             ledger.add(Constant.UNTAGGED);
             output = ledger.get((int) (Math.random() * ledger.size()));
         } else {
-            ledger=  gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE);
+            ledger = gsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE);
             ledger.add(Constant.UNTAGGED);
             output = ledger.get((int) (Math.random() * ledger.size()));
         }
@@ -234,7 +235,7 @@ public class TestingData {
 
     private static int getRandomMonthNDate() {
 
-        int tempPastDays = (int)(Math.random()*400);
+        int tempPastDays = (int) (Math.random() * 400);
 
         return UnitUtil.fromJodaTimeLocalDateToAppDateInteger(
                 LocalDate.now().minusDays(tempPastDays)
@@ -248,8 +249,6 @@ public class TestingData {
 
         return output;
     }
-
-
 
 
 }

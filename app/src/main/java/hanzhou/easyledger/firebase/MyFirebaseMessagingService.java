@@ -20,9 +20,9 @@ import hanzhou.easyledger.ui.MainActivity;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
 
-    private static final String NOTIFICATION_MSG_FROM_FIREBASE="message_from_firebase";
+    private static final String NOTIFICATION_MSG_FROM_FIREBASE = "message_from_firebase";
 
-    private static final int NOTIFICATION_ID_REMINDER_UPDATE_APP  = 1001;
+    private static final int NOTIFICATION_ID_REMINDER_UPDATE_APP = 1001;
 
 
     @Override
@@ -42,7 +42,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Context context = MyFirebaseMessagingService.this;
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent  = PendingIntent.getActivity(this, 0, intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSourdUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 

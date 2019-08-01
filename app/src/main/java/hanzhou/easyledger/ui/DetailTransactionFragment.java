@@ -1,34 +1,28 @@
 package hanzhou.easyledger.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
-import hanzhou.easyledger.data.RepositoryDB;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
-import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.viewadapter.TransactionAdapter;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
-import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
 
 
@@ -38,11 +32,8 @@ import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
  */
 public class DetailTransactionFragment extends Fragment {
 
-    private static final String TAG = DetailTransactionFragment.class.getSimpleName();
 
     private static final String INPUT = "user_in_put";
-
-    private static final String PARENT_NAME = "who_called_current_frag";
 
     private AdapterNActionBarViewModel mAdapterActionViewModel;
 
@@ -50,11 +41,7 @@ public class DetailTransactionFragment extends Fragment {
 
     private AppCompatActivity mAppCompatActivity;
 
-    private String mInput;
-
     private String mLedgerName;
-
-    private String mVisibleLedger;
 
 
     public static DetailTransactionFragment newInstance(String ledger) {
@@ -90,7 +77,7 @@ public class DetailTransactionFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail_transaction, container, false);
 
-        mAdapter = new TransactionAdapter(mAdapterActionViewModel,mAppCompatActivity);
+        mAdapter = new TransactionAdapter(mAdapterActionViewModel, mAppCompatActivity);
 
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_detail_transaction);
 
@@ -109,15 +96,6 @@ public class DetailTransactionFragment extends Fragment {
         final TransactionDBViewModel mTransactionViewModel =
                 ViewModelProviders.of(mAppCompatActivity).get(TransactionDBViewModel.class);
 
-        GeneralViewModel mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
-
-        mGeneralViewModel.getmCurrentLedger().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                mVisibleLedger =s ;
-            }
-        });
-
 
         mTransactionViewModel.updateTransactionOnUserInput(mLedgerName);
 
@@ -128,7 +106,6 @@ public class DetailTransactionFragment extends Fragment {
                 mAdapter.setAdapterData(transactionEntryList);
             }
         });
-
 
 
         mAdapterActionViewModel.getActionModeState().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -168,7 +145,6 @@ public class DetailTransactionFragment extends Fragment {
         });
 
 
-
         mAdapterActionViewModel.getmCategorizeItemsToOthersTrigger().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -188,7 +164,6 @@ public class DetailTransactionFragment extends Fragment {
             }
         });
     }
-
 
 
 }

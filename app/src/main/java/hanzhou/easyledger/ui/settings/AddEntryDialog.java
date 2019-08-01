@@ -6,12 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,7 +25,15 @@ import java.util.ArrayList;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 
-public class AddEntryDialog  extends AppCompatDialogFragment {
+
+
+/*
+ *
+ *   Dialog for handling adding category/ledger
+ *
+ * */
+
+public class AddEntryDialog extends AppCompatDialogFragment {
     private AppCompatActivity mAppCompatActivity;
 
     private TextInputEditText mEditText;
@@ -45,13 +50,15 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()!= null)
+        if (getArguments() != null)
             mList = getArguments().getStringArrayList(Constant.SETTING_BUNDLE_LIST_OF_NAMES);
     }
+
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(mAppCompatActivity);
         View view = LayoutInflater.
                 from(mAppCompatActivity).
@@ -63,10 +70,13 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
 
         builder.setView(view)
                 .setNegativeButton(getString(R.string.dialog_negative_btn_title), cancelBTNClickListener)
-                .setPositiveButton(getString(R.string.dialog_positive_btn_title),  null );
+                .setPositiveButton(getString(R.string.dialog_positive_btn_title), null);
 
-        final AlertDialog dialog =builder.create();
 
+        final AlertDialog dialog = builder.create();
+
+
+        /*override default positiveButton action to do validation check*/
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
@@ -74,7 +84,7 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
                 btnPositive.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(validateUserInput()){
+                        if (validateUserInput()) {
                             Intent intent = new Intent();
                             intent.putExtra(Constant.CATEGORY_ADD, mEditText.getText().toString());
                             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
@@ -89,14 +99,14 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
         return dialog;
     }
 
-    private boolean validateUserInput(){
+    private boolean validateUserInput() {
 
-        String input= mEditText.getText().toString();
-        if(input.trim().equals("")){
+        String input = mEditText.getText().toString();
+        if (input.trim().equals("")) {
             mTextInputLayout.setError(getString(R.string.setting_warning_msg_empty_string));
-        }else if(mList.contains(input)){
+        } else if (mList.contains(input)) {
             mTextInputLayout.setError(getString(R.string.setting_warning_msg_duplicate_word));
-        }else{
+        } else {
             mTextInputLayout.setError(null);
             return true;
         }
@@ -107,7 +117,7 @@ public class AddEntryDialog  extends AppCompatDialogFragment {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
 
-            Toast.makeText(mAppCompatActivity, "No Entry Added", Toast.LENGTH_LONG).show();
+            Toast.makeText(mAppCompatActivity, getString(R.string.setting_toast_msg_no_enter_added), Toast.LENGTH_LONG).show();
         }
     };
 

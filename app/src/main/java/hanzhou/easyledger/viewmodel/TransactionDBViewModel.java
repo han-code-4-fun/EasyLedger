@@ -1,21 +1,14 @@
 package hanzhou.easyledger.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.arch.core.util.Function;
-
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 
 import java.util.List;
 
 import hanzhou.easyledger.data.RepositoryDB;
-import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 
@@ -35,14 +28,14 @@ public class TransactionDBViewModel extends AndroidViewModel {
     }
 
 
-    public void updateTransactionOnUserInput(String input){
+    public void updateTransactionOnUserInput(String input) {
 
-        if(input.equals(Constant.UNTAGGED)){
+        if (input.equals(Constant.UNTAGGED)) {
             transactionsByLedger = mRepository.getUntaggedTransaction();
-        }else{
-            if(input.equals("OVERALL")){
+        } else {
+            if (input.equals(Constant.LEDGER_OVERALL)) {
                 transactionsByLedger = mRepository.getAllTransactions();
-            }else{
+            } else {
                 transactionsByLedger = mRepository.getTransactionByLedger(input);
             }
 
@@ -59,9 +52,6 @@ public class TransactionDBViewModel extends AndroidViewModel {
     public LiveData<List<TransactionEntry>> getUntaggedTransactions() {
         return untaggedTransactions;
     }
-
-
-
 
 
 }

@@ -1,6 +1,5 @@
 package hanzhou.easyledger.viewadapter;
 
-import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -8,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
 
 import java.util.ArrayList;
 
@@ -27,19 +25,18 @@ public class LedgersAdapter extends FragmentPagerAdapter {
     private TransactionDBViewModel mTransactionDBViewModel;
 
 
-
     public LedgersAdapter(FragmentManager fm, ArrayList<String> ledgers) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        mLedgers=ledgers;
+        mLedgers = ledgers;
         mCurrentVisiblePage = "";
     }
 
-    public void setmLedgers(ArrayList<String> input){
+    public void setmLedgers(ArrayList<String> input) {
         mLedgers = input;
         notifyDataSetChanged();
     }
 
-    public void setViewModel(TransactionDBViewModel inputVM ){
+    public void setViewModel(TransactionDBViewModel inputVM) {
         mTransactionDBViewModel = inputVM;
     }
 
@@ -48,7 +45,6 @@ public class LedgersAdapter extends FragmentPagerAdapter {
         super.setPrimaryItem(container, position, object);
 
     }
-
 
 
     @Override
@@ -66,7 +62,7 @@ public class LedgersAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        if(mLedgers == null)
+        if (mLedgers == null)
             return 0;
         return mLedgers.size();
     }

@@ -1,20 +1,17 @@
 package hanzhou.easyledger.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import hanzhou.easyledger.data.TransactionEntry;
-import hanzhou.easyledger.ui.MainActivity;
 import hanzhou.easyledger.utility.Constant;
 
 public class AdapterNActionBarViewModel extends AndroidViewModel {
@@ -22,6 +19,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     /*store the state of toolbar*/
     private MutableLiveData<Boolean> mIsActionMode;
 
+    /*store the state of current screen's all selection*/
     private MutableLiveData<Boolean> mIsAllSelected;
 
     /*record the number of entries that is seleced by user*/
@@ -32,19 +30,18 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> mDeselectAllTrigger;
 
 
-
+    /*trigger that used to communicate between fragments*/
     private MutableLiveData<Boolean> mCategorizeItemsToOthersTrigger;
 
 
     /*keep track of user selection*/
     private SparseBooleanArray selectedBooleanArrayViewMode;
 
+    /*hold id to be edit in AddNEditTransaction Fragment*/
     private MutableLiveData<Integer> mClickedEntryID;
 
+    /*show current selected category in category sectino of AddNEditTransaction fragment*/
     private MutableLiveData<String> mSelectedCategory;
-
-
-
 
 
     public AdapterNActionBarViewModel(@NonNull Application application) {
@@ -120,7 +117,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
 
     public void setDeselectAllTrigger(boolean input) {
 
-        if(input){
+        if (input) {
             emptySelectedItems();
             setmTransactionSelectedNumber();
             setmIsAllSelected(false);
@@ -152,7 +149,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         return output;
     }
 
-    private int[] getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires(){
+    private int[] getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires() {
 
         int[] selectedNumbers = new int[selectedBooleanArrayViewMode.size()];
 
@@ -167,7 +164,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         mapping them to all UntaggedTransactions
     */
 
-    public List<TransactionEntry> categorizeSelectedItemsToOthers(List<TransactionEntry> inputList){
+    public List<TransactionEntry> categorizeSelectedItemsToOthers(List<TransactionEntry> inputList) {
 
         int[] selectedNumbers = getSelectedBooleanArrayIntoArrayOfPositionInCurrentListEntires();
 
@@ -202,7 +199,7 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         return selectedBooleanArrayViewMode.size();
     }
 
-    public int getFirstSelectedItems(){
+    public int getFirstSelectedItems() {
         return selectedBooleanArrayViewMode.keyAt(0);
     }
 
@@ -215,10 +212,9 @@ public class AdapterNActionBarViewModel extends AndroidViewModel {
         this.mClickedEntryID.setValue(inputID);
     }
 
-    public void setmClickedEntryIDToNull(){
+    public void setmClickedEntryIDToNull() {
         mClickedEntryID.setValue(null);
     }
-
 
 
     public MutableLiveData<String> getmSelectedCategory() {

@@ -1,13 +1,14 @@
 package hanzhou.easyledger.data;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
 import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.utility.GsonHelper;
+import hanzhou.easyledger.utility.TestingData;
 
 public class RepositoryDB {
 
@@ -28,7 +29,7 @@ public class RepositoryDB {
 
     public void initializeRepository(Application application) {
         mTransactionDB = TransactionDB.getInstance(application);
-        mAppExecutors=AppExecutors.getInstance();
+        mAppExecutors = AppExecutors.getInstance();
     }
 
     public LiveData<List<TransactionEntry>> getPeriodOfEntries(int start, int end) {
@@ -60,12 +61,11 @@ public class RepositoryDB {
     }
 
     public LiveData<TransactionEntry> getTransactionByID(int id) {
-        return  mTransactionDB.transactionDAO().loadTransactionByID(id);
+        return mTransactionDB.transactionDAO().loadTransactionByID(id);
     }
 
 
-
-    public void renameHistoryLedger(final String inputString, final String deletedLedgerName){
+    public void renameHistoryLedger(final String inputString, final String deletedLedgerName) {
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -75,7 +75,7 @@ public class RepositoryDB {
         });
     }
 
-    public void renameHistoryCategory(final String inputString, final String deletedCategory){
+    public void renameHistoryCategory(final String inputString, final String deletedCategory) {
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -85,21 +85,40 @@ public class RepositoryDB {
         });
     }
 
-    public void applyUpdateToExistingUntaggedTransaction(final String remark, final String category){
+    public void applyUpdateToExistingUntaggedTransaction(final String remark, final String category) {
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mTransactionDB.transactionDAO().applyUpdateCategory(remark,category, Constant.UNTAGGED);
+                mTransactionDB.transactionDAO().applyUpdateCategory(remark, category, Constant.UNTAGGED);
             }
         });
     }
 
-    public void deleteSelectedTransactions(final List<TransactionEntry> input){
+    public void deleteSelectedTransactions(final List<TransactionEntry> input) {
         mAppExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
 
                 mTransactionDB.transactionDAO().deleteListOfTransactions(input);
+            }
+        });
+    }
+
+    public void deleteAllTransactions() {
+        mAppExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+
+                mTransactionDB.transactionDAO().deleteAll();
+            }
+        });
+    }
+
+    public void insertTransactions(final GsonHelper mGsonHelper) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mTransactionDB.transactionDAO().insertListOfTransactions(TestingData.create1000Transactions(mGsonHelper));
             }
         });
     }

@@ -5,10 +5,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /* A Helper class that
-*   1. handling diskio operations, in current version, interact with DB
-*   2. can be further developer for handling network data
-*
-* */
+ *   1. handling diskio operations, in current version, interact with DB
+ *   2. can be further developer for handling network data
+ *
+ * */
 
 public class AppExecutors {
 
@@ -27,7 +27,7 @@ public class AppExecutors {
             synchronized (LOCK) {
                 sInstance = new AppExecutors(
                         Executors.newSingleThreadExecutor()
-                        );
+                );
             }
         }
         return sInstance;

@@ -11,7 +11,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceManager;
-
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
@@ -55,25 +53,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.utility.GsonHelper;
-import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
-import hanzhou.easyledger.viewmodel.GeneralViewModel;
-import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.chart_personalization.LabelFormatterCurrentBarChart;
 import hanzhou.easyledger.chart_personalization.MonthValueFormatter;
 import hanzhou.easyledger.chart_personalization.MyLargeValueFormatter;
+import hanzhou.easyledger.chart_personalization.MyMarkerView;
 import hanzhou.easyledger.chart_personalization.MyPercentFormatter;
 import hanzhou.easyledger.chart_personalization.WeekValueFormatter;
-import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.BackGroundColor;
 import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.chart_personalization.MyMarkerView;
+import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.utility.UnitUtil;
+import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.ChartDataViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 
 /*
  *   This Fragment shows 3 charts in one of two ways:
@@ -98,22 +94,19 @@ public class ChartFragment extends Fragment implements
     private static final String CHART_REVENUE = "a_revenue_chart";
     private static final String CHART_EXPENSE = "a_expense_chart";
 
-    private TransactionDB mDb;
 
     private AppCompatActivity mAppCompatActivity;
 
-
-    private GeneralViewModel mGeneralViewModel;
-    private SPViewModel sharedPreferenceViewModel;
     private ChartDataViewModel mChartDataViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
 
-    /*belowing 5 items value based on sharedPreferencce*/
+    /*following 5 items value based on sharedPreferencce*/
     private int mHistoryPeriodType;
     private int mNumberOfPeriodsToCompare;
     private String mUserSelection;
     private int mCurrentPeriodType;
     private boolean mIsPieChartShowPercentage;
+
 
     private boolean mIsCustomCurrentPeriod;
 
@@ -122,8 +115,12 @@ public class ChartFragment extends Fragment implements
     private int mCurrentChartStartingDate;
     private int mNumOfCustomDays;
 
-
+    /*
+        list of date in a form of 2 values
+        (e.g. startdateInt1, enddateInt1, startdateInt2,enddataInt2)
+    */
     private List<Integer> mDateListForEachPeriod;
+
 
     private PieChart mCurrentPieChartRevenue;
     private PieChart mCurrentPieChartExpense;
@@ -143,17 +140,11 @@ public class ChartFragment extends Fragment implements
 
     private GsonHelper mGsonHelper;
 
-    private int testNumber = 0;
-
     private int mHistoryChartStartDate, mHistoryChartEndDate;
-
-    private int mRevenueCategorySize;
-    private int mExpenseCategorySize;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mDb = TransactionDB.getInstance(context);
         mAppCompatActivity = (AppCompatActivity) context;
 
         mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
@@ -162,7 +153,7 @@ public class ChartFragment extends Fragment implements
         mGsonHelper.setmSharedPreferences(mAppPreferences);
 
 
-        loadPreferenceSetting();
+        loadPreferenceSettingWhenStart();
 
 
     }
@@ -204,9 +195,9 @@ public class ChartFragment extends Fragment implements
      */
     private void setChartHeightForAllTypeOfScreenHeight() {
 
-       int screenHeight = getIdealScreenHeight();
+        int screenHeight = getIdealScreenHeight();
 
-       setChartHeight(screenHeight);
+        setChartHeight(screenHeight);
 
     }
 
@@ -261,10 +252,10 @@ public class ChartFragment extends Fragment implements
 
     private void setupViewModel() {
 
-        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        GeneralViewModel mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_CHART);
 
-        sharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
+        SPViewModel sharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
         );
 
         setupSharedPreferenceViewModelObserverForChartDisplay(sharedPreferenceViewModel);
@@ -277,8 +268,6 @@ public class ChartFragment extends Fragment implements
     }
 
 
-
-
     private void initializeHistoryBarChart() {
 
         mHistoryBarChart.setOnChartValueSelectedListener(this);
@@ -289,7 +278,7 @@ public class ChartFragment extends Fragment implements
         mHistoryBarChart.setDrawGridBackground(false);
 
         /*
-         *   MPAndroidChart bug, version lower than API24 cannot have custom Marker due to memory issue
+         *   MPAndroidChart library bug, version lower than API24 cannot have custom Marker due to memory issue
          * */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
@@ -384,7 +373,7 @@ public class ChartFragment extends Fragment implements
 
 
             barChartXAxisStartTime = Integer.parseInt(
-                    DateTimeFormat.forPattern("YYYYMM").print(
+                    DateTimeFormat.forPattern(getString(R.string.date_format_yyyymm)).print(
                             LocalDate.now().minusMonths(mNumberOfPeriodsToCompare)));
             xAxisFormatter.setStartDate(LocalDate.now().minusMonths(mNumberOfPeriodsToCompare));
             xAxis.setValueFormatter(xAxisFormatter);
@@ -415,6 +404,7 @@ public class ChartFragment extends Fragment implements
         mHistoryBarChart.invalidate();
     }
 
+
     private void convertTwoSumListIntoBarEntriesList(
             ArrayList<BarEntry> mRevenuesBarEntries, ArrayList<BarEntry> mExpensesBarEntries,
             List<Float> revenueSumList, List<Float> expenseSumList) {
@@ -426,7 +416,7 @@ public class ChartFragment extends Fragment implements
                 /*display by month-period data where x-axis value will be displayed on YYYYMM*/
 
                 float currentMonth = Integer.parseInt(
-                        DateTimeFormat.forPattern("YYYYMM").print(
+                        DateTimeFormat.forPattern(getString(R.string.date_format_yyyymm)).print(
                                 LocalDate.now().minusMonths(mNumberOfPeriodsToCompare - i)));
                 mRevenuesBarEntries.add(new BarEntry(currentMonth, revenueSumList.get(i)));
                 mExpensesBarEntries.add(new BarEntry(currentMonth, expenseSumList.get(i)));
@@ -442,11 +432,6 @@ public class ChartFragment extends Fragment implements
     private void extractEntriesToRevenueAndExpenseVariableForHistoryChart
             (List<TransactionEntry> allEntries, List<Float> revenues, List<Float> expenses) {
 
-
-        int testCounterRevenue = 0;
-        int testCounterExpense = 0;
-        int testCounterTotalOfEntries = 0;
-
         /*pointer in odd number to get ending date of a period*/
         int pointerForDates = 1;
         float tempRevenueSum = 0f;
@@ -454,11 +439,11 @@ public class ChartFragment extends Fragment implements
         for (TransactionEntry entry : allEntries) {
 
             if (entry.getTime() > UnitUtil.getTodayInAppTimeFormat()) {
-                Toast.makeText(getActivity(), "time excess today", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.toast_time_exceed), Toast.LENGTH_LONG).show();
                 return;
             }
-            //todo, fix this
-            try{
+            //todo, fix this bug
+            try {
 
                 while (entry.getTime() > mDateListForEachPeriod.get(pointerForDates)) {
                     revenues.add(tempRevenueSum);
@@ -468,19 +453,16 @@ public class ChartFragment extends Fragment implements
                     pointerForDates += 2;
 
                 }
-            }catch (IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
-
 
             if (entry.getAmount() >= 0) {
                 //add to revenue
                 tempRevenueSum += entry.getAmount();
-                testCounterRevenue++;
             } else {
                 //add to expense
                 tempExpenseSum += Math.abs(entry.getAmount());
-                testCounterExpense++;
             }
 
         }
@@ -488,10 +470,13 @@ public class ChartFragment extends Fragment implements
         revenues.add(tempRevenueSum);
         expenses.add(tempExpenseSum);
 
-
     }
 
 
+    /*
+     *   user may choose pie chart or bar chart for current period revenue/expense
+     *
+     * */
     private void setDataForCurrentChart(String type) {
 
         if (mUserSelection.equals(CATEGORY_PIECHART)) {
@@ -507,6 +492,8 @@ public class ChartFragment extends Fragment implements
             }
 
         } else {
+            /*user choosed barchart*/
+
             enableCurrentBarChart();
 
             if (type.equals(CHART_EXPENSE)) {
@@ -524,6 +511,11 @@ public class ChartFragment extends Fragment implements
 
     }
 
+
+    /*
+     *   populate data to barchart and set some of its styles based on types
+     *
+     * */
     private void setCurrentBarChartData(BarChart barChart, HashMap<String, Float> hashMap, String type) {
 
         ArrayList<BarEntry> values = new ArrayList<>();
@@ -532,12 +524,12 @@ public class ChartFragment extends Fragment implements
         List<Integer> colors;
 
         if (type.equals(CHART_REVENUE)) {
-            mRevenueCategorySize = mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE).size();
+            int mRevenueCategorySize = mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE).size();
             categoriesArray = new String[mRevenueCategorySize];
             barDataSetString = getString(R.string.chart_name_text_revenue);
             colors = mColors.getNonRepeatingLightColors(mRevenueCategorySize);
         } else {
-            mExpenseCategorySize = mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE).size();
+            int mExpenseCategorySize = mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE).size();
             categoriesArray = new String[mExpenseCategorySize];
             barDataSetString = getString(R.string.chart_name_text_expense);
             colors = mColors.getNonRepeatingDarkColors(mExpenseCategorySize);
@@ -578,8 +570,6 @@ public class ChartFragment extends Fragment implements
         }
 
 
-
-
         BarData data = new BarData(barDataSet);
         data.setBarWidth(0.9f);
         data.setValueFormatter(new MyLargeValueFormatter());
@@ -610,6 +600,11 @@ public class ChartFragment extends Fragment implements
         return output;
     }
 
+
+    /*
+     *  barchart style setting
+     *
+     * */
     private void initializeCurrentBarChart(BarChart barChart) {
         barChart.setOnChartValueSelectedListener(this);
         barChart.getDescription().setEnabled(false);
@@ -647,8 +642,12 @@ public class ChartFragment extends Fragment implements
         mCurrentBarChartRevenue.setVisibility(View.VISIBLE);
     }
 
-    private void initializePieChart(PieChart chart, String chartType) {
 
+    /*
+     *   piechart style setting
+     *
+     * */
+    private void initializePieChart(PieChart chart, String chartType) {
 
         if (mIsPieChartShowPercentage) {
             chart.setUsePercentValues(true);
@@ -696,10 +695,16 @@ public class ChartFragment extends Fragment implements
 
     }
 
-    private void setPieChartData(PieChart chart, HashMap<String, Float> categoryHashMap, String chartType) {
-        ArrayList<PieEntry> entries = fromHashMapToArrayListOfPieEntry(categoryHashMap);
 
-        PieDataSet pieDataSet = new PieDataSet(entries, "Categories");
+    /*
+     *   populate piechar with data
+     *
+     * */
+
+    private void setPieChartData(PieChart chart, HashMap<String, Float> categoryHashMap, String chartType) {
+        ArrayList<PieEntry> entries = convertHashMapToArrayListOfPieEntry(categoryHashMap);
+
+        PieDataSet pieDataSet = new PieDataSet(entries, getString(R.string.pie_chart_set_label));
         pieDataSet.setDrawIcons(false);
         pieDataSet.setSliceSpace(3f);
         pieDataSet.setIconsOffset(new MPPointF(0, 40));
@@ -720,7 +725,7 @@ public class ChartFragment extends Fragment implements
 
 
             data.setValueTextColor(Color.WHITE);
-            charCenterTxt = generateCenterSpannableText(
+            charCenterTxt = generateCenterSpannableTextForPieChart(
                     getString(R.string.chart_name_text_expense),
                     mCategoryExpense.size(),
                     entries.size()
@@ -731,7 +736,7 @@ public class ChartFragment extends Fragment implements
             colors = mColors.getNonRepeatingLightColors(entries.size());
 
             data.setValueTextColor(Color.BLACK);
-            charCenterTxt = generateCenterSpannableText(
+            charCenterTxt = generateCenterSpannableTextForPieChart(
                     getString(R.string.chart_name_text_revenue),
                     mCategoryRevenue.size(),
                     entries.size()
@@ -765,7 +770,8 @@ public class ChartFragment extends Fragment implements
     }
 
 
-    private ArrayList<PieEntry> fromHashMapToArrayListOfPieEntry(HashMap<String, Float> categoryHashMap) {
+    private ArrayList<PieEntry> convertHashMapToArrayListOfPieEntry(HashMap<String, Float> categoryHashMap) {
+
         ArrayList<PieEntry> entries = new ArrayList<>();
         for (Map.Entry<String, Float> entry : categoryHashMap.entrySet()) {
             String key = entry.getKey();
@@ -835,7 +841,7 @@ public class ChartFragment extends Fragment implements
     }
 
 
-    private SpannableString generateCenterSpannableText(String input, int numCategory, int availableCategory) {
+    private SpannableString generateCenterSpannableTextForPieChart(String input, int numCategory, int availableCategory) {
         String tempCategory = String.valueOf(numCategory);
         String tempAvailable = String.valueOf(availableCategory);
         int lengthTotalCategory = tempCategory.length();
@@ -879,7 +885,7 @@ public class ChartFragment extends Fragment implements
     }
 
 
-    private void loadPreferenceSetting() {
+    private void loadPreferenceSettingWhenStart() {
 
 
         mHistoryPeriodType = mAppPreferences.getInt(
@@ -959,11 +965,10 @@ public class ChartFragment extends Fragment implements
 
         mHistoryChartStartDate = mDateListForEachPeriod.get(0);
 
-       /*get the last value in the mDateListForEachPeriod;*/
+        /*get the last value in the mDateListForEachPeriod;*/
         mHistoryChartEndDate = mDateListForEachPeriod.get(mDateListForEachPeriod.size() - 1);
 
     }
-
 
 
     private void setupSharedPreferenceViewModelObserverForChartDisplay(SPViewModel sharedPreferenceViewModel) {

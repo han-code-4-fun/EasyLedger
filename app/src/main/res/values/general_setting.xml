@@ -75,10 +75,8 @@
     <string name="setting_warning_neutral_btn_title">OK</string>
 
     <string name="setting_info_dialog_title">How to</string>
-    <string name="setting_info_dialog_msg_body">
-        Drag and drop to change position.\n
-        Swipe to delete.\n
-        Press the bottom right button to add.
+
+    <string name="setting_info_dialog_msg_body">\nDrag and drop to change position.\nSwipe to delete.\nPress the bottom right button to add.
     </string>
 
 
@@ -109,6 +107,8 @@
     <string name="setting_warning_msg_duplicate_word">
         This is a duplicate name.
     </string>
+
+    <string name="setting_toast_msg_no_enter_added">No Entry Added</string>
 
 
 

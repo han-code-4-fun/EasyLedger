@@ -6,7 +6,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "hanzhou.easyledger"
+        applicationId "hanzhou.easyledger_demo"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1

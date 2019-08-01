@@ -16,6 +16,13 @@ import java.util.List;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 
+
+
+/*
+ *   categories section for user to pick inseide the Add/Edit Transation Fragment
+ *
+ * */
+
 public class CategoryAdapter
         extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
@@ -26,7 +33,7 @@ public class CategoryAdapter
     private int mActivePosition;
 
 
-    public CategoryAdapter(Context context , AdapterNActionBarViewModel mInputVM) {
+    public CategoryAdapter(Context context, AdapterNActionBarViewModel mInputVM) {
         mContext = context;
         mViewModel = mInputVM;
         mCategories = new ArrayList<>();
@@ -38,7 +45,7 @@ public class CategoryAdapter
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View categoryView = LayoutInflater
                 .from(mContext)
-                .inflate(R.layout.list_item_category,parent, false);
+                .inflate(R.layout.list_item_category, parent, false);
 
         return new CategoryViewHolder(categoryView);
     }
@@ -47,9 +54,9 @@ public class CategoryAdapter
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         String currentCategory = mCategories.get(position);
         holder.categoryTV.setText(currentCategory);
-        if(position == mActivePosition){
+        if (position == mActivePosition) {
             holder.categoryTV.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent));
-        }else{
+        } else {
 
             holder.categoryTV.setTextColor(ContextCompat.getColor(mContext, R.color.design_default_color_primary));
         }
@@ -60,7 +67,7 @@ public class CategoryAdapter
         return mCategories.size();
     }
 
-    public void setData(List<String> inputList){
+    public void setData(List<String> inputList) {
         mActivePosition = -1;
         mCategories = inputList;
         notifyDataSetChanged();
@@ -74,15 +81,15 @@ public class CategoryAdapter
         this.mActivePosition = mActivePosition;
     }
 
-    public String getClickedCategory(){
-        String output="";
+    public String getClickedCategory() {
+        String output = "";
         output = mCategories.get(mActivePosition);
         return output;
     }
 
-    public void highlightExistingCategoryIfMatch(String inputCategory){
+    public void highlightExistingCategoryIfMatch(String inputCategory) {
         int position = mCategories.indexOf(inputCategory);
-        if(position!= -1){
+        if (position != -1) {
             mActivePosition = position;
             notifyItemChanged(mActivePosition);
         }
@@ -90,7 +97,7 @@ public class CategoryAdapter
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder
-    implements View.OnClickListener {
+            implements View.OnClickListener {
         TextView categoryTV;
 
         public CategoryViewHolder(@NonNull View itemView) {
@@ -101,13 +108,13 @@ public class CategoryAdapter
 
         @Override
         public void onClick(View view) {
-            if(mActivePosition != -1){
+            if (mActivePosition != -1) {
                 int previousPosition = mActivePosition;
                 int position = getAdapterPosition();
                 mActivePosition = position;
                 notifyItemChanged(previousPosition);
                 notifyItemChanged(position);
-            }else{
+            } else {
 
                 mActivePosition = getAdapterPosition();
                 notifyItemChanged(mActivePosition);

@@ -28,7 +28,6 @@ public class SPViewModel extends ViewModel {
     private SPBoolLiveData mIsAutoTaggerOn;
 
 
-
     public SPViewModel(SharedPreferences inputSP) {
 
         mChartNumberOfHistoryPeriodSelectedByUser = new SPIntLiveData(
@@ -129,7 +128,7 @@ public class SPViewModel extends ViewModel {
         return mLedgersList;
     }
 
-    public SPBoolLiveData getmIsAutoTaggerOn(){
+    public SPBoolLiveData getmIsAutoTaggerOn() {
         return mIsAutoTaggerOn;
     }
 }

@@ -1,6 +1,5 @@
 package hanzhou.easyledger.smsprocessor;
 
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -35,34 +34,34 @@ public class HistoryRemark {
         return mRemarks;
     }
 
-    public boolean isContainRemark(String inputRemark) {
+    boolean isContainRemark(String inputRemark) {
         return mRemarks.containsKey(inputRemark);
     }
 
-    public String getCategoryFromRemark(String inputRemark) {
+    String getCategoryFromRemark(String inputRemark) {
         return mRemarks.get(inputRemark);
     }
 
-    public boolean addToRemarks(String remark, String category) {
+    private boolean addToRemarks(String remark, String category) {
         /*
-        *    don't update "Withdrawal" and "Deposit" remarks
-        *    because they are app's remark for debit card account
-        *
-        * */
-        if(!remark.equals(Constant.RBC_WITHDRAWAL.toLowerCase() )
+         *    don't update "Withdrawal" and "Deposit" remarks
+         *    because they are app's remark for debit card account
+         *
+         * */
+        if (!remark.equals(Constant.RBC_WITHDRAWAL.toLowerCase())
                 && !remark.equals(Constant.RBC_DEPOSIT.toLowerCase())) {
 
             /*only return true, if inserted new and modified previous*/
 
-            if(!mRemarks.containsKey(remark)){
+            if (!mRemarks.containsKey(remark)) {
 
                 mRemarks.put(remark, category);
                 return true;
 
-            }else{
+            } else {
 
                 String replacedCategory = mRemarks.put(remark, category);
-                if(!replacedCategory.equals(category)){
+                if (replacedCategory == null || !replacedCategory.equals(category)) {
                     return true;
                 }
             }
@@ -70,24 +69,21 @@ public class HistoryRemark {
         return false;
     }
 
-    public void removeFromRemarks(String remark) {
-        mRemarks.remove(remark);
-    }
 
-    public void saveToFile(GsonHelper gsonHelper) {
+    private void saveToFile(GsonHelper gsonHelper) {
         gsonHelper.saveHashMapToSharedPreference(mRemarks, Constant.PREFERENCE_KEY_REMARK);
     }
 
-    public void synchronizeUserTaggingBehaviour(String remark, String category, GsonHelper gsonHelper){
+    public void synchronizeUserTaggingBehaviour(String remark, String category, GsonHelper gsonHelper) {
 
-        if(addToRemarks(remark,category)){
+        if (addToRemarks(remark, category)) {
             saveToFile(gsonHelper);
             applyUpdateToExistingUntaggedTransaction(remark, category);
         }
     }
 
     private void applyUpdateToExistingUntaggedTransaction(String remark, String category) {
-        RepositoryDB.getInstance().applyUpdateToExistingUntaggedTransaction(remark,category);
+        RepositoryDB.getInstance().applyUpdateToExistingUntaggedTransaction(remark, category);
     }
 
 }

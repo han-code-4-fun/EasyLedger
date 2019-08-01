@@ -9,6 +9,6 @@ public class SPIntLiveData extends SPLiveData<Integer> {
 
     @Override
     Integer getValueFromPreferences(String key, Integer defValue) {
-        return sharedPrefs.getInt(key,defValue);
+        return sharedPrefs.getInt(key, defValue);
     }
 }

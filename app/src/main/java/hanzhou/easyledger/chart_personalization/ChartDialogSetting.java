@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -132,7 +131,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         loadPreferenceSetting();
 
 
-
         //todo, use string
         builder.setView(view)
                 .setNegativeButton(getString(R.string.dialog_negative_btn_title), cancelBTNClickListener)
@@ -245,7 +243,6 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
     }
 
 
-
     private RadioGroup.OnCheckedChangeListener radioGroupCurrentPeriodTypeChangeListenerGeneral =
             new RadioGroup.OnCheckedChangeListener() {
                 @Override
@@ -342,7 +339,7 @@ public class ChartDialogSetting extends AppCompatDialogFragment {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
 
-            Toast.makeText(mAppCompatActivity, "No Change Made", Toast.LENGTH_LONG).show();
+            Toast.makeText(mAppCompatActivity, getString(R.string.chart_setting_no_change_made), Toast.LENGTH_LONG).show();
         }
     };
 

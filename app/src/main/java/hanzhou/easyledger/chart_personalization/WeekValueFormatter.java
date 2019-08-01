@@ -1,11 +1,11 @@
 package hanzhou.easyledger.chart_personalization;
 
-import android.util.Log;
-
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import org.joda.time.LocalDate;
+
+import hanzhou.easyledger.utility.Constant;
 
 public class WeekValueFormatter extends ValueFormatter {
     private final BarLineChartBase<?> chart;
@@ -17,8 +17,8 @@ public class WeekValueFormatter extends ValueFormatter {
         this.chart = chart;
     }
 
-    public void setMaxPeriod(int maxPeriod){
-        mMaxPeriod= maxPeriod;
+    public void setMaxPeriod(int maxPeriod) {
+        mMaxPeriod = maxPeriod;
     }
 
 
@@ -26,8 +26,8 @@ public class WeekValueFormatter extends ValueFormatter {
     public String getFormattedValue(float value) {
 
         int x = mMaxPeriod - (int) value;
-        if(x <= 1) return "last week";
-        return x + " weeks";
+        if (x <= 1) return Constant.TXT_LAST_WEEK;
+        return x + " " + Constant.TXT_WEEKS;
     }
 
 

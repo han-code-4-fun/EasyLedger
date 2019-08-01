@@ -1,7 +1,6 @@
 package hanzhou.easyledger.data;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -28,6 +27,7 @@ public interface TransactionDAO {
 
     @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount>=0 ORDER BY time ASC, id DESC")
     LiveData<List<TransactionEntry>> loadTransactionRevenuePeriod(int startingDate);
+
     @Query("SELECT * FROM transactions WHERE time >= :startingDate and amount<0 ORDER BY time ASC, id DESC")
     LiveData<List<TransactionEntry>> loadTransactionExpensePeriod(int startingDate);
 
@@ -38,14 +38,14 @@ public interface TransactionDAO {
     LiveData<List<TransactionEntry>> loadTransactionInPeriodForChart(int startDate, int endDate);
 
     @Query("UPDATE transactions SET remark = :remarkInFront || remark, category = 'Others' WHERE category = :category")
-    void markHistoryCategory(String remarkInFront,String category);
+    void markHistoryCategory(String remarkInFront, String category);
 
     @Query("UPDATE transactions SET remark = :remarkInFront || remark WHERE ledger = :ledger")
-    void markHistoryLedger(String remarkInFront,String ledger);
+    void markHistoryLedger(String remarkInFront, String ledger);
 
     /*only update new category to untagged transacion, the other(historical) transaction should not be affected*/
     @Query("UPDATE transactions SET category = :category WHERE remark = :remark AND category = :untagged ")
-    void applyUpdateCategory(String remark, String category,String untagged);
+    void applyUpdateCategory(String remark, String category, String untagged);
 
     @Insert
     void insertTransaction(TransactionEntry transactionEntry);
@@ -59,8 +59,6 @@ public interface TransactionDAO {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateListOfTransactions(List<TransactionEntry> transactionEntryList);
 
-    @Delete
-    void deleteTransaction(TransactionEntry transactionEntry);
 
     @Delete
     void deleteListOfTransactions(List<TransactionEntry> lisOfTransactions);

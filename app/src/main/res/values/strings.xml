@@ -32,7 +32,7 @@
     <string name="menu_title_setting">Settings</string>
     <string name="menu_title_question">Is this app safe?</string>
     <string name="menu_title_feedback">Feedback</string>
-    <string name="menu_insert_data">Insert Data</string>
+    <string name="menu_insert_data">Insert 1000 Data</string>
     <string name="menu_delete_all_data">Delete All</string>
     <string name="menu_insert_data_7days">Insert Data within 7days (0\-6)</string>
     <string name="menu_insert_data_30days">Insert Data within 30days (0\-29)</string>
@@ -181,6 +181,26 @@
 
     <string name="notification_title_msg_from_firebase">Message from developer</string>
     <string name="main_notification_channel_name">Primary</string>
+
+
+    <string name="add_edit_transaction_toast_user_input_invalidate">Please enter required information.</string>
+    <string name="chart_setting_no_change_made">No Change Made</string>
+    <string name="sms_base_uri">content://sms/inbox</string>
+    <string name="sms_pdus">pdus</string>
+    <string name="error_msg_getting_pdus">onReceive: error getting \'pdus\'</string>
+    <string name="sms_string_extra_format">format</string>
+    <string name="ledger_name_rbc">RBC</string>
+    <string name="error_msg_extract_sms_fail">extractSMSDebit:   error while converting sms to TransactionEntry</string>
+    <string name="remove_remark_begin"><![CDATA[(history ledger ->]]></string>
+    <string name="remove_remark_end">)</string>
+    <string name="dialog_positive_btn_ok">OK</string>
+    <string name="date_format_yyyymm">YYYYMM</string>
+    <string name="toast_time_exceed">time exceed  today</string>
+    <string name="pie_chart_set_label">Categories</string>
+    <string name="error_time_earlier_than_history">time get back to app is eariler than get left app, is there a time travel?</string>
+    <string name="overview_bar_data_label">Bar data</string>
+    <string name="april_first">04-01</string>
+    <string name="app_exit_notice">Tap one more time to exit app.</string>
 
 
 </resources>

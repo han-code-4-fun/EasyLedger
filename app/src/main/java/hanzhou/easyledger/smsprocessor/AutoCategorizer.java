@@ -2,15 +2,11 @@ package hanzhou.easyledger.smsprocessor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-
-import androidx.lifecycle.ViewModelProviders;
 
 import java.util.ArrayList;
 
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
-import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /*
  *   Auto tag users transaction based on user's history tag
@@ -27,16 +23,14 @@ public class AutoCategorizer {
      */
 
 
-
-
     /*
-    *
-    *  return a category or n/a (untagged transaction) according to user's remark, based on user history remark-cateogry hashmap
-    *
-    *  and whether the returned category a present category
-    *
-    *
-    * */
+     *
+     *  return a category or n/a (untagged transaction) according to user's remark, based on user history remark-cateogry hashmap
+     *
+     *  and whether the returned category a present category
+     *
+     *
+     * */
     public static String process(Context context, String remark, float amount) {
 
         if (!remark.equals("")) {
@@ -53,15 +47,15 @@ public class AutoCategorizer {
                             context.getSharedPreferences(context.getPackageName() + "_preferences", Context.MODE_PRIVATE);
 
                     ArrayList<String> categoriesList;
-                    if(amount >=0){
+                    if (amount >= 0) {
 
                         categoriesList = GsonHelper.getInstance().getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE);
-                    }else{
+                    } else {
 
                         categoriesList = GsonHelper.getInstance().getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE);
                     }
                     /*only need to auto-mark if category is present categories*/
-                    if(categoriesList.contains(category)){
+                    if (categoriesList.contains(category)) {
                         return category;
                     }
                 }

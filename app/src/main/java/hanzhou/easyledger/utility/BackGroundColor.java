@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.util.SparseBooleanArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class BackGroundColor {
@@ -20,13 +19,13 @@ public class BackGroundColor {
         random = new Random();
     }
 
-    public ArrayList<Integer> getNonRepeatingDarkColors(int number){
+    public ArrayList<Integer> getNonRepeatingDarkColors(int number) {
         colorsHM = new SparseBooleanArray();
         output = new ArrayList<>();
         int temp = 0;
         for (int i = 0; i < number; i++) {
-            temp =generateADarkColor();
-            while(colorsHM.get(temp)){
+            temp = generateADarkColor();
+            while (colorsHM.get(temp)) {
                 temp = generateADarkColor();
             }
             output.add(temp);
@@ -35,13 +34,13 @@ public class BackGroundColor {
         return output;
     }
 
-    public ArrayList<Integer> getNonRepeatingLightColors(int number){
+    public ArrayList<Integer> getNonRepeatingLightColors(int number) {
         colorsHM = new SparseBooleanArray();
         output = new ArrayList<>();
         int temp = 0;
         for (int i = 0; i < number; i++) {
-            temp =generateALightColor();
-            while(colorsHM.get(temp)){
+            temp = generateALightColor();
+            while (colorsHM.get(temp)) {
                 temp = generateALightColor();
             }
             output.add(temp);
@@ -51,7 +50,7 @@ public class BackGroundColor {
     }
 
 
-    private int generateADarkColor(){
+    private int generateADarkColor() {
         return Color.argb(
                 255,
                 (random.nextInt(100) + 100),
@@ -59,7 +58,7 @@ public class BackGroundColor {
                 (random.nextInt(100) + 100));
     }
 
-    private int generateALightColor(){
+    private int generateALightColor() {
         return Color.argb(
                 255,
                 (random.nextInt(50) + 200),

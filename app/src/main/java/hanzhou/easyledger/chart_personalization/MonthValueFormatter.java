@@ -5,16 +5,12 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 
+import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.UnitUtil;
 
 
-public class MonthValueFormatter extends ValueFormatter
+public class MonthValueFormatter extends ValueFormatter {
 
-{
-
-    private final String[] mMonths = new String[]{
-           "", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    };
 
     private int mInitialValue;
 
@@ -25,10 +21,10 @@ public class MonthValueFormatter extends ValueFormatter
         mInitialValue = -1000;
     }
 
-    public void setStartDate(LocalDate inputDate){
+    public void setStartDate(LocalDate inputDate) {
         mStartingDate = inputDate;
         mInitialValue = Integer.parseInt(
-                DateTimeFormat.forPattern("YYYYMM").print(
+                DateTimeFormat.forPattern(Constant.DATE_TIME_FORMAT_YEAR_MONTH).print(
                         mStartingDate));
     }
 
@@ -37,11 +33,11 @@ public class MonthValueFormatter extends ValueFormatter
 
         int difference = (int) value - mInitialValue;
         LocalDate displayDate;
-        if(difference >0){
+        if (difference > 0) {
             displayDate = mStartingDate.plusMonths(difference);
-        }else if(difference<0){
+        } else if (difference < 0) {
             displayDate = mStartingDate.minusMonths(difference);
-        }else{
+        } else {
             displayDate = mStartingDate;
         }
 

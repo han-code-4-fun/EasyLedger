@@ -6,19 +6,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,12 +22,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
@@ -56,7 +53,6 @@ import hanzhou.easyledger.viewmodel.AddTransactionVMFactory;
 import hanzhou.easyledger.viewmodel.AddTransactionViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
-import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,25 +60,21 @@ import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel
 public class AddNEditTransactionFragment extends Fragment
         implements DatePickerDialog.OnDateSetListener/*, View.OnFocusChangeListener*/ {
 
-    // Constant for default task id to be used when not in update mode
+    /*Constant for default task id to be used when not in update mode*/
     private static final int DEFAULT_TASK_ID = -1;
 
-    // Extra for the task ID to be received after rotation
-    public static final String INSTANCE_TASK_ID = "instanceTaskId";
+    /*Extra for the task ID to be received after configuration change*/
+    private static final String INSTANCE_TASK_ID = "instanceTaskId";
 
     private TransactionDB mDB;
 
     private GeneralViewModel mGeneralViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
-    private SPViewModel mSPViewModel;
-//    private AddTransactionViewModel mAddTransactionViewModel;
 
     private AppCompatActivity mAppCompatActivity;
 
     private Toolbar toolbar;
 
-    private TextView mTvMoneyIn;
-    private TextView mTvMoneyOut;
     private TextView mAmountLabel;
     private TextView mCategoryLabel;
 
@@ -98,17 +90,10 @@ public class AddNEditTransactionFragment extends Fragment
 
     private Spinner mSpinner;
 
-    private Button mMoneyFlowBtn;
-
-    private FloatingActionButton mSaveBtn;
-
-    private RecyclerView mCategoryRecyclerView;
     private CategoryAdapter mCategoryAdapter;
     private ArrayAdapter<String> mSpinnerLedgerAdapter;
 
-    private SharedPreferences mSharedPreference;
     private GsonHelper mGsonHelper;
-
 
     private int mTransactionId = DEFAULT_TASK_ID;
 
@@ -116,16 +101,13 @@ public class AddNEditTransactionFragment extends Fragment
     private boolean mIsAutotaggerOn;
 
 
-    private double mMoneyNum;
     private int mCategoryNum;
     private int mLedgerNum;
     private int mDateNum;
     private String mRemark;
 
     private String mCurrentTransactionCategory;
-    private int mPositionInSpinner;
 
-    private HistoryRemark mHistoryRemark;
     private boolean mIsMoneyInChecked;
 
 
@@ -139,7 +121,7 @@ public class AddNEditTransactionFragment extends Fragment
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
         mDB = TransactionDB.getInstance(getContext());
-        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
         mGsonHelper = GsonHelper.getInstance();
         mGsonHelper.setmSharedPreferences(mSharedPreference);
         mIsMoneyInChecked = true;
@@ -149,7 +131,7 @@ public class AddNEditTransactionFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mHistoryRemark = HistoryRemark.getInstance();
+        HistoryRemark mHistoryRemark = HistoryRemark.getInstance();
         mHistoryRemark.loadFromFile(mGsonHelper);
 
         toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
@@ -167,7 +149,7 @@ public class AddNEditTransactionFragment extends Fragment
 
     private void setupUI(View rootView) {
 
-        mMoneyFlowBtn = rootView.findViewById(R.id.money_flow_change_btn);
+        Button mMoneyFlowBtn = rootView.findViewById(R.id.money_flow_change_btn);
         mMoneyFlowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,24 +180,19 @@ public class AddNEditTransactionFragment extends Fragment
 
         mMoneyOut = rootView.findViewById(R.id.add_edit_transaction_btn_money_out);
 
-        mCategoryRecyclerView = rootView.findViewById(R.id.add_edit_transaction_category_recycler_view);
-
-        mSaveBtn = rootView.findViewById(R.id.add_edit_transaction_save_btn);
+        FloatingActionButton mSaveBtn = rootView.findViewById(R.id.add_edit_transaction_save_btn);
         mSaveBtn.setOnClickListener(saveBtnOnlickListener);
 
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
+        setupRecyclerView(rootView);
 
-        RecyclerView.LayoutManager layoutManager =
-                new GridLayoutManager(getContext(), 3, RecyclerView.VERTICAL, false);
-        mCategoryRecyclerView.setLayoutManager(layoutManager);
-        mCategoryRecyclerView.setHasFixedSize(true);
-
-        mCategoryAdapter = new CategoryAdapter(getContext(), mAdapterActionViewModel);
-
-        mCategoryRecyclerView.setAdapter(mCategoryAdapter);
+        setupSpinnerForLedger(rootView);
 
 
+    }
+
+    private void setupSpinnerForLedger(View rootView) {
         mSpinnerLedgerAdapter = new ArrayAdapter<String>(
                 mAppCompatActivity,
                 android.R.layout.simple_spinner_item,
@@ -228,9 +205,23 @@ public class AddNEditTransactionFragment extends Fragment
         mSpinner.setAdapter(mSpinnerLedgerAdapter);
     }
 
+    private void setupRecyclerView(View rootView) {
+
+        RecyclerView mCategoryRecyclerView = rootView.findViewById(R.id.add_edit_transaction_category_recycler_view);
+
+        RecyclerView.LayoutManager layoutManager =
+                new GridLayoutManager(getContext(), 3, RecyclerView.VERTICAL, false);
+        mCategoryRecyclerView.setLayoutManager(layoutManager);
+        mCategoryRecyclerView.setHasFixedSize(true);
+
+        mCategoryAdapter = new CategoryAdapter(getContext(), mAdapterActionViewModel);
+
+        mCategoryRecyclerView.setAdapter(mCategoryAdapter);
+    }
+
     private void setupUIListenerForClosingSoftKeyboard(View rootView) {
 
-       /*Set up touch listener for non-text box views to hide keyboard.*/
+        /*Set up touch listener for non-text box views to hide keyboard.*/
         if (!(rootView instanceof EditText)) {
             rootView.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
@@ -256,7 +247,7 @@ public class AddNEditTransactionFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mSPViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class);
+        SPViewModel mSPViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class);
         mSPViewModel.getmIsAutoTaggerOn().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -412,11 +403,11 @@ public class AddNEditTransactionFragment extends Fragment
             = new FloatingActionButton.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (checkIfUserEnteredNecessaryDate()) {
-                //String ledger, int time, Float amount, String category, String remark
-                float tempAmount = Float.parseFloat(mEditTextAmount.getText().toString());
-                if (!mIsMoneyInChecked) {
+            if (validateUserInput()) {
 
+                float tempAmount = Float.parseFloat(mEditTextAmount.getText().toString());
+
+                if (!mIsMoneyInChecked) {
                     tempAmount = 0 - tempAmount;
                 }
                 String remark = mEditTextRemark.getText().toString();
@@ -426,45 +417,57 @@ public class AddNEditTransactionFragment extends Fragment
                         tempAmount,
                         mCategoryAdapter.getClickedCategory(),
                         remark
-
                 );
 
+                applyUpdatesToExistingUntaggedTransaction(remark);
 
-                if (mIsAutotaggerOn) {
+                saveTransactionEntryToDB(entry);
+
+            } else {
+                Toast.makeText(
+                        mAppCompatActivity,
+                        getString(R.string.add_edit_transaction_toast_user_input_invalidate),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        }
+    };
+
+    private void saveTransactionEntryToDB(final TransactionEntry entry) {
+        /*save to DB*/
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (mTransactionId == DEFAULT_TASK_ID) {
+
+                    mDB.transactionDAO().insertTransaction(entry);
+                } else {
+
+                    /*update existing records*/
+                    entry.setId(mTransactionId);
+                    mDB.transactionDAO().updateTransaction(entry);
+                }
+
+                mGeneralViewModel.setmBackButtonPressTrigger(true);
+            }
+        });
+    }
+
+    private void applyUpdatesToExistingUntaggedTransaction(String remark) {
+        if (mIsAutotaggerOn) {
                     /*
                         update HistoryRemark for auto-tagging
                         and apply Updates To Existing UntaggedTransaction
 
                     */
-                    HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
-                            remark,
-                            mCategoryAdapter.getClickedCategory(),
-                            mGsonHelper
-                    );
+            HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
+                    remark,
+                    mCategoryAdapter.getClickedCategory(),
+                    mGsonHelper
+            );
 
-                }
-
-                /*save to DB*/
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mTransactionId == DEFAULT_TASK_ID) {
-
-                            mDB.transactionDAO().insertTransaction(entry);
-                        } else {
-
-                            /*update existing records*/
-                            entry.setId(mTransactionId);
-                            mDB.transactionDAO().updateTransaction(entry);
-                        }
-
-                        mGeneralViewModel.setmBackButtonPressTrigger(true);
-                    }
-                });
-
-            }
         }
-    };
+    }
 
 
     private void populateUIWithExistingData(TransactionEntry transactionEntry) {
@@ -477,25 +480,19 @@ public class AddNEditTransactionFragment extends Fragment
             setMoneyOutActive();
         }
 
-
-        mMoneyNum = transactionEntry.getAmount();
+        double mMoneyNum = transactionEntry.getAmount();
 
         mEditTextAmount.setText(UnitUtil.displayPositiveMoney(mMoneyNum));
 
         mEditTextRemark.setText(transactionEntry.getRemark());
 
-        //todo, check here
-        if (mMoneyNum >= 0) {
-        } else {
-            mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
-        }
 
         mCurrentTransactionCategory = transactionEntry.getCategory();
         mTVCategory.setText(mCurrentTransactionCategory);
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
 
-       /*select spinner for ledger*/
-        mPositionInSpinner = mSpinnerLedgerAdapter.getPosition(transactionEntry.getLedger());
+        /*select spinner for ledger*/
+        int mPositionInSpinner = mSpinnerLedgerAdapter.getPosition(transactionEntry.getLedger());
         if (mPositionInSpinner != -1) {
             mSpinner.setSelection(mPositionInSpinner);
         }
@@ -506,7 +503,7 @@ public class AddNEditTransactionFragment extends Fragment
 
     }
 
-    private boolean checkIfUserEnteredNecessaryDate() {
+    private boolean validateUserInput() {
         boolean process = true;
         /*save new records*/
         if (mDateNum == -1) {
@@ -548,7 +545,7 @@ public class AddNEditTransactionFragment extends Fragment
         return input;
     }
 
-    public void hideSoftKeyboard() {
+    private void hideSoftKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) mAppCompatActivity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (inputMethodManager != null) {
             View view = mAppCompatActivity.getCurrentFocus();

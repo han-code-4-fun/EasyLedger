@@ -1,6 +1,8 @@
 package hanzhou.easyledger.utility;
 
-import android.util.Log;
+
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -9,22 +11,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-
 public class UnitUtil {
     private static final String TAG = UnitUtil.class.getSimpleName();
 
     private static LocalDate now = LocalDate.now();
 
-    public static String displayPositiveMoney(double input){
+    public static String displayPositiveMoney(double input) {
         double temp = Math.abs(input);
         return String.valueOf(temp);
     }
 
 
-    public static int getTodayInAppTimeFormat(){
+    public static int getTodayInAppTimeFormat() {
         return fromJodaTimeLocalDateToAppDateInteger(now);
     }
 
@@ -34,9 +32,9 @@ public class UnitUtil {
         return formatterMonthDay.format(today);
     }
 
-    public static String formatMoney(double money){
-        if(money<0){
-            money = money -money*2;
+    public static String formatMoney(double money) {
+        if (money < 0) {
+            money = money - money * 2;
         }
 
         DecimalFormat moneyFormater = new DecimalFormat("$#,###.##");
@@ -44,40 +42,38 @@ public class UnitUtil {
     }
 
 
-    public static int formatTime(Date inputDate){
+    public static int formatTime(Date inputDate) {
         SimpleDateFormat formatterDBTime = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         String output = formatterDBTime.format(inputDate);
         return Integer.valueOf(output);
     }
 
-    public static String getTimeIntInMoreReadableFormat(int inputTime){
-        String output ="";
+    public static String getTimeIntInMoreReadableFormat(int inputTime) {
+        String output = "";
         String temp = String.valueOf(inputTime);
-        String month = temp.charAt(2)+""+temp.charAt(3);
+        String month = temp.charAt(2) + "" + temp.charAt(3);
         int monthIndex = Integer.parseInt(month);
         monthIndex--;
         month = Constant.MONTHS_NON_CAP[monthIndex];
 
 
-        output = "20"+temp.charAt(0)+temp.charAt(1)+"/"+month+"/"+temp.charAt(4)+temp.charAt(5);
+        output = "20" + temp.charAt(0) + temp.charAt(1) + "/" + month + "/" + temp.charAt(4) + temp.charAt(5);
 
         return output;
     }
 
 
-
-
-    public static int setDatePickerDateIntoAppIntDate(int year, int month, int day){
-        return (year-2000)*10000+ (month+1)*100+day;
+    public static int setDatePickerDateIntoAppIntDate(int year, int month, int day) {
+        return (year - 2000) * 10000 + (month + 1) * 100 + day;
     }
 
-    public static int getStartingDateCurrentWeek(){
+    public static int getStartingDateCurrentWeek() {
 
         return fromJodaTimeLocalDateToAppDateInteger(now.dayOfWeek().withMinimumValue());
     }
 
-    public static int getStartingDateCurrentMonth(){
-        int year = (now.getYear())-2000;
+    public static int getStartingDateCurrentMonth() {
+        int year = (now.getYear()) - 2000;
         int month = now.getMonthOfYear();
 
         return fromJodaTimeLocalDateToAppDateInteger(now.dayOfMonth().withMinimumValue());
@@ -94,10 +90,10 @@ public class UnitUtil {
         return fromJodaTimeLocalDateToAppDateInteger(now.minusDays(customDays));
     }
 
-    public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareMonths(int numberOfMonths){
+    public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareMonths(int numberOfMonths) {
 
         List<Integer> result = new ArrayList<>();
-        for (int i = numberOfMonths; i >0; i--) {
+        for (int i = numberOfMonths; i > 0; i--) {
             int[] temp = getStartingEndDateOfAMonth(now.minusMonths(i));
             result.add(temp[0]);
             result.add(temp[1]);
@@ -107,9 +103,9 @@ public class UnitUtil {
         return result;
     }
 
-    public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareWeeks (int numberOfWeeks){
+    public static List<Integer> getArrayOfStartEndDatesOnNumberOfCompareWeeks(int numberOfWeeks) {
         List<Integer> result = new ArrayList<>();
-        for (int i = numberOfWeeks; i >0; i--) {
+        for (int i = numberOfWeeks; i > 0; i--) {
             int[] temp = getStartingEndDateOfAWeek(now.minusWeeks(i));
             result.add(temp[0]);
             result.add(temp[1]);
@@ -120,8 +116,7 @@ public class UnitUtil {
     }
 
 
-
-    public static int[] getStartingEndDateOfAMonth(LocalDate inputDate){
+    public static int[] getStartingEndDateOfAMonth(LocalDate inputDate) {
         int[] output = new int[2];
 
         int startDateOfMonth = fromJodaTimeLocalDateToAppDateInteger(inputDate.withDayOfMonth(1));
@@ -132,6 +127,7 @@ public class UnitUtil {
 
         return output;
     }
+
     private static int[] getStartingEndDateOfAWeek(LocalDate inputDate) {
         int[] output = new int[2];
 
@@ -145,31 +141,30 @@ public class UnitUtil {
         return output;
     }
 
-    public static Integer fromJodaTimeLocalDateToAppDateInteger(LocalDate inputDate){
-        return  Integer.parseInt(DateTimeFormat.forPattern("YYMMdd").print(inputDate));
+    public static Integer fromJodaTimeLocalDateToAppDateInteger(LocalDate inputDate) {
+        return Integer.parseInt(DateTimeFormat.forPattern("YYMMdd").print(inputDate));
     }
 
-    public static String fromJodaTimeLocalDateToMonthLabel(LocalDate inputDate){
+    public static String fromJodaTimeLocalDateToMonthLabel(LocalDate inputDate) {
 
-        return  DateTimeFormat.forPattern("YYYY/MMM").print(inputDate);
+        return DateTimeFormat.forPattern("YYYY/MMM").print(inputDate);
     }
 
-    public static int fromMMMDDFormatToAppDateFormat(String input){
-        String month = input.substring(0,3);
+    public static int fromMMMDDFormatToAppDateFormat(String input) {
+        String month = input.substring(0, 3);
         int monthInt = -1;
-        for (int i = 0; i< Constant.MONTHS_CAP.length; i++) {
-            if(month.equals(Constant.MONTHS_CAP[i])){
-                monthInt = i+1;
+        for (int i = 0; i < Constant.MONTHS_CAP.length; i++) {
+            if (month.equals(Constant.MONTHS_CAP[i])) {
+                monthInt = i + 1;
                 break;
             }
         }
         int day = Integer.parseInt(input.substring(3));
-        int year =  Integer.parseInt(DateTimeFormat.forPattern("YY").print(now));
+        int year = Integer.parseInt(DateTimeFormat.forPattern("YY").print(now));
 
-        return year*10000+monthInt*100+day;
+        return year * 10000 + monthInt * 100 + day;
 
     }
-
 
 
 }

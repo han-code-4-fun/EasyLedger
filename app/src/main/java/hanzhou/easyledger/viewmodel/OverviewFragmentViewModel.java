@@ -17,7 +17,6 @@ import hanzhou.easyledger.data.TransactionEntry;
 public class OverviewFragmentViewModel extends AndroidViewModel {
 
 
-    private LiveData<List<TransactionEntry>> untaggedTransactions;
     private MediatorLiveData<List<TransactionEntry>>
             listOfTransactionsOfCertainDaysChooseByUser = new MediatorLiveData<>();
 
@@ -32,9 +31,8 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
         mDBRepository = RepositoryDB.getInstance();
         mDBRepository.initializeRepository(application);
 
-        untaggedTransactions = mDBRepository.getUntaggedTransaction();
 
-        revenue =new MutableLiveData<>();
+        revenue = new MutableLiveData<>();
         revenue.setValue(0.0f);
 
         spend = new MutableLiveData<>();
@@ -42,40 +40,36 @@ public class OverviewFragmentViewModel extends AndroidViewModel {
     }
 
 
-
-
-    public void updateTransactionOverviewPeriod(int time){
+    public void updateTransactionOverviewPeriod(int time) {
         listOfTransactionsOfCertainDaysChooseByUser.
                 addSource(mDBRepository.getPeriodOfEntriesForOverview(time), new Observer<List<TransactionEntry>>() {
-            @Override
-            public void onChanged(List<TransactionEntry> transactionEntryList) {
-                listOfTransactionsOfCertainDaysChooseByUser.setValue(transactionEntryList);
-            }
-        });
+                    @Override
+                    public void onChanged(List<TransactionEntry> transactionEntryList) {
+                        listOfTransactionsOfCertainDaysChooseByUser.setValue(transactionEntryList);
+                    }
+                });
     }
 
 
-    public LiveData<List<TransactionEntry>> getlistOfTransactionsInTimeRange(){
+    public LiveData<List<TransactionEntry>> getlistOfTransactionsInTimeRange() {
         return listOfTransactionsOfCertainDaysChooseByUser;
     }
 
-    public void setRevenue(Float input){
+    public void setRevenue(Float input) {
         revenue.setValue(input);
     }
 
-    public LiveData<Float> getRevenue(){
+    public LiveData<Float> getRevenue() {
         return revenue;
     }
 
-    public void setSpend(Float input){
+    public void setSpend(Float input) {
         spend.setValue(input);
     }
 
-    public LiveData<Float> getSpend(){
+    public LiveData<Float> getSpend() {
         return spend;
     }
-
-
 
 
 }

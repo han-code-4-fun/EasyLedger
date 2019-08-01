@@ -3,6 +3,7 @@ package hanzhou.easyledger.smsprocessor;
 import android.content.Context;
 import android.util.Log;
 
+import hanzhou.easyledger.R;
 import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionDB;
 import hanzhou.easyledger.data.TransactionEntry;
@@ -14,16 +15,15 @@ import hanzhou.easyledger.utility.UnitUtil;
  *
  *
  * */
-public class SMSToTransactionEntry {
+class SMSToTransactionEntry {
 
     private static final String TAG = SMSToTransactionEntry.class.getSimpleName();
 
-    public static void processRBCBankingSMS(final Context context, String msgBody) {
+    static void processRBCBankingSMS(final Context context, String msgBody) {
 
         TransactionEntry transactionEntry = null;
 
-        //todo, assign a ledger that is used temperatorily
-        String ledgerName = "RBC";
+        String ledgerName = Constant.RBC_LEDGER_NAME;
 
         if (msgBody.contains(Constant.CREDIT_CARD)) {
 
@@ -31,7 +31,7 @@ public class SMSToTransactionEntry {
 
         } else if (msgBody.contains(Constant.RBC_DEPOSIT)) {
 
-            transactionEntry = extractSMSDebit(context,ledgerName, msgBody, Constant.RBC_DEPOSIT);
+            transactionEntry = extractSMSDebit(context, ledgerName, msgBody, Constant.RBC_DEPOSIT);
 
         } else if (msgBody.contains(Constant.RBC_WITHDRAWAL)) {
             transactionEntry = extractSMSDebit(context, ledgerName, msgBody, Constant.RBC_WITHDRAWAL);
@@ -43,19 +43,24 @@ public class SMSToTransactionEntry {
     }
 
 
-    public static void processBMOBankingSMS(final Context context, String msgBody) {
+    static void processBMOBankingSMS(final Context context, String msgBody) {
 
     }
 
-    public static void processCIBCBankingSMS(final Context context, String msgBody) {
+    static void processCIBCBankingSMS(final Context context, String msgBody) {
 
     }
 
-    public static void processHSBCBankingSMS(final Context context, String msgBody) {
+    static void processHSBCBankingSMS(final Context context, String msgBody) {
 
     }
 
-    private static TransactionEntry extractSMSCredit(Context context,String ledgerName, String msgBody) {
+
+    /*
+     *   detail extracting method all depends on bank txt msg format
+     *
+     * */
+    private static TransactionEntry extractSMSCredit(Context context, String ledgerName, String msgBody) {
         try {
 
             int amountPosition = msgBody.indexOf('$') + 1;
@@ -66,14 +71,13 @@ public class SMSToTransactionEntry {
 
             int timePosition = msgBody.indexOf("made") + 5;
 
-            String time = msgBody.substring(timePosition, msgBody.indexOf("at", timePosition)-1);
+            String time = msgBody.substring(timePosition, msgBody.indexOf("at", timePosition) - 1);
 
             int timeInt = UnitUtil.fromMMMDDFormatToAppDateFormat(time);
 
-            //todo, change the remark for credit card
-            int creditCardRemarkStart = msgBody.indexOf("at", timePosition)+3;
+            int creditCardRemarkStart = msgBody.indexOf("at", timePosition) + 3;
 
-            String remark = msgBody.substring(creditCardRemarkStart, msgBody.indexOf('.',creditCardRemarkStart) ) ;
+            String remark = msgBody.substring(creditCardRemarkStart, msgBody.indexOf('.', creditCardRemarkStart));
             remark = remark.trim().toLowerCase();
             String category = AutoCategorizer.process(context, remark, amount);
 
@@ -82,11 +86,17 @@ public class SMSToTransactionEntry {
 
         } catch (Exception e) {
 
-            Log.e(TAG, "extractSMSDebit:   error while converting sms to TransactionEntry ", e);
+            Log.e(TAG, context.getString(R.string.error_msg_extract_sms_fail), e);
 
             return null;
         }
     }
+
+
+    /*
+     *   detail extracting method all depends on bank txt msg format
+     *
+     * */
 
     private static TransactionEntry extractSMSDebit(Context context, String ledgerName, String msgBody, String remark) {
         try {
@@ -109,12 +119,12 @@ public class SMSToTransactionEntry {
 
             remark = remark.toLowerCase();
 
-            String category = AutoCategorizer.process(context,remark, amount);
+            String category = AutoCategorizer.process(context, remark, amount);
 
             return new TransactionEntry(ledgerName, timeInt, amount, category, remark);
 
         } catch (Exception e) {
-            Log.e(TAG, "extractSMSDebit:   error while converting sms to TransactionEntry ", e);
+            Log.e(TAG, context.getString(R.string.error_msg_extract_sms_fail), e);
             return null;
         }
     }

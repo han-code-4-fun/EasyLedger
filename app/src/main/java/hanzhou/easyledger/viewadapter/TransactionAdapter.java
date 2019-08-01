@@ -1,8 +1,6 @@
 package hanzhou.easyledger.viewadapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import hanzhou.easyledger.R;
@@ -23,10 +20,18 @@ import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 
 
+
+/*
+ *
+ *
+ *   work with DetailTransactionFragment to be used as a reuseable piece
+ *
+ *
+ *
+ * */
+
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
-
-    private static final String TAG = TransactionAdapter.class.getSimpleName();
 
     private List<TransactionEntry> mTransactionEntryList;
     private AdapterNActionBarViewModel mAdapterNActionBarViewModel;
@@ -43,7 +48,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
 
-
     public void setAdapterData(List<TransactionEntry> inputEntries) {
         mTransactionEntryList = inputEntries;
         mAdapterNActionBarViewModel.emptySelectedItems();
@@ -51,11 +55,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     }
 
-    public List<TransactionEntry> getAdateperData(){
-        return  mTransactionEntryList;
+    public List<TransactionEntry> getAdateperData() {
+        return mTransactionEntryList;
     }
 
-    public void updateSelectedItemsArray(int position){
+
+    public void updateSelectedItemsArray(int position) {
 
         /*if selected, unselect(delete) it*/
         if (mAdapterNActionBarViewModel.getAValueFromSelectedItems(position)) {
@@ -68,27 +73,20 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         /*update selected number that will display in the toolbar*/
         mAdapterNActionBarViewModel.setmTransactionSelectedNumber();
 
-        if(mAdapterNActionBarViewModel.getNumberOfSelectedItems() == getItemCount()){
+        if (mAdapterNActionBarViewModel.getNumberOfSelectedItems() == getItemCount()) {
             mAdapterNActionBarViewModel.setmIsAllSelected(true);
-        }else{
+        } else {
             mAdapterNActionBarViewModel.setmIsAllSelected(false);
         }
         this.notifyItemChanged(position);
     }
 
 
-//    public int getOneSelectedEntryID(){
-//        int position = mAdapterNActionBarViewModel.getFirstSelectedItems();
-//
-//        return mTransactionEntryList.get(position).getId();
-//    }
-
-
     public void selectAll() {
 
-        for(int i =0;i<mTransactionEntryList.size(); i++){
-            if(!mAdapterNActionBarViewModel.getAValueFromSelectedItems(i)){
-                mAdapterNActionBarViewModel.putAValueIntoSelectedItems(i,true);
+        for (int i = 0; i < mTransactionEntryList.size(); i++) {
+            if (!mAdapterNActionBarViewModel.getAValueFromSelectedItems(i)) {
+                mAdapterNActionBarViewModel.putAValueIntoSelectedItems(i, true);
                 this.notifyItemChanged(i);
             }
         }
@@ -97,9 +95,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         mAdapterNActionBarViewModel.setmIsAllSelected(true);
     }
 
-    public List<TransactionEntry> getmTransactionEntryList() {
-        return mTransactionEntryList;
-    }
 
     public void deselectAll() {
         mAdapterNActionBarViewModel.emptySelectedItems();
@@ -136,17 +131,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.time.setText(UnitUtil.getTimeIntInMoreReadableFormat(currentRecord.getTime()));
 
         holder.amount.setText(UnitUtil.formatMoney(amount));
-        if(amount>=0){
-            holder.amount.setTextColor(ContextCompat.getColor(mContext,R.color.color_money_in));
+        if (amount >= 0) {
+            holder.amount.setTextColor(ContextCompat.getColor(mContext, R.color.color_money_in));
 
-        }else{
-            holder.amount.setTextColor(ContextCompat.getColor(mContext,R.color.color_money_out));
+        } else {
+            holder.amount.setTextColor(ContextCompat.getColor(mContext, R.color.color_money_out));
 
         }
         holder.category.setText(currentRecord.getCategory());
         holder.remark.setText(currentRecord.getRemark());
         if (isInActionMode) {
-            holder.layout.setBackgroundColor(ContextCompat.getColor(mContext,R.color.color_selected_bg));
+            holder.layout.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_selected_bg));
             holder.checkBox.setVisibility(View.VISIBLE);
             holder.checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -167,11 +162,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public int getItemCount() {
-        if (mTransactionEntryList == null){ return 0;}
+        if (mTransactionEntryList == null) {
+            return 0;
+        }
 
         return mTransactionEntryList.size();
     }
-
 
 
     public class TransactionViewHolder extends RecyclerView.ViewHolder
@@ -186,7 +182,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         CheckBox checkBox;
 
 
-        public TransactionViewHolder(@NonNull View itemView) {
+        TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
 
             layout = itemView.findViewById(R.id.transaction_layout);
@@ -207,12 +203,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             int position = getAdapterPosition();
 
             /*ensure the deleting animation is on-going while customer clicked this position*/
-            if ( position != RecyclerView.NO_POSITION) {
+            if (position != RecyclerView.NO_POSITION) {
 
-                if(isInActionMode){
+                if (isInActionMode) {
                     updateSelectedItemsArray(position);
-                }
-                else{
+                } else {
 
                     int id = mTransactionEntryList.get(position).getId();
 
@@ -224,7 +219,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         @Override
         public boolean onLongClick(View view) {
 
-            if (!isInActionMode) {  mAdapterNActionBarViewModel.setActionModeState(true); }
+            if (!isInActionMode) {
+                mAdapterNActionBarViewModel.setActionModeState(true);
+            }
             return false;
         }
     }

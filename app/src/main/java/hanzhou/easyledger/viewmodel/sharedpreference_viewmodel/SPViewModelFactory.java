@@ -1,7 +1,6 @@
 package hanzhou.easyledger.viewmodel.sharedpreference_viewmodel;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

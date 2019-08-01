@@ -33,36 +33,36 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if(isAtLeastOneSmsExtractorFromSettingIsOn(context)){
+        if (isAtLeastOneSmsExtractorFromSettingIsOn(context)) {
 
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-                Object[] pdusObj = (Object[]) bundle.get("pdus");
+                Object[] pdusObj = (Object[]) bundle.get(context.getString(R.string.sms_pdus));
                 if (pdusObj != null) {
 
-                    String[] msgContent = getMSGContent(pdusObj, intent);
+                    String[] msgContent = getMSGContent(pdusObj, intent, context);
 
-                    SMSProcessor.processExtraction(context, msgContent[0],msgContent[1]);
+                    SMSProcessor.processExtraction(context, msgContent[0], msgContent[1]);
 
                 } else {
-                    Log.e(TAG, "onReceive: error getting 'pdus'");
+                    Log.e(TAG, context.getString(R.string.error_msg_getting_pdus));
                 }
             }
         }
     }
 
-    private String[] getMSGContent(Object[] pdusObj, Intent intent) {
+    private String[] getMSGContent(Object[] pdusObj, Intent intent, Context context) {
 
         String[] output = new String[2];
 
         SmsMessage currentMessage;
-        for (int i = 0; i < pdusObj.length; i++) {
+        for (Object o : pdusObj) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                String formatFromPDU = intent.getStringExtra("format");
-                currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i], formatFromPDU);
+                String formatFromPDU = intent.getStringExtra(context.getString(R.string.sms_string_extra_format));
+                currentMessage = SmsMessage.createFromPdu((byte[]) o, formatFromPDU);
             } else {
-                currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                currentMessage = SmsMessage.createFromPdu((byte[]) o);
             }
 
             output[0] = currentMessage.getOriginatingAddress();
@@ -75,19 +75,19 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         return output;
     }
 
-    private boolean isAtLeastOneSmsExtractorFromSettingIsOn(Context context){
+    private boolean isAtLeastOneSmsExtractorFromSettingIsOn(Context context) {
 
         boolean isRBCOn = mSharedPreferences.getBoolean(
-                context.getResources().getString(R.string.setting_others_msg_tracker_rbc_default_key),true);
+                context.getResources().getString(R.string.setting_others_msg_tracker_rbc_default_key), true);
 
-        if(isRBCOn){
+        if (isRBCOn) {
             return true;
         }
 
         return false;
     }
 
-    public void setmSharedPreferences(SharedPreferences input){
+    public void setmSharedPreferences(SharedPreferences input) {
         mSharedPreferences = input;
     }
 

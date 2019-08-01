@@ -15,6 +15,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> mRefreshLedgerFragmentTrigger;
 
     private RepositoryDB mDBRepository;
+
     public SettingsViewModel(@NonNull Application application) {
         super(application);
 
@@ -25,19 +26,19 @@ public class SettingsViewModel extends AndroidViewModel {
         mRefreshLedgerFragmentTrigger.setValue(false);
     }
 
-    public void setSettingEditType(String input){
+    public void setSettingEditType(String input) {
         mCategoryToEdit.setValue(input);
     }
 
-    public MutableLiveData<String> getmCategoryType(){
+    public MutableLiveData<String> getmCategoryType() {
         return mCategoryToEdit;
     }
 
-    public void renameHistoryLedger(String inputString, String deletedLedgerName){
-        mDBRepository.renameHistoryLedger(inputString,deletedLedgerName);
+    public void renameHistoryLedger(String inputString, String deletedLedgerName) {
+        mDBRepository.renameHistoryLedger(inputString, deletedLedgerName);
     }
 
-    public void renameHistoryCategory(String inputString, String deletedCategory){
+    public void renameHistoryCategory(String inputString, String deletedCategory) {
         mDBRepository.renameHistoryCategory(inputString, deletedCategory);
     }
 

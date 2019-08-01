@@ -24,10 +24,13 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
 
         android:id="@+id/btn_setting_add_entry_btn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="15dp"
+        android:foregroundGravity="center"
+        app:fabSize="normal"
+
+        android:layout_margin="@dimen/floatingactionbtn_margin_larger_screen_phone"
         android:tint="@color/color_white"
         app:srcCompat="@drawable/icon_floating_action_btn_add"
         app:layout_constraintBottom_toBottomOf="parent"

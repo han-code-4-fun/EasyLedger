@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer;
 import java.util.List;
 
 import hanzhou.easyledger.data.RepositoryDB;
-import hanzhou.easyledger.data.AppExecutors;
 import hanzhou.easyledger.data.TransactionEntry;
 
 public class ChartDataViewModel extends AndroidViewModel {
@@ -20,9 +19,9 @@ public class ChartDataViewModel extends AndroidViewModel {
     private final RepositoryDB mDBRepository;
 
 
-    private final MediatorLiveData<List<TransactionEntry>> mHistoryListEntries= new MediatorLiveData<>();
-    private final MediatorLiveData<List<TransactionEntry>> mRevenueListEntries= new MediatorLiveData<>();
-    private final MediatorLiveData<List<TransactionEntry>> mExpenseListEntries= new MediatorLiveData<>();
+    private final MediatorLiveData<List<TransactionEntry>> mHistoryListEntries = new MediatorLiveData<>();
+    private final MediatorLiveData<List<TransactionEntry>> mRevenueListEntries = new MediatorLiveData<>();
+    private final MediatorLiveData<List<TransactionEntry>> mExpenseListEntries = new MediatorLiveData<>();
 
 
     public ChartDataViewModel(@NonNull Application application) {
@@ -30,12 +29,12 @@ public class ChartDataViewModel extends AndroidViewModel {
         mDBRepository = RepositoryDB.getInstance();
     }
 
-    public void initializeDatesForVM(int historyStartDate,int historyEndDate, int currentStartDate){
+    public void initializeDatesForVM(int historyStartDate, int historyEndDate, int currentStartDate) {
         updatesHistoryDatesForVM(historyStartDate, historyEndDate);
         updatesCurrentDatesforVM(currentStartDate);
     }
 
-    public void updatesHistoryDatesForVM(int historyStartDate, int historyEndDate){
+    public void updatesHistoryDatesForVM(int historyStartDate, int historyEndDate) {
         mHistoryListEntries.addSource(mDBRepository.getPeriodOfEntries(historyStartDate, historyEndDate), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
@@ -44,7 +43,7 @@ public class ChartDataViewModel extends AndroidViewModel {
         });
     }
 
-    public void updatesCurrentDatesforVM(int currentChartStartDate){
+    public void updatesCurrentDatesforVM(int currentChartStartDate) {
         mRevenueListEntries.addSource(mDBRepository.getCurrentRevenueOfEntries(currentChartStartDate), new Observer<List<TransactionEntry>>() {
             @Override
             public void onChanged(List<TransactionEntry> transactionEntryList) {
@@ -60,22 +59,19 @@ public class ChartDataViewModel extends AndroidViewModel {
     }
 
 
-
-
-    public LiveData<List<TransactionEntry>> getmHistoryListEntryPeriod(){
+    public LiveData<List<TransactionEntry>> getmHistoryListEntryPeriod() {
 
         return mHistoryListEntries;
     }
 
-    public LiveData<List<TransactionEntry>> getmRevenueListEntry(){
+    public LiveData<List<TransactionEntry>> getmRevenueListEntry() {
         return mRevenueListEntries;
     }
 
-    public LiveData<List<TransactionEntry>> getmExpenseListEntry(){
+    public LiveData<List<TransactionEntry>> getmExpenseListEntry() {
 
         return mExpenseListEntries;
     }
-
 
 
 }

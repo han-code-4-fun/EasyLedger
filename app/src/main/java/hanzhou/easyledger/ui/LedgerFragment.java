@@ -3,7 +3,6 @@ package hanzhou.easyledger.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,13 +20,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.data.AppExecutors;
-import hanzhou.easyledger.data.RepositoryDB;
-import hanzhou.easyledger.data.TransactionDB;
-import hanzhou.easyledger.data.TransactionEntry;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.LedgersAdapter;
@@ -138,7 +132,6 @@ public class LedgerFragment extends Fragment {
     }
 
 
-
     private void setupViewModel() {
 
         mTransactionDBViewModel = ViewModelProviders.of(mAppCompatActivity).get(TransactionDBViewModel.class);
@@ -150,8 +143,6 @@ public class LedgerFragment extends Fragment {
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_LEDGER);
 
         mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
-
-
 
 
         SPViewModelFactory factory = new SPViewModelFactory(mSharedPreferences);

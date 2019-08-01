@@ -5,13 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,15 +13,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
+/*
+ *   an explaination fragment to let user not worried about using this app
+ *
+ *
+ * */
+
 public class QuestionFragment extends Fragment {
 
     private static final String TAG = QuestionFragment.class.getSimpleName();
@@ -52,14 +55,14 @@ public class QuestionFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         setHasOptionsMenu(true);
-        mAppCompatActivity = (AppCompatActivity)context;
+        mAppCompatActivity = (AppCompatActivity) context;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView =inflater.inflate(R.layout.fragment_question, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_question, container, false);
 
         String dateString = UnitUtil.getMonthDayToday();
 
@@ -67,7 +70,9 @@ public class QuestionFragment extends Fragment {
         uiInitialization(rootView);
 
         /*make a joke on April 1st*/
-        if (dateString.equals("04-01")) {btnJoke.setVisibility(View.VISIBLE);}
+        if (dateString.equals(getString(R.string.april_first))) {
+            btnJoke.setVisibility(View.VISIBLE);
+        }
 
         setOnClickListenerForAllButton();
 
@@ -82,13 +87,12 @@ public class QuestionFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        toolbar =  mAppCompatActivity.findViewById(R.id.toolbar_layout);
+        toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
         toolbar.setTitle(getString(R.string.title_question_fragment));
         toolbar.getMenu().clear();
         inflater.inflate(R.menu.toolbar_empty, menu);
         mAppCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
 
 
     private void uiInitialization(View rootView) {

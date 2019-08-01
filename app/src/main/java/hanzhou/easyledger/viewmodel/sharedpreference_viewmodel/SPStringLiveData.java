@@ -10,6 +10,6 @@ public class SPStringLiveData extends SPLiveData<String> {
 
     @Override
     String getValueFromPreferences(String key, String defValue) {
-        return sharedPrefs.getString(key,defValue);
+        return sharedPrefs.getString(key, defValue);
     }
 }

@@ -3,27 +3,19 @@ package hanzhou.easyledger.ui;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Handler;
-import android.transition.Fade;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import hanzhou.easyledger.R;
-import hanzhou.easyledger.ui.animation.DetailsTransition;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.PermissionUtil;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
@@ -66,7 +58,7 @@ public class LauncherFragment extends Fragment {
 
 
 
-        /*set a time to display splash screen*/
+        /*set a time for displaying splash screen*/
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -74,7 +66,7 @@ public class LauncherFragment extends Fragment {
 
                     loadInitialFragment();
                 } else {
-                    PermissionUtil.askPermission(mAppCompatActivity,PERMISSIONS,REQUEST_PERMISSION_APP_START);
+                    PermissionUtil.askPermission(mAppCompatActivity, PERMISSIONS, REQUEST_PERMISSION_APP_START);
                 }
             }
         }, splashScreenTime);
@@ -90,19 +82,8 @@ public class LauncherFragment extends Fragment {
     }
 
 
-
-
-
-
     private void loadInitialFragment() {
         OverviewFragment overviewFragment = new OverviewFragment();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            overviewFragment.setSharedElementEnterTransition(new DetailsTransition());
-            overviewFragment.setEnterTransition(new Fade());
-            setExitTransition(new Fade());
-            overviewFragment.setSharedElementReturnTransition(new DetailsTransition());
-        }
 
 
         mAppCompatActivity.getSupportFragmentManager()

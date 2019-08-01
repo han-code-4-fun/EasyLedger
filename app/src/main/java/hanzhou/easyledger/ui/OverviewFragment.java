@@ -2,9 +2,7 @@ package hanzhou.easyledger.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +15,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -40,25 +35,14 @@ import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 
-public class OverviewFragment extends Fragment{
+public class OverviewFragment extends Fragment {
 
-    private static final String TAG = OverviewFragment.class.getSimpleName();
 
-    private GeneralViewModel mGeneralViewModel;
     private OverviewFragmentViewModel mOverviewFragmentViewModel;
-    private AdapterNActionBarViewModel mAdapterActionViewModel;
-    private SPViewModel mSharedPreferenceViewModel;
 
-    HorizontalBarChart mBarChart;
-    BarDataSet barDataSet;
-
-    LinearLayoutManager mLayoutManager;
-
-    private RecyclerView mRecyclerView;
+    private HorizontalBarChart mBarChart;
 
     private AppCompatActivity mAppCompatActivity;
-
-    private SharedPreferences mAppPreferences;
 
 
     private TextView mTotalAmount;
@@ -70,8 +54,6 @@ public class OverviewFragment extends Fragment{
     private float mBiggerNumber;
 
 
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -79,19 +61,15 @@ public class OverviewFragment extends Fragment{
 
         mExpenseFloatingPoint = 0f;
         mRevenueFloatingPoint = 0f;
-
-        mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
-        mAppPreferences = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        mBiggerNumber = 0f;
     }
-
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_overview,container,false);
-
+        View root = inflater.inflate(R.layout.fragment_overview, container, false);
 
 
         mBarChart = root.findViewById(R.id.overview_total_balance_barchart);
@@ -104,7 +82,7 @@ public class OverviewFragment extends Fragment{
                 .beginTransaction()
                 .setCustomAnimations(R.anim.enter_from_top, R.anim.exit_to_bottom, R.anim.enter_from_bottom, R.anim.exit_to_top)
                 .replace(R.id.overview_recyclerview_for_untagged_transactions,
-                       DetailTransactionFragment.newInstance(Constant.UNTAGGED))
+                        DetailTransactionFragment.newInstance(Constant.UNTAGGED))
                 .commit();
 
         return root;
@@ -118,25 +96,16 @@ public class OverviewFragment extends Fragment{
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mAppCompatActivity = null;
-    }
-
-
-
     private void initiazlizeBarChart() {
 
         setChartStyle();
 
         setChartData();
 
-
     }
 
     /*make chart to display only*/
-    private void setChartStyle(){
+    private void setChartStyle() {
 
         mBarChart.setDescription(null);
         mBarChart.getLegend().setEnabled(false);
@@ -176,7 +145,7 @@ public class OverviewFragment extends Fragment{
 
 
     /*set YLeftAxis' maximum based on the maximum get from DB*/
-    private void setYLeftAxis(){
+    private void setYLeftAxis() {
         YAxis yLeftAxis = mBarChart.getAxisLeft();
 
         /*set YLeftAxis' maximum based on the maximum get from DB*/
@@ -198,7 +167,7 @@ public class OverviewFragment extends Fragment{
         entries.add(revenue);
         entries.add(spend);
 
-        barDataSet = new BarDataSet(entries, "Bar data test");
+        BarDataSet barDataSet = new BarDataSet(entries, getString(R.string.overview_bar_data_label));
 
         barDataSet.setColors(
                 /*set upper chart (revenue) color*/
@@ -210,7 +179,6 @@ public class OverviewFragment extends Fragment{
                 ContextCompat.getColor(mBarChart.getContext(), R.color.color_deactive));
         barDataSet.setValueTextSize(15f);
         barDataSet.setDrawValues(true);
-
 
 
         BarData barData = new BarData(barDataSet);
@@ -225,13 +193,12 @@ public class OverviewFragment extends Fragment{
     }
 
 
-
     private void setupViewModel() {
 
-        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        GeneralViewModel mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_OVERVIEW);
 
-        mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
+        AdapterNActionBarViewModel mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
         mOverviewFragmentViewModel = ViewModelProviders.of(mAppCompatActivity).get(OverviewFragmentViewModel.class);
 
         mOverviewFragmentViewModel.getlistOfTransactionsInTimeRange().observe(this, new Observer<List<TransactionEntry>>() {
@@ -240,13 +207,13 @@ public class OverviewFragment extends Fragment{
                 calculateSpendingNRevenueSum(transactionEntryList);
             }
         });
-        mSharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
+        SPViewModel mSharedPreferenceViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class
         );
         mOverviewFragmentViewModel.getRevenue().observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
             public void onChanged(Float aDouble) {
                 mRevenueFloatingPoint = aDouble;
-                synchronizeBalanceData();
+                synchronizeOverviewBalanceData();
             }
         });
 
@@ -254,20 +221,18 @@ public class OverviewFragment extends Fragment{
             @Override
             public void onChanged(Float aDouble) {
                 mExpenseFloatingPoint = Math.abs(aDouble);
-                synchronizeBalanceData();
+                synchronizeOverviewBalanceData();
 
             }
         });
 
 
-
-
     }
 
-    private void synchronizeBalanceData(){
-            mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
-            setYLeftAxis();
-            setChartData();
+    private void synchronizeOverviewBalanceData() {
+        mBiggerNumber = Math.max(mExpenseFloatingPoint, mRevenueFloatingPoint);
+        setYLeftAxis();
+        setChartData();
     }
 
     @SuppressLint("SetTextI18n")
@@ -285,7 +250,7 @@ public class OverviewFragment extends Fragment{
         mOverviewFragmentViewModel.setRevenue(revenue);
         mOverviewFragmentViewModel.setSpend(spending);
 
-        mTotalAmount.setText(UnitUtil.formatMoney(revenue+spending));
+        mTotalAmount.setText(UnitUtil.formatMoney(revenue + spending));
 
     }
 }

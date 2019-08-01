@@ -3,14 +3,17 @@ package hanzhou.easyledger.viewmodel;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import hanzhou.easyledger.data.RepositoryDB;
 import hanzhou.easyledger.utility.Constant;
+
+
+/*
+ *   Viewmodel that across all fragments as a communicator
+ *
+ * */
 
 public class GeneralViewModel extends AndroidViewModel {
 
@@ -26,7 +29,6 @@ public class GeneralViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> mBackButtonPressTrigger = new MutableLiveData<>();
 
 
-
     public GeneralViewModel(@NonNull Application application) {
         super(application);
         mCurrentLedger.setValue(Constant.LEDGER_OVERALL);
@@ -38,7 +40,7 @@ public class GeneralViewModel extends AndroidViewModel {
                 name.equals(Constant.FRAG_NAME_OVERVIEW) |
                 name.equals(Constant.FRAG_NAME_LEDGER)) {
             mIsInBaseFragment.setValue(true);
-        }else{
+        } else {
             mIsInBaseFragment.setValue(false);
         }
     }

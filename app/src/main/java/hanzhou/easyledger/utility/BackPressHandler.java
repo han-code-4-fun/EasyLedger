@@ -2,8 +2,9 @@ package hanzhou.easyledger.utility;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
+
+import hanzhou.easyledger.R;
 
 public class BackPressHandler {
     /*
@@ -15,21 +16,20 @@ public class BackPressHandler {
      *
      * */
 
-    private static int numOfTimesBackPressed =0;
+    private static int numOfTimesBackPressed = 0;
 
-    private static  Handler handlerBackPress;
+    private static Handler handlerBackPress;
     private static Runnable minusOneNumBackPressed;
 
-    public static boolean isUserPressedTwice(Context context){
+    public static boolean isUserPressedTwice(Context context) {
 
         numOfTimesBackPressed += 1;
 
 
-        if(numOfTimesBackPressed <= 1)
-        {
+        if (numOfTimesBackPressed <= 1) {
             Toast.makeText(
                     context,
-                    "Tap one more time to exit app.",
+                    R.string.app_exit_notice,
                     Toast.LENGTH_SHORT).show();
 
             handlerBackPress = new Handler();
@@ -43,7 +43,7 @@ public class BackPressHandler {
             //int numOfTimesBackPressed-- for every 2seconds
             handlerBackPress.postDelayed(minusOneNumBackPressed, 2000);
             return false;
-        }else{
+        } else {
             handlerBackPress.removeCallbacks(minusOneNumBackPressed);
             numOfTimesBackPressed = 0;
             return true;

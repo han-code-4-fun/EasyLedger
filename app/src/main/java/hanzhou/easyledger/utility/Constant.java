@@ -148,5 +148,18 @@ public class Constant {
 
     public static final String SETTING_BUNDLE_LIST_OF_NAMES = "setting_bundle_list_of_names";
 
+    public static final String DATE_TIME_FORMAT_YEAR_MONTH = "YYYYMM";
+
+    public static final String DOLLOR_SIGN = "$";
+
+    public static final String TXT_NEW_LINE = "\n";
+
+
+    public static final String TXT_LAST_WEEK = "last week";
+
+    public static final String TXT_WEEKS = "weeks";
+
+
+
 
 }

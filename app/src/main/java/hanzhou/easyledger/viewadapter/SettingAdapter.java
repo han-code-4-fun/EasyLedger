@@ -2,7 +2,6 @@ package hanzhou.easyledger.viewadapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,14 @@ import java.util.Collections;
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 
+
+
+/*
+ *   display list of datas for category/ledger when user want to edit their current ledgers and revenue/expense categories
+ *
+ *
+ * */
+
 public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingViewHolder> {
 
     private ArrayList<String> mList;
@@ -27,12 +34,12 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         mContext = inputContext;
     }
 
-    public void setData(ArrayList<String> inputList){
+    public void setData(ArrayList<String> inputList) {
         mList = inputList;
         notifyDataSetChanged();
     }
 
-    public ArrayList<String> getData(){
+    public ArrayList<String> getData() {
         return mList;
     }
 
@@ -60,27 +67,26 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.SettingV
         return mList.size();
     }
 
-    public boolean isCurrentLedgerOVERALL(int position){
+    public boolean isCurrentLedgerOVERALL(int position) {
         return mList.get(position).equals(Constant.LEDGER_OVERALL);
     }
 
-    public boolean isCurrentCategoryOthers(int position){
+    public boolean isCurrentCategoryOthers(int position) {
         return mList.get(position).equals(Constant.CATEGORY_OTHERS);
     }
 
-    public boolean isCurrentLedgerOnSMSExtraction(int position, String ledgerName){
+    public boolean isCurrentLedgerOnSMSExtraction(int position, String ledgerName) {
         return mList.get(position).equals(ledgerName);
     }
 
 
-
-    public void swapPosition(int positionFrom, int positionTo){
+    public void swapPosition(int positionFrom, int positionTo) {
         Collections.swap(mList, positionFrom, positionTo);
         notifyItemMoved(positionFrom, positionTo);
     }
 
     public String remove(int position) {
-        String removed =mList.remove(position);
+        String removed = mList.remove(position);
         notifyDataSetChanged();
         return removed;
     }

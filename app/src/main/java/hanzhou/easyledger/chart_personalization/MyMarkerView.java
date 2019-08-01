@@ -12,6 +12,7 @@ import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 
 import hanzhou.easyledger.R;
+import hanzhou.easyledger.utility.Constant;
 
 /**
  * Custom implementation of the MarkerView.
@@ -50,7 +51,6 @@ public class MyMarkerView extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
 
 
-
         if (e instanceof CandleEntry) {
 
             CandleEntry ce = (CandleEntry) e;
@@ -59,9 +59,9 @@ public class MyMarkerView extends MarkerView {
                 int position = (int) e.getX();
                 String temp = mCategories[position];
                 tvContent.setText(
-                        temp +"\n" +
-                        getResources().getString(R.string.dollor_sign) +
-                        Utils.formatNumber(ce.getHigh(), 0, false));
+                        temp + Constant.TXT_NEW_LINE +
+                                getResources().getString(R.string.dollor_sign) +
+                                Utils.formatNumber(ce.getHigh(), 0, false));
 
             } else {
                 tvContent.setText(getResources().getString(R.string.dollor_sign) + Utils.formatNumber(ce.getHigh(), 0, false));
@@ -74,9 +74,9 @@ public class MyMarkerView extends MarkerView {
                 int position = (int) e.getX();
                 String temp = mCategories[position];
                 tvContent.setText(
-                        temp + "\n" +
-                        getResources().getString(R.string.dollor_sign) +
-                        Utils.formatNumber(e.getY(), 0, false));
+                        temp + Constant.TXT_NEW_LINE +
+                                getResources().getString(R.string.dollor_sign) +
+                                Utils.formatNumber(e.getY(), 0, false));
 
             } else {
                 tvContent.setText(getResources().getString(R.string.dollor_sign) + Utils.formatNumber(e.getY(), 0, false));

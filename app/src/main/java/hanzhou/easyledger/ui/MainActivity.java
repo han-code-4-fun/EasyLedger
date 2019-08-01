@@ -1,11 +1,5 @@
 package hanzhou.easyledger.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -21,36 +15,16 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import hanzhou.easyledger.R;
-import hanzhou.easyledger.data.RepositoryDB;
-import hanzhou.easyledger.data.TransactionEntry;
-import hanzhou.easyledger.smsprocessor.HistoryRemark;
-import hanzhou.easyledger.smsprocessor.HistorySMSReader;
-import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
-import hanzhou.easyledger.ui.settings.SettingMain;
-import hanzhou.easyledger.utility.GsonHelper;
-import hanzhou.easyledger.utility.PermissionUtil;
-import hanzhou.easyledger.utility.UnitUtil;
-import hanzhou.easyledger.viewmodel.GeneralViewModel;
-import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
-import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
-import hanzhou.easyledger.chart_personalization.ChartDialogSetting;
-import hanzhou.easyledger.data.AppExecutors;
-import hanzhou.easyledger.data.TransactionDB;
-import hanzhou.easyledger.utility.BackPressHandler;
-import hanzhou.easyledger.utility.Constant;
-import hanzhou.easyledger.utility.TestingData;
-import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
-import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
-import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
-import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -63,6 +37,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hanzhou.easyledger.R;
+import hanzhou.easyledger.chart_personalization.ChartDialogSetting;
+import hanzhou.easyledger.data.AppExecutors;
+import hanzhou.easyledger.data.RepositoryDB;
+import hanzhou.easyledger.data.TransactionDB;
+import hanzhou.easyledger.data.TransactionEntry;
+import hanzhou.easyledger.smsprocessor.HistoryRemark;
+import hanzhou.easyledger.smsprocessor.HistorySMSReader;
+import hanzhou.easyledger.smsprocessor.SMSBroadcastReceiver;
+import hanzhou.easyledger.ui.settings.SettingMain;
+import hanzhou.easyledger.utility.BackPressHandler;
+import hanzhou.easyledger.utility.Constant;
+import hanzhou.easyledger.utility.GsonHelper;
+import hanzhou.easyledger.utility.PermissionUtil;
+import hanzhou.easyledger.utility.TestingData;
+import hanzhou.easyledger.utility.UnitUtil;
+import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
+import hanzhou.easyledger.viewmodel.GeneralViewModel;
+import hanzhou.easyledger.viewmodel.OverviewFragmentViewModel;
+import hanzhou.easyledger.viewmodel.TransactionDBViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModelFactory;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
+
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
 public class MainActivity extends AppCompatActivity {
@@ -71,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String CHART_FRAGMENT = "in_chart_fragment";
-    private static final String NON_CHART_FRAGMENT = "not_in_chart_fragment";
 
     private IntentFilter mSmsIntentFilter;
     private SMSBroadcastReceiver mSmsReceiver;
@@ -85,9 +81,6 @@ public class MainActivity extends AppCompatActivity {
     private TransactionDBViewModel mTransactionViewModel;
     private OverviewFragmentViewModel mOverviewViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
-    private SPViewModel mSharedPreferenceViewModel;
-
-    private HistoryRemark mHistoryRemark;
 
 
     private Fragment selectedFragment;
@@ -104,18 +97,16 @@ public class MainActivity extends AppCompatActivity {
 
     /*
         Ignore btn on toolbar that appears when toolbar is in action mode,
-        this will 'tag' currently untagged transactions into 'others' category
+        this will 'tag' currently untagged transactions into 'Others' category
      */
     private MenuItem mIgnoreBtn;
     private MenuItem mDeleteBtn;
     private MenuItem mEditBtn;
     private MenuItem mSelectAllBtn;
 
-    private MenuItem mSaveBtn;
 
     private boolean isInActionModel;
     private boolean isAllSelected;
-
 
 
     private boolean mIsInBaseFragment;
@@ -198,10 +189,10 @@ public class MainActivity extends AppCompatActivity {
 
         this.registerReceiver(mSmsReceiver, mSmsIntentFilter);
 
-        processHistorySMSInBackGround();
+        processHistorySMSInBackGroundThatHappenedAfterAppKilledLastTime();
     }
 
-    private void processHistorySMSInBackGround() {
+    private void processHistorySMSInBackGroundThatHappenedAfterAppKilledLastTime() {
 
         long startTime = mSharedPreference.getLong(Constant.PREFERENCE_TIME_LEFT_APP, 0);
         long endTime = mSharedPreference.getLong(Constant.PREFERENCE_TIME_BACK_TO_APP, 1);
@@ -225,8 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             } else {
-                Log.e(TAG, "processHistorySMSInBackGround:  " +
-                        "time get back to app is eariler than get left app, is there a time travel?");
+                Log.e(TAG, getString(R.string.error_time_earlier_than_history));
             }
 
         } else {
@@ -341,7 +331,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 toolbarActionToOriginMode();
 
-
                 break;
 
             case R.id.toolbar_edit:
@@ -416,13 +405,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void broadcastReceiverInitialization() {
 
-        mHistoryRemark = HistoryRemark.getInstance();
+        HistoryRemark mHistoryRemark = HistoryRemark.getInstance();
         mHistoryRemark.loadFromFile(mGsonHelper);
 
         mSmsIntentFilter = new IntentFilter();
 
-        //todo , handle this
-        //todo, may crush
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             mSmsIntentFilter.addAction(SMS_RECEIVED_ACTION_OLD);
@@ -434,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
         mSmsReceiver = new SMSBroadcastReceiver();
         mSmsReceiver.setmSharedPreferences(mSharedPreference);
     }
+
 
     private void uiInitialization() {
         toolBar = findViewById(R.id.toolbar_layout);
@@ -469,7 +457,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setViewModel() {
-
+        mOverviewViewModel = ViewModelProviders.of(MainActivity.this).
+                get(OverviewFragmentViewModel.class);
 
         mGeneralViewModel = ViewModelProviders.of(this).get(GeneralViewModel.class);
         mGeneralViewModel.getCurrentScreen().observe(this, new Observer<String>() {
@@ -493,6 +482,9 @@ public class MainActivity extends AppCompatActivity {
         mGeneralViewModel.getmCurrentLedger().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
+                /*
+                 * use to identify present ledger in viewpager of LedgerFragment
+                 * */
                 mVisibleLedger = s;
             }
         });
@@ -500,7 +492,8 @@ public class MainActivity extends AppCompatActivity {
         mGeneralViewModel.getmBackButtonPressTrigger().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
+
+                if (aBoolean) {
                     getSupportFragmentManager().popBackStack();
                     toolbarActionToOriginMode();
 
@@ -511,52 +504,37 @@ public class MainActivity extends AppCompatActivity {
 
 
         SPViewModelFactory spFactory = new SPViewModelFactory(mSharedPreference);
-        mSharedPreferenceViewModel = ViewModelProviders.of(this, spFactory).get(SPViewModel.class
+        final SPViewModel mSharedPreferenceViewModel = ViewModelProviders.of(this, spFactory).get(SPViewModel.class
         );
-
-        mSharedPreferenceViewModel.getmSettingOverviewCustomDateRange().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                mOverviewDateRange = integer;
-
-                if (isOverviewCustomRange) {
-                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(mOverviewDateRange);
-
-                }
-                if (mOverviewViewModel == null) {
-
-                    mOverviewViewModel = ViewModelProviders.of(MainActivity.this).
-                            get(OverviewFragmentViewModel.class);
-                }
-                mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
-            }
-        });
 
 
         mSharedPreferenceViewModel.getmSettingOverviewDateRangeType().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 if (s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_MONTH)) {
-                    isOverviewCustomRange = false;
-                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentMonth();
 
+                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentMonth();
+                    mSharedPreferenceViewModel.getmSettingOverviewCustomDateRange().removeObservers(MainActivity.this);
+                    mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
                 } else if (s.equals(Constant.SETTING_GENERAL_OVERVIEW_DATE_RANGE_BY_WEEK)) {
-                    isOverviewCustomRange = false;
+
                     mOverviewDateStartTime = UnitUtil.getStartingDateCurrentWeek();
+                    mSharedPreferenceViewModel.getmSettingOverviewCustomDateRange().removeObservers(MainActivity.this);
+                    mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
 
                 } else {
                     /*custom range*/
-                    isOverviewCustomRange = true;
-                    mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(mOverviewDateRange);
+
+                    mSharedPreferenceViewModel.getmSettingOverviewCustomDateRange().observe(MainActivity.this, new Observer<Integer>() {
+                        @Override
+                        public void onChanged(Integer integer) {
+
+                            mOverviewDateStartTime = UnitUtil.getStartingDateCurrentCustom(integer);
+                            mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
+
+                        }
+                    });
                 }
-
-
-                if (mOverviewViewModel == null) {
-
-                    mOverviewViewModel = ViewModelProviders.of(MainActivity.this).
-                            get(OverviewFragmentViewModel.class);
-                }
-                mOverviewViewModel.updateTransactionOverviewPeriod(mOverviewDateStartTime);
 
             }
         });
@@ -564,22 +542,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 Constant.setIsAutoTaggerOn(aBoolean);
-                if(aBoolean){
+                if (aBoolean) {
 
 
                     /*
-                    *  if user turn auto tagger back on from off,
-                    *  app will mark current untagged transaction
-                    *
-                    * */
+                     *  if user turn auto tagger back on from off,
+                     *  app will mark current untagged transaction
+                     *
+                     * */
 
-                    HashMap<String,String> remarkLists = HistoryRemark.getInstance().exportData();
+                    HashMap<String, String> remarkLists = HistoryRemark.getInstance().exportData();
 
                     for (Map.Entry<String, String> entry : remarkLists.entrySet()) {
                         String remark = entry.getKey();
                         String category = entry.getValue();
 
-                        RepositoryDB.getInstance().applyUpdateToExistingUntaggedTransaction(remark,category);
+                        RepositoryDB.getInstance().applyUpdateToExistingUntaggedTransaction(remark, category);
                     }
                 }
             }
@@ -691,7 +669,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void runAppStartingFragment() {
         selectedFragment = new LauncherFragment();
-        switchFragmentsOnBottomNavigationBar(selectedFragment, "launcher");
+        switchFragmentsOnBottomNavigationBar(selectedFragment, Constant.FRAG_NAME_LAUNCHER);
     }
 
 
@@ -762,22 +740,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void toolbarActionDeleteAll() {
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDb.transactionDAO().deleteAll();
-            }
-        });
+        RepositoryDB.getInstance().deleteAllTransactions();
     }
 
 
     private void toolbarActionInsert1000FakeData() {
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDb.transactionDAO().insertListOfTransactions(TestingData.create1000Transactions(mGsonHelper));
-            }
-        });
+        RepositoryDB.getInstance().insertTransactions(mGsonHelper);
     }
 
 
@@ -797,13 +765,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
 
 
-
-                    RepositoryDB.getInstance().deleteSelectedTransactions(
-                            mAdapterActionViewModel.getSelectedTransactions(mVisibleListEntry)
-                    );
-                    toolbarActionToOriginMode();
-
-
+            RepositoryDB.getInstance().deleteSelectedTransactions(
+                    mAdapterActionViewModel.getSelectedTransactions(mVisibleListEntry)
+            );
+            toolbarActionToOriginMode();
 
 
         }
@@ -823,8 +788,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-
 
 
     private void showNumberOfSelectedTransactionOnToolbar(int integer) {
@@ -924,8 +887,6 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
-
-
 
 
     }
@@ -1058,7 +1019,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-
 
 
 }

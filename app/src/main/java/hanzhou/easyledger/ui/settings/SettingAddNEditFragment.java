@@ -35,29 +35,20 @@ import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.viewadapter.SettingAdapter;
-import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 public class SettingAddNEditFragment extends Fragment {
 
 
-    private GeneralViewModel mGeneralViewModel;
-    private AdapterNActionBarViewModel adapterNActionBarViewModel;
     private SettingsViewModel mSettingsViewModel;
     private AppCompatActivity mAppCompatActivity;
 
-    private Toolbar toolbar;
-    private FloatingActionButton mFloatingActionButton;
-
-    private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLinearLayoutManager;
     private SettingAdapter mSettingAdapter;
 
     private ArrayList<String> mListData;
 
     private AlertDialog mAlertDialog;
-    private AlertDialog.Builder mDialogBuilder;
 
     private GsonHelper mGsonHelper;
 
@@ -65,23 +56,20 @@ public class SettingAddNEditFragment extends Fragment {
 
     private ArrayList<String> mListDeletedData;
 
-    private SharedPreferences mSharedPreference;
-
     private boolean isRBCMsgExtractionOn;
 
-    public static final int REQUEST_DIALOG_CODE = Constant.REQUEST_DIALOG_CODE_SETTING_ADD_EDIT_FRAGMENT;
+    private static final int REQUEST_DIALOG_CODE = Constant.REQUEST_DIALOG_CODE_SETTING_ADD_EDIT_FRAGMENT;
 
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mAppCompatActivity = (AppCompatActivity) context;
         setHasOptionsMenu(true);
-        mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
-        isRBCMsgExtractionOn = mSharedPreference.getBoolean(getString(R.string.setting_others_msg_tracker_rbc_default_key),true);
+        SharedPreferences mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
+        isRBCMsgExtractionOn = mSharedPreference.getBoolean(getString(R.string.setting_others_msg_tracker_rbc_default_key), true);
         mGsonHelper = GsonHelper.getInstance();
         mGsonHelper.setmSharedPreferences(mSharedPreference);
-
 
     }
 
@@ -89,13 +77,13 @@ public class SettingAddNEditFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_setting_add_n_edit, container, false);
-        mRecyclerView = root.findViewById(R.id.setting_edit_recyclerview);
+        RecyclerView mRecyclerView = root.findViewById(R.id.setting_edit_recyclerview);
 
-        mFloatingActionButton = root.findViewById(R.id.btn_setting_add_entry_btn);
+        FloatingActionButton mFloatingActionButton = root.findViewById(R.id.btn_setting_add_entry_btn);
         mFloatingActionButton.setOnClickListener(onClickFAB);
 
 
-        mLinearLayoutManager = new LinearLayoutManager(mAppCompatActivity);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mAppCompatActivity);
 
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
@@ -139,24 +127,24 @@ public class SettingAddNEditFragment extends Fragment {
 
                 if (mSettingAdapter.isCurrentCategoryOthers(position)) {
                     /*user should not remove "Others" in category list or "OVERALL" in ledger list*/
-                    isValidAction=false;
+                    isValidAction = false;
                     launchWarningMSGNoDelete(position, getString(R.string.setting_warning_cannot_delete_others_in_category_msg_body));
                 }
 
                 if (mSettingAdapter.isCurrentLedgerOVERALL(position)) {
-                    isValidAction=false;
+                    isValidAction = false;
                     launchWarningMSGNoDelete(position, getString(R.string.setting_warning_cannot_delete_overall_in_ledger_msg_body));
 
                 }
 
                 if (isRBCMsgExtractionOn) {
-                    if (mSettingAdapter.isCurrentLedgerOnSMSExtraction(position, Constant.RBC_LEDGER_NAME)){
-                        isValidAction=false;
+                    if (mSettingAdapter.isCurrentLedgerOnSMSExtraction(position, Constant.RBC_LEDGER_NAME)) {
+                        isValidAction = false;
                         launchWarningMSGNoDelete(position, getString(R.string.setting_warning_cannot_delete_sms_extraction_ledger_msg_body));
                     }
                 }
 
-                if(isValidAction){
+                if (isValidAction) {
                     String removedItem = mSettingAdapter.remove(position);
                     mListDeletedData.add(removedItem);
                 }
@@ -170,7 +158,7 @@ public class SettingAddNEditFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
+        Toolbar toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
         toolbar.setTitle(getString(R.string.title_settings_fragment));
         toolbar.getMenu().clear();
         inflater.inflate(R.menu.toolbar_setting_edit, menu);
@@ -224,10 +212,9 @@ public class SettingAddNEditFragment extends Fragment {
 
     private void setupViewModel() {
 
-        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
+        GeneralViewModel mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_SETTING_ADD_EDIT);
 
-        adapterNActionBarViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
 
@@ -260,7 +247,7 @@ public class SettingAddNEditFragment extends Fragment {
                 /*add remark, (history Ledger -> $LedgerName)*/
                 for (int i = 0; i < mListDeletedData.size(); i++) {
                     String ledgerName = mListDeletedData.get(i);
-                    String addedRemark = "(history ledger -> " + ledgerName + ") ";
+                    String addedRemark = getString(R.string.remove_remark_begin) + ledgerName + getString(R.string.remove_remark_end);
                     mSettingsViewModel.renameHistoryLedger(addedRemark, ledgerName);
 
                 }
@@ -268,7 +255,7 @@ public class SettingAddNEditFragment extends Fragment {
                 /*add remark, (hisotory category -> $categoryName)*/
                 for (int i = 0; i < mListDeletedData.size(); i++) {
                     String categoryName = mListDeletedData.get(i);
-                    String addedRemark = "(history category -> " + categoryName + ") ";
+                    String addedRemark = getString(R.string.remove_remark_begin) + categoryName + getString(R.string.remove_remark_end);
                     mSettingsViewModel.renameHistoryCategory(addedRemark, categoryName);
 
                 }
@@ -296,7 +283,7 @@ public class SettingAddNEditFragment extends Fragment {
         if (mAlertDialog != null && mAlertDialog.isShowing()) {
             /*do nothing since it's already on screen*/
         } else {
-            mDialogBuilder = new AlertDialog.Builder(mAppCompatActivity)
+            AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(mAppCompatActivity)
                     .setTitle(getString(R.string.setting_warning_cannot_swap_overall_in_ledger_title))
                     .setMessage(getString(R.string.setting_warning_cannot_swap_overall_in_ledger_msg_body))
                     .setNeutralButton(getString(R.string.setting_warning_neutral_btn_title), new DialogInterface.OnClickListener() {
@@ -327,20 +314,18 @@ public class SettingAddNEditFragment extends Fragment {
             dialog.setTargetFragment(SettingAddNEditFragment.this, REQUEST_DIALOG_CODE);
 
 
-
-
             dialog.show(mAppCompatActivity.getSupportFragmentManager(), null);
         }
     };
 
 
-    private void showInitialInfoDialogHowToAddEditDelete(){
+    private void showInitialInfoDialogHowToAddEditDelete() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mAppCompatActivity);
         builder.setTitle(getString(R.string.setting_info_dialog_title));
         builder.setMessage(getString(R.string.setting_info_dialog_msg_body));
 
-        builder.setPositiveButton("OK", null);
+        builder.setPositiveButton(getString(R.string.dialog_positive_btn_ok), null);
 
         AlertDialog dialog = builder.create();
         dialog.show();

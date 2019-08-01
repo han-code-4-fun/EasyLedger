@@ -2,41 +2,46 @@ package hanzhou.easyledger.smsprocessor;
 
 
 /*
-*   decide which bank's sms this is, then pass to SMSToTransactionEntry to get right info
-*
-*
-*
-* */
+ *   decide which bank's sms this is, then pass to SMSToTransactionEntry to get right info
+ *
+ *
+ *
+ * */
 
 import android.content.Context;
-import android.util.Log;
 
+import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 
-public class SMSProcessor {
+class SMSProcessor {
 
-    public static void processExtraction(Context context, String sender, String msgBody){
+    /*
+     *   identify which bank does this msg belongs to
+     *   so to extract relative information according to its format
+     *
+     * */
+    static void processExtraction(Context context, String sender, String msgBody) {
 
         /*check sender number first, then check msgBody*/
-        checkSenderNumber(context,sender,msgBody);
+        checkSenderNumber(context, sender, msgBody);
     }
 
-    private static void checkSenderNumber(Context context, String sender, String msgBody){
-        switch (sender){
+    private static void checkSenderNumber(Context context, String sender, String msgBody) {
+        switch (sender) {
             case Constant.RBC_NUMBER:
-                SMSToTransactionEntry.processRBCBankingSMS(context,msgBody);
+                SMSToTransactionEntry.processRBCBankingSMS(context, msgBody);
                 break;
             case Constant.BMO_NUMBER:
-                SMSToTransactionEntry.processBMOBankingSMS(context,msgBody);
+                SMSToTransactionEntry.processBMOBankingSMS(context, msgBody);
                 break;
             case Constant.CIBC_NUMBER:
-                SMSToTransactionEntry.processCIBCBankingSMS(context,msgBody);
+                SMSToTransactionEntry.processCIBCBankingSMS(context, msgBody);
                 break;
             case Constant.HSBC_NUMBER:
-                SMSToTransactionEntry.processHSBCBankingSMS(context,msgBody);
+                SMSToTransactionEntry.processHSBCBankingSMS(context, msgBody);
                 break;
             default:
-                //do sth
+                /*do more time consuming check*/
                 checkMSGContent(context, msgBody);
                 break;
 
@@ -44,8 +49,8 @@ public class SMSProcessor {
 
     }
 
-    private static void checkMSGContent(Context context, String msgBody){
-        if(msgBody.contains("RBC")){
+    private static void checkMSGContent(Context context, String msgBody) {
+        if (msgBody.contains(context.getString(R.string.ledger_name_rbc))) {
             SMSToTransactionEntry.processRBCBankingSMS(context, msgBody);
         }
     }

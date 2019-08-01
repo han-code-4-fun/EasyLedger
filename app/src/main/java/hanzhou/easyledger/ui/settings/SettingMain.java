@@ -4,11 +4,12 @@ package hanzhou.easyledger.ui.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -17,23 +18,13 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.SeekBar;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-import java.util.Set;
 
 import hanzhou.easyledger.R;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
-import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
@@ -45,13 +36,8 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private AppCompatActivity mAppCompatActivity;
 
-    private GeneralViewModel mGeneralViewModel;
-    private AdapterNActionBarViewModel mAdapterActionViewModel;
-
-    private SharedPreferences mSharedPreferences;
 
     private Toolbar toolbar;
-    private ListPreference mListOfDayRanges;
 
     private SeekBarPreference seekBarPreference;
 
@@ -61,8 +47,6 @@ public class SettingMain extends PreferenceFragmentCompat implements
     private SettingsViewModel mSettingsViewModel;
 
     private GsonHelper mGsonHelper;
-
-    private String mLastFrag;
 
 
     public SettingMain() {
@@ -92,7 +76,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.setting_main);
 
-        mSharedPreferences = getPreferenceScreen().getSharedPreferences();
+        SharedPreferences mSharedPreferences = getPreferenceScreen().getSharedPreferences();
 
         toolbar = mAppCompatActivity.findViewById(R.id.toolbar_layout);
 
@@ -100,7 +84,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
         seekBarPreference = findPreference(getString(R.string.setting_overview_custom_range_seekbar_key));
 
 
-        mListOfDayRanges = findPreference(getString(R.string.setting_general_overview_date_range_list_key));
+        ListPreference mListOfDayRanges = findPreference(getString(R.string.setting_general_overview_date_range_list_key));
 
 
 
@@ -108,77 +92,31 @@ public class SettingMain extends PreferenceFragmentCompat implements
         mCurrentOverviewDatesRange = mSharedPreferences.getString(mListOfDayRanges.getKey(), getString(R.string.empty_string));
 
 
-        if(!mCurrentOverviewDatesRange.equals(getString(R.string.setting_overview_date_range_custom_range_key))){
+        if (!mCurrentOverviewDatesRange.equals(getString(R.string.setting_overview_date_range_custom_range_key))) {
             mOverviewCategory.removePreference(seekBarPreference);
         }
         setPreferenceSummary(mListOfDayRanges, mCurrentOverviewDatesRange);
 
 
-        Preference settingEditLedger =
-                findPreference(getString(R.string.setting_transaction_edit_ledger_key));
-        if(settingEditLedger!= null){
+        Preference settingEditLedger = findPreference(getString(R.string.setting_transaction_edit_ledger_key));
+        if (settingEditLedger != null) {
 
-            settingEditLedger.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-
-                    mSettingsViewModel.setSettingEditType(Constant.LEDGERS);
-
-                    mAppCompatActivity.getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
-                            .replace(R.id.fragment_base, new SettingAddNEditFragment())
-                            .addToBackStack(Constant.FRAG_NAME_SETTING_ADD_EDIT)
-                            .commit();
-                    return true;
-                }
-            });
+            settingEditLedger.setOnPreferenceClickListener(mEditLedgerListener);
         }
 
-        Preference editRevenueCategory =
-                findPreference(getString(R.string.setting_others_edit_category_revenue_key));
-        if(editRevenueCategory!= null){
+        Preference editRevenueCategory = findPreference(getString(R.string.setting_others_edit_category_revenue_key));
+        if (editRevenueCategory != null) {
 
-            editRevenueCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-
-                    mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_REVENUE);
-
-                    mAppCompatActivity.getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
-                            .replace(R.id.fragment_base, new SettingAddNEditFragment())
-                            .addToBackStack(Constant.FRAG_NAME_SETTING_ADD_EDIT)
-                            .commit();
-                    return true;
-                }
-            });
+            editRevenueCategory.setOnPreferenceClickListener(mEditRevenueCategoryListener);
         }
 
-        Preference editExpenseCategory =
-                findPreference(getString(R.string.setting_others_edit_category_expense_key));
-        if(editExpenseCategory!= null){
+        Preference editExpenseCategory = findPreference(getString(R.string.setting_others_edit_category_expense_key));
+        if (editExpenseCategory != null) {
 
-            editExpenseCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-
-                    mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_EXPENSE);
-                    mAppCompatActivity.getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
-                            .replace(R.id.fragment_base, new SettingAddNEditFragment())
-                            .addToBackStack(Constant.FRAG_NAME_SETTING_ADD_EDIT)
-                            .commit();
-                    return true;
-                }
-            });
+            editExpenseCategory.setOnPreferenceClickListener(mEditExpenseCategoryListener);
         }
 
     }
-
-
 
 
     @Override
@@ -203,39 +141,39 @@ public class SettingMain extends PreferenceFragmentCompat implements
         Preference preference = findPreference(s);
         if (preference != null) {
 
-            if(preference instanceof ListPreference){
+            if (preference instanceof ListPreference) {
                 String value = sharedPreferences.getString(preference.getKey(), "");
                 mCurrentOverviewDatesRange = value;
                 setPreferenceSummary(preference, value);
 
-                if(value.equals(getString(R.string.setting_overview_date_range_custom_range_key)) ){
+                if (value.equals(getString(R.string.setting_overview_date_range_custom_range_key))) {
 
                     mOverviewCategory.addPreference(seekBarPreference);
                     seekBarPreference.setUpdatesContinuously(true);
 
-                }else{
+                } else {
 
                     seekBarPreference.setUpdatesContinuously(false);
                     mOverviewCategory.removePreference(seekBarPreference);
                 }
-            }else if(preference instanceof CheckBoxPreference){
+            } else if (preference instanceof CheckBoxPreference) {
                 String key = preference.getKey();
 
-                if(key.equals(getString(R.string.setting_others_msg_tracker_rbc_default_key))){
+                if (key.equals(getString(R.string.setting_others_msg_tracker_rbc_default_key))) {
                     /*
                         when checkbox for extracting RBC is turning on,
-                        there must be an ledger called RBC, if not, app will create one
+                        there must be an ledger called 'RBC', if not, app will create one
                     */
-                    if(((CheckBoxPreference) preference).isChecked()){
-                        ArrayList<String> ledgers =mGsonHelper.getLedgers(Constant.LEDGERS);
+                    if (((CheckBoxPreference) preference).isChecked()) {
+                        ArrayList<String> ledgers = mGsonHelper.getLedgers(Constant.LEDGERS);
 
-                        if(!ledgers.contains(Constant.RBC_LEDGER_NAME)){
-                            if(ledgers.size()>1){
+                        if (!ledgers.contains(Constant.RBC_LEDGER_NAME)) {
+                            if (ledgers.size() > 1) {
                                 ledgers.add(1, Constant.RBC_LEDGER_NAME);
-                            }else{
+                            } else {
                                 ledgers.add(Constant.RBC_LEDGER_NAME);
                             }
-                            mGsonHelper.saveDataToSharedPreference(ledgers,Constant.LEDGERS);
+                            mGsonHelper.saveDataToSharedPreference(ledgers, Constant.LEDGERS);
 
                             Toast.makeText(
                                     mAppCompatActivity,
@@ -249,7 +187,6 @@ public class SettingMain extends PreferenceFragmentCompat implements
     }
 
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -259,7 +196,7 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private void setPreferenceSummary(Preference preference, String value) {
         if (preference instanceof ListPreference) {
-             /*For list preferences, figure out the label of the selected value*/
+            /*For list preferences, figure out the label of the selected value*/
             ListPreference listPreference = (ListPreference) preference;
             int prefIndex = listPreference.findIndexOfValue(value);
             if (prefIndex >= 0) {
@@ -272,15 +209,54 @@ public class SettingMain extends PreferenceFragmentCompat implements
 
     private void setupViewModel() {
 
-        mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
-        mLastFrag = mGeneralViewModel.getCurrentScreen().getValue();
+        GeneralViewModel mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
 
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_SETTING);
 
-        mAdapterActionViewModel = ViewModelProviders.of(mAppCompatActivity).get(AdapterNActionBarViewModel.class);
 
         mSettingsViewModel = ViewModelProviders.of(mAppCompatActivity).get(SettingsViewModel.class);
     }
 
+
+    private Preference.OnPreferenceClickListener mEditExpenseCategoryListener = new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+
+            mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_EXPENSE);
+            goToSettingEditingFragment();
+            return true;
+        }
+    };
+
+    private Preference.OnPreferenceClickListener mEditRevenueCategoryListener = new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            mSettingsViewModel.setSettingEditType(Constant.CATEGORY_TYPE_REVENUE);
+
+            goToSettingEditingFragment();
+            return true;
+
+        }
+    };
+
+    private Preference.OnPreferenceClickListener mEditLedgerListener = new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+
+            mSettingsViewModel.setSettingEditType(Constant.LEDGERS);
+
+            goToSettingEditingFragment();
+            return true;
+        }
+    };
+
+    private void goToSettingEditingFragment() {
+        mAppCompatActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left)
+                .replace(R.id.fragment_base, new SettingAddNEditFragment())
+                .addToBackStack(Constant.FRAG_NAME_SETTING_ADD_EDIT)
+                .commit();
+    }
 
 }

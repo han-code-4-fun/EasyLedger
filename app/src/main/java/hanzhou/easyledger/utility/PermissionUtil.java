@@ -1,9 +1,7 @@
 package hanzhou.easyledger.utility;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -26,7 +24,7 @@ public class PermissionUtil {
         return true;
     }
 
-    public static void askPermission(AppCompatActivity mAppCompatActivity, String[] PERMISSIONS, int REQUEST_PERMISSION_APP_START){
+    public static void askPermission(AppCompatActivity mAppCompatActivity, String[] PERMISSIONS, int REQUEST_PERMISSION_APP_START) {
         ActivityCompat.requestPermissions(mAppCompatActivity,
                 PERMISSIONS,
                 REQUEST_PERMISSION_APP_START);
