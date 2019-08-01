@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -260,12 +261,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_feedback:
                 sendEmailToDeveloper();
                 break;
+            case R.id.menu_privacy_policy:
+                visitPrivacyPolicyPage();
+                break;
             case R.id.menu_insert_data:
                 toolbarActionInsert1000FakeData();
                 break;
             case R.id.menu_delete_all_data:
                 toolbarActionDeleteAll();
                 break;
+
             case R.id.menu_insert_data_within7days:
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
@@ -814,6 +819,19 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.no_email_app) + getString(R.string.developer_email_addr), Toast.LENGTH_LONG).show();
         }
     }
+
+    private void visitPrivacyPolicyPage() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(getString(R.string.privacy_policy_url)));
+
+        PackageManager packageManager = getPackageManager();
+        boolean isIntentSafe = browserIntent.resolveActivity(packageManager) != null;
+        if (isIntentSafe) {
+            startActivity(browserIntent);
+        }
+    }
+
+
 
 
     private void uiActionsOnScreenChange(String s) {

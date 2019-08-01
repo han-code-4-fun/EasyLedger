@@ -202,6 +202,8 @@
     <string name="april_first">04-01</string>
     <string name="app_exit_notice">Tap one more time to exit app.</string>
     <string name="demo">Demo</string>
+    <string name="privacy_policy_url">https://github.com/miaonagemide/privacy_policy/blob/master/EasyLedger_privacy_policy.md</string>
+    <string name="menu_item_privacy_policy_title">Privacy Policy</string>
 
 
 </resources>
