@@ -59,7 +59,9 @@ import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
@@ -565,6 +567,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 Constant.setIsAutoTaggerOn(aBoolean);
+                if(aBoolean){
+
+
+                    /*
+                    *  if user turn auto tagger back on from off,
+                    *  app will mark current untagged transaction
+                    *
+                    * */
+
+                    HashMap<String,String> remarkLists = HistoryRemark.getInstance().exportData();
+
+                    for (Map.Entry<String, String> entry : remarkLists.entrySet()) {
+                        String remark = entry.getKey();
+                        String category = entry.getValue();
+
+                        RepositoryDB.getInstance().applyUpdateToExistingUntaggedTransaction(remark,category);
+                    }
+                }
             }
         });
 

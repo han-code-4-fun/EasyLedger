@@ -29,6 +29,9 @@ public class SPViewModel extends ViewModel {
     private SPBoolLiveData mIsAutoTaggerOn;
 
 
+
+
+
 //    public SPViewModel(SharedPreferences inputSP , String inputKey, int inputVal) {
 //       /* sharedPreferences = new MutableLiveData<>();
 //        sharedPreferences.setValue(inputSP);

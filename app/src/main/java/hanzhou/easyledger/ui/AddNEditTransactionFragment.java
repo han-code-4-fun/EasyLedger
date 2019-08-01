@@ -54,6 +54,7 @@ import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.AddTransactionVMFactory;
 import hanzhou.easyledger.viewmodel.AddTransactionViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
+import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SPViewModel;
 import hanzhou.easyledger.viewmodel.sharedpreference_viewmodel.SettingsViewModel;
 
 /**
@@ -72,7 +73,7 @@ public class AddNEditTransactionFragment extends Fragment
 
     private GeneralViewModel mGeneralViewModel;
     private AdapterNActionBarViewModel mAdapterActionViewModel;
-    private SettingsViewModel mSettingsViewModel;
+    private SPViewModel mSPViewModel;
 //    private AddTransactionViewModel mAddTransactionViewModel;
 
     private AppCompatActivity mAppCompatActivity;
@@ -111,6 +112,10 @@ public class AddNEditTransactionFragment extends Fragment
 
     private int mTransactionId = DEFAULT_TASK_ID;
 
+
+    private boolean mIsAutotaggerOn;
+
+
     private double mMoneyNum;
     private int mCategoryNum;
     private int mLedgerNum;
@@ -137,7 +142,7 @@ public class AddNEditTransactionFragment extends Fragment
         mSharedPreference = PreferenceManager.getDefaultSharedPreferences(mAppCompatActivity);
         mGsonHelper = GsonHelper.getInstance();
         mGsonHelper.setmSharedPreferences(mSharedPreference);
-        mIsMoneyInChecked=true;
+        mIsMoneyInChecked = true;
     }
 
     @Override
@@ -160,16 +165,15 @@ public class AddNEditTransactionFragment extends Fragment
     }
 
 
-
     private void setupUI(View rootView) {
 
         mMoneyFlowBtn = rootView.findViewById(R.id.money_flow_change_btn);
         mMoneyFlowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mIsMoneyInChecked){
+                if (mIsMoneyInChecked) {
                     setMoneyOutActive();
-                }else{
+                } else {
                     setMoneyInActive();
                 }
             }
@@ -253,6 +257,14 @@ public class AddNEditTransactionFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mSPViewModel = ViewModelProviders.of(mAppCompatActivity).get(SPViewModel.class);
+        mSPViewModel.getmIsAutoTaggerOn().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                mIsAutotaggerOn = aBoolean;
+            }
+        });
+
         mGeneralViewModel = ViewModelProviders.of(mAppCompatActivity).get(GeneralViewModel.class);
         mGeneralViewModel.setmCurrentScreen(Constant.FRAG_NAME_ADD_EDIT_TRANSACTION);
 
@@ -299,7 +311,6 @@ public class AddNEditTransactionFragment extends Fragment
         });
 
 
-
 //
 //        mMoneyIn.setOnClickListener(moneyInBtnListener);
 //
@@ -340,7 +351,7 @@ public class AddNEditTransactionFragment extends Fragment
     private void setMoneyInActive() {
 
 
-        mIsMoneyInChecked =true;
+        mIsMoneyInChecked = true;
         mMoneyIn.setVisibility(View.VISIBLE);
         mMoneyOut.setVisibility(View.GONE);
         mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_REVENUE));
@@ -354,7 +365,7 @@ public class AddNEditTransactionFragment extends Fragment
 
 
     private void setMoneyOutActive() {
-        mIsMoneyInChecked =false;
+        mIsMoneyInChecked = false;
         mCategoryAdapter.setData(mGsonHelper.getDataFromSharedPreference(Constant.CATEGORY_TYPE_EXPENSE));
 
         mCategoryAdapter.highlightExistingCategoryIfMatch(mCurrentTransactionCategory);
@@ -369,7 +380,6 @@ public class AddNEditTransactionFragment extends Fragment
 
 
     }
-
 
 
 //    private Button.OnClickListener moneyInBtnListener = new View.OnClickListener() {
@@ -469,14 +479,23 @@ public class AddNEditTransactionFragment extends Fragment
 
                 );
 
-                /*update HistoryRemark for auto-tagging */
-               HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
-                       remark,
-                       mCategoryAdapter.getClickedCategory(),
-                       mGsonHelper
-               );
 
-               /*save to DB*/
+                if (mIsAutotaggerOn) {
+
+
+                /*
+                update HistoryRemark for auto-tagging
+                and apply Updates To Existing UntaggedTransaction
+                */
+                    HistoryRemark.getInstance().synchronizeUserTaggingBehaviour(
+                            remark,
+                            mCategoryAdapter.getClickedCategory(),
+                            mGsonHelper
+                    );
+
+                }
+
+                /*save to DB*/
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -586,15 +605,15 @@ public class AddNEditTransactionFragment extends Fragment
 
 
     /*the "OVERALL" ledger is a 'virtual ledger' for displaying all the other ledgers
-    * when adding/editing transaction, there is no need to that*/
-    private ArrayList<String> notDisplayLedgerOVERALL(ArrayList<String> input){
+     * when adding/editing transaction, there is no need to that*/
+    private ArrayList<String> notDisplayLedgerOVERALL(ArrayList<String> input) {
 
         input.remove(Constant.LEDGER_OVERALL);
         return input;
     }
 
     public void hideSoftKeyboard() {
-        InputMethodManager inputMethodManager =(InputMethodManager)mAppCompatActivity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) mAppCompatActivity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (inputMethodManager != null) {
             View view = mAppCompatActivity.getCurrentFocus();
 
