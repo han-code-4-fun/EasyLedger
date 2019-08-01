@@ -6,7 +6,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "hanzhou.easyledger_demo"
+        applicationId "hanzhou.easyledger"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
@@ -53,16 +53,13 @@ dependencies {
 
     //todo, add license info
     implementation 'net.danlew:android.joda:2.10.2'
-    implementation 'com.sackcentury:shinebutton:1.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'me.grantland:autofittextview:0.2.+'
+
 
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
 
-    implementation "com.airbnb.android:lottie:3.0.7"
-
-    implementation 'com.etebarian:meow-bottom-navigation:1.0.4'
 
 }
 

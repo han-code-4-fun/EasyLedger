@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "364873074613",
-    "firebase_url": "https://easyledgerdemo.firebaseio.com",
-    "project_id": "easyledgerdemo",
-    "storage_bucket": "easyledgerdemo.appspot.com"
+    "project_number": "786201937364",
+    "firebase_url": "https://easyledger-c5a0f.firebaseio.com",
+    "project_id": "easyledger-c5a0f",
+    "storage_bucket": "easyledger-c5a0f.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:364873074613:android:d943f1fe10fbf509",
+        "mobilesdk_app_id": "1:786201937364:android:0b7b850a92189405",
         "android_client_info": {
-          "package_name": "hanzhou.easyledger_demo"
+          "package_name": "hanzhou.easyledger"
         }
       },
       "oauth_client": [
         {
-          "client_id": "364873074613-mcr2hsf63vca2erjqh9blmuedc7j0bdn.apps.googleusercontent.com",
+          "client_id": "786201937364-674lc65jprj5al15lhdt3vn7uplcsl68.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBiZL5hml1qYZmQ4NQ2-KaZdLSRh35uQFk"
+          "current_key": "AIzaSyAmRcOn6N_RRuTCt20bUG2VrzluYnU4Nrs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "364873074613-mcr2hsf63vca2erjqh9blmuedc7j0bdn.apps.googleusercontent.com",
+              "client_id": "786201937364-674lc65jprj5al15lhdt3vn7uplcsl68.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
