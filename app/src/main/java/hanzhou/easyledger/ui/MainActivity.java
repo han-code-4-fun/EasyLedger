@@ -51,7 +51,6 @@ import hanzhou.easyledger.utility.BackPressHandler;
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
 import hanzhou.easyledger.utility.PermissionUtil;
-import hanzhou.easyledger.utility.TestingData;
 import hanzhou.easyledger.utility.UnitUtil;
 import hanzhou.easyledger.viewmodel.AdapterNActionBarViewModel;
 import hanzhou.easyledger.viewmodel.GeneralViewModel;
@@ -259,69 +258,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.menu_feedback:
                 sendEmailToDeveloper();
-                break;
-            case R.id.menu_insert_data:
-                toolbarActionInsert1000FakeData();
-                break;
-            case R.id.menu_delete_all_data:
-                toolbarActionDeleteAll();
-                break;
-            case R.id.menu_insert_data_within7days:
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().insertListOfTransactions(
-                                TestingData.create10DesignateTestingDataInCertaindays(7, mGsonHelper));
-                    }
-                });
-                break;
-            case R.id.menu_insert_data_within30days:
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().insertListOfTransactions(
-                                TestingData.create10DesignateTestingDataInCertaindays(30, mGsonHelper));
-                    }
-                });
-                break;
-            case R.id.menu_insert_data_within180days:
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().insertListOfTransactions(
-                                TestingData.create10DesignateTestingDataInCertaindays(180, mGsonHelper));
-                    }
-                });
-
-                break;
-            case R.id.menu_insert_data_within_this_week:
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().insertListOfTransactions(
-                                TestingData.create10DesignateTestingDataInCurrentWeek(mGsonHelper));
-                    }
-                });
-
-                break;
-            case R.id.menu_insert_data_within_this_month:
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().insertListOfTransactions(
-                                TestingData.create10DesignateTestingDataInCurrentMonth(mGsonHelper));
-                    }
-                });
-                break;
-
-            case R.id.menu_insert_untagged_data:
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.transactionDAO().insertListOfTransactions(
-                                TestingData.create5UntaggedTransactions(mGsonHelper));
-                    }
-                });
                 break;
 
             case android.R.id.home:
@@ -738,15 +674,6 @@ public class MainActivity extends AppCompatActivity {
         mEditBtn.setVisible(false);
     }
 
-
-    private void toolbarActionDeleteAll() {
-        RepositoryDB.getInstance().deleteAllTransactions();
-    }
-
-
-    private void toolbarActionInsert1000FakeData() {
-        RepositoryDB.getInstance().insertTransactions(mGsonHelper);
-    }
 
 
     private void toolbarActionEditSelectedTransaction() {

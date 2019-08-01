@@ -9,7 +9,6 @@
         android:icon="@drawable/icon_toolbar_edit"
         app:showAsAction="always" />
 
-
     <item
         android:id="@+id/toolbar_delete"
         android:orderInCategory="200"

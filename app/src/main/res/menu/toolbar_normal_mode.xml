@@ -23,47 +23,6 @@
 
             app:showAsAction="never" />
 
-        <item
-            android:id="@+id/menu_insert_data"
-            android:orderInCategory="400"
-            android:title="@string/menu_insert_data"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/menu_delete_all_data"
-            android:orderInCategory="500"
-            android:title="@string/menu_delete_all_data"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/menu_insert_data_within7days"
-            android:orderInCategory="600"
-            android:title="@string/menu_insert_data_7days"
-            app:showAsAction="never" />
-
-        <item
-            android:id="@+id/menu_insert_data_within30days"
-            android:orderInCategory="700"
-            android:title="@string/menu_insert_data_30days"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/menu_insert_data_within180days"
-            android:orderInCategory="800"
-            android:title="@string/menu_insert_data_180days"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/menu_insert_data_within_this_week"
-            android:orderInCategory="900"
-            android:title="@string/menu_insert_data_current_week"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/menu_insert_data_within_this_month"
-            android:orderInCategory="1000"
-            android:title="@string/menu_insert_data_current_month"
-            app:showAsAction="never" />
-        <item
-            android:id="@+id/menu_insert_untagged_data"
-            android:orderInCategory="1100"
-            android:title="@string/menu_insert_untagged_data"
-            app:showAsAction="never" />
 
 
 </menu>

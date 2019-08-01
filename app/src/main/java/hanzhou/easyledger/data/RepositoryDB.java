@@ -8,7 +8,6 @@ import java.util.List;
 
 import hanzhou.easyledger.utility.Constant;
 import hanzhou.easyledger.utility.GsonHelper;
-import hanzhou.easyledger.utility.TestingData;
 
 public class RepositoryDB {
 
@@ -114,14 +113,6 @@ public class RepositoryDB {
         });
     }
 
-    public void insertTransactions(final GsonHelper mGsonHelper) {
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mTransactionDB.transactionDAO().insertListOfTransactions(TestingData.create1000Transactions(mGsonHelper));
-            }
-        });
-    }
 
 
 }
