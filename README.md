@@ -41,6 +41,7 @@ The app receives sms broadcast, when a new sms received, the app will first chec
 :point_right:**What make app battery friendly**
 
 When app got killed, the custom broadcast will be end, and the same time, a timestamp will be saved (EndTime). When app is re-launched, the app will make another timestampe (StartTime) then turn on broadcast receiver to extract msg. As soon as the StartTime is available, the app will read history sms between EndTime and StartTime, and add qulified transaction into DB without interrupt user's forground interaction. This way the app "behaves" like its never sleep for user and it's in fact very battery friendly.
+Plus, due to the Model View ViewModel architecture, any change in DB will be reflect to UI, but won't causing any problem.
 
 
 :point_right:**An ideal situation of user experience**
