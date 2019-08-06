@@ -89,13 +89,13 @@ public class Constant {
 
     /*For developer use to check the present RBC msg format*/
     private static final String RBC_TEMPLATE_CREDIT_CARD =
-            "Purchase of $3.94 from RBC credit card 1121 made JUL21 at STARBUCKS #04274#. Stop-txt STOP/Help-txt HELP";
+            "Purchase of $45,643.94 from RBC credit card 1121 made JUL21 at STARBUCKS #04274#. Stop-txt STOP/Help-txt HELP";
 
     private static final String RBC_TEMPLATE_DEBIT_CARD_WITHDRAWAL =
-            "RBC: Withdrawal of $1.37 from RBC acct 4784 made JUL22. Stop-txt STOP/Help-txt HELP";
+            "RBC: Withdrawal of $49,891.37 from RBC acct 4784 made JUL22. Stop-txt STOP/Help-txt HELP";
 
     private static final String RBC_TEMPLATE_DEBIT_CARD_DEPOSIT =
-            "RBC: Deposit of $2.00 to RBC acct 4784 made JUL22. Stop-txt STOP/Help-txt HELP";
+            "RBC: Deposit of $7,000.00 to RBC acct 4784 made AUG06. Stop-txt STOP/Help-txt HELP";
 
     public static final String[] MONTHS_CAP = {
             "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
